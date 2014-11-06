@@ -1,0 +1,411 @@
+/*
+Project:    react-news
+Author:     Evan Henley
+Author URI: http://henleyedition.com/
+====================================== */
+
+
+/* Colors and Other Variables
+====================================== */
+
+// colors
+$primary: #6E9A81;
+$secondary: #7BB6A1;
+$tertiary: #C0B698;
+$gray: #D3DACC;
+
+// borders/margins/padding
+$line: 0.13rem;
+
+// dimensions
+$nav-height: 4rem;
+$footer-height: $nav-height;
+$content-width: 700px;
+
+$x-small: 0.5rem;
+$small: 1rem;
+$medium: 2rem;
+$large: 3rem;
+
+// media query breakpoints
+$breakpoint: 800px;
+
+
+
+
+/* Reset
+====================================== */
+
+* {
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+
+
+/* Typography
+====================================== */
+
+$font-size: 110%;
+$line-height: 1.55;
+
+$heading-font: "Libre Baskerville", "Times New Roman", serif;
+$body-font: "Open Sans", serif;
+$monospace: "Andale Mono", AndaleMono, Consolas, monaco, monospace;
+
+
+
+
+/* Animations
+====================================== */
+
+@keyframes slide-in {
+    0% { 
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.content-enter {
+    opacity: 0.01;
+    transition: opacity 0.4s;
+}
+.content-enter.content-enter-active {
+    opacity: 1;
+}
+
+.content-leave {
+    opacity: 1;
+}
+
+.content-leave.content-leave-active {
+    opacity: 0.01;
+}
+
+
+/* Structure
+====================================== */
+
+html {
+    height: 100%;
+    max-height: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+    font-family: $body-font;
+    height: 100%;
+    max-height: 100%;
+    line-height: $line-height;
+    background: #e5e5e5;
+    color: black;
+    font-size: $font-size;
+    text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    font-kerning: normal;
+}
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+.wrapper {
+    min-height: 100%;
+}
+
+.content {
+    min-height: 100%;
+    padding-top: $nav-height + $medium;
+    padding-bottom: $medium;
+}
+
+
+/* General
+====================================== */
+
+a {
+    color: $primary;
+    cursor: pointer;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+}
+
+
+
+/* Utilities/Helpers
+====================================== */
+
+.cf {
+    *zoom: 1;
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+.vertical {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.shadow {
+    text-shadow: 0px 0px 100px black;
+}
+
+// responsive wrapper
+.inner {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hidden {
+    text-indent: -9999px;
+    visibility: hidden;
+    display: none;
+}
+
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.float-right { float: right; }
+.float-left  { float: left; }
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.no-underline {
+    text-decoration: none !important;
+}
+
+.button {
+    border: 2px solid #fff;
+    padding: $x-small $small;
+    transition: background 0.3s;
+    &:hover { background: $secondary; }
+    + .button {
+        margin-left: $small;
+    }
+}
+
+
+
+
+
+/* Navbar
+====================================== */
+
+.menu {
+    z-index: 3;
+    position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    height: $nav-height;
+    line-height: $nav-height;
+    background: $primary;
+    color: #fff;
+    a { color: #fff; }
+    > div {
+        display: inline-block;
+    }
+}
+
+.panel-toggle {
+
+    // @media screen and (min-width: $breakpoint) {
+    //     display: none;
+    // }
+
+    position: relative;
+    display: block;
+    float: right;
+    height: $nav-height;
+    width: $nav-height;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+
+    .panel-icon,
+    &:before,
+    &:after {
+        position: absolute;
+            top: 50%;
+            left: 1.2rem;
+        display: block;
+        margin-top: -1px;
+        height: $line;
+        width: 1.6rem;
+        background: #fff;
+        font-size: 0;
+        user-select: none;
+        transition: transform 0.3s,
+                    background 0.3s;
+    }
+
+    &:before,
+    &:after  {
+        content: '';
+    }
+
+    &:before { transform: translateY(-0.5rem); }
+    &:after  { transform: translateY(0.5rem); }
+
+    .menu-open & {
+        span {
+            transform: rotateY(90deg) rotateZ(15deg);
+            // background-color: transparent;
+        }
+        &:before { transform: translateY(0) rotate(135deg); }
+        &:after  { transform: translateY(0) rotate(-135deg); }
+    }
+}
+
+.menu-title {
+    display: inline-block;
+    margin: 0 $small;
+}
+
+.user-info,
+.profile-link,
+.nav-pic {
+    display: inline-block;
+}
+
+.profile-link {
+
+}
+
+.nav-pic {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.8rem;
+    margin-left: 2rem;
+    vertical-align: middle;
+    border-radius: 50%;
+    // filter: grayscale(100%);
+}
+
+
+
+
+/* Post Panel
+====================================== */
+
+.panel {
+    z-index: 2;
+    position: fixed;
+    display: table;
+    height: $nav-height;
+    width: 100%;
+    padding: 0 2%;
+    background: $secondary;
+    color: #fff;
+    a { color: #fff; }
+    transition: transform 0.3s;
+    transform: translateY(0);
+    .menu-open + & {
+        transform: translateY($nav-height);
+    }
+}
+
+.panel-form {
+    display: table-cell;
+    height: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+    > * {
+        display: inline-block;
+        padding: 0 $x-small;
+        height: $nav-height - 1.8rem;
+    }
+    > *:not(:first-child) {
+        margin-left: 2%;
+    }
+}
+
+.panel-input {
+    border: none;
+    color: black;
+    max-width: 38%;
+}
+
+.panel-button {
+    background: transparent;
+    border: 2px solid #fff;
+    max-width: 20%;
+    white-space: nowrap;
+}
+
+
+
+
+/* Posts
+====================================== */
+
+.post {
+    padding: $x-small $small;
+    background: #fff;
+    & + & {
+        margin-top: $small;
+    }
+}
+
+.post-title a {
+    color: $secondary;
+}
+
+.hostname {
+    font-size: 0.9em;
+    margin-left: 0.6em;
+    color: $primary; 
+    a { color: $primary; }
+}
+
+.comments-link {
+    margin-left: $small;
+}
+
+.upvote + label {
+    color: $tertiary;
+    user-select: none;
+    transition: color 0.3s;
+}
+.upvote:checked + label {
+    color: $secondary;
+}
+
+
+
+
+/* Single Post
+====================================== */
+
+.comment {
+    padding: $x-small $small;
+    background: #fff;
+    & + & {
+        margin-top: $small;
+    }
+}
+
+
+
+
+
+
+
