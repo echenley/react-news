@@ -10,11 +10,11 @@ var postsRef = ref.child('posts');
 var userActions = require('./userActions');
 
 var commentActions = Reflux.createActions([
-	'upvote',
-	'getComments',
-	'addComment',
-	'setFirebaseCallback',
-	'removeFirebaseCallback'
+    'upvote',
+    'getComments',
+    'addComment',
+    'setFirebaseCallback',
+    'removeFirebaseCallback'
 ]);
 
 function updateCommentCount(postId, n) {
@@ -30,10 +30,10 @@ commentActions.upvote.preEmit = function (userId, postId, commentId, alreadyUpvo
         var n = alreadyUpvoted ? -1 : 1;
         return curr + n;
     }, function (error, success) {
-    	if (success) {
-			// add comment to user's list of upvoted items
-			userActions.upvoteItem(userId, commentId, alreadyUpvoted);
-    	}
+        if (success) {
+            // add comment to user's list of upvoted items
+            userActions.upvoteItem(userId, commentId, alreadyUpvoted);
+        }
     });
 };
 
