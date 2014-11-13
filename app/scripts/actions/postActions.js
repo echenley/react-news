@@ -9,19 +9,19 @@ var historyActions = require('./historyActions');
 var userActions = require('./userActions');
 
 var postActions = Reflux.createActions([
-	'upvote',
-	'submitPost'
+    'upvote',
+    'submitPost'
 ]);
 
 postActions.submitPost.preEmit = function (post) {
-	// postsRef.push() returns reference to post
-	var postRef = postsRef.push(post, function (error) {
+    // postsRef.push() returns reference to post
+    var postRef = postsRef.push(post, function (error) {
         if (error === null) {
             // add post to user's history
             var postId = postRef.key();
             historyActions.addPost(post.creatorUID, postId);
         }
-	});
+    });
 };
 
 postActions.upvote.preEmit = function (userId, postId, alreadyUpvoted) {
@@ -30,10 +30,10 @@ postActions.upvote.preEmit = function (userId, postId, alreadyUpvoted) {
         var n = alreadyUpvoted ? -1 : 1;
         return curr + n;
     }, function (error, success) {
-    	if (success) {
-			// add comment to user's list of upvoted items
-			userActions.upvoteItem(userId, postId, alreadyUpvoted);
-    	}
+        if (success) {
+            // add comment to user's list of upvoted items
+            userActions.upvoteItem(userId, postId, alreadyUpvoted);
+        }
     });
 };
 

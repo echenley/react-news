@@ -16,93 +16,93 @@ var Post = require('../components/post');
 
 var Profile = React.createClass({
 
-	mixins: [
-		Navigation,
-		Reflux.connect(userStore, 'user'),
-		Reflux.connect(historyStore, 'history')
-	],
+    mixins: [
+        Navigation,
+        Reflux.connect(userStore, 'user'),
+        Reflux.connect(historyStore, 'history')
+    ],
 
-	getInitialState: function () {
-		return {
-			user: false,
-			history: {}
-		};
-	},
+    getInitialState: function () {
+        return {
+            user: false,
+            history: {}
+        };
+    },
 
     componentWillMount: function() {
-    	// sets callback to watch current user's posts
-    	historyActions.setFirebaseCallback(this.props.params.userId);
+        // sets callback to watch current user's posts
+        historyActions.setFirebaseCallback(this.props.params.userId);
     },
 
     componentWillUnmount: function () {
-    	// removes 
-    	historyActions.removeFirebaseCallback(this.props.params.userId);
+        // removes 
+        historyActions.removeFirebaseCallback(this.props.params.userId);
     },
 
-	logout: function (e) {
-		e.preventDefault();
+    logout: function (e) {
+        e.preventDefault();
         userActions.logout();
-	    this.transitionTo('home');
-	},
+        this.transitionTo('home');
+    },
 
-	// accumulateItems: function (itemData, component) {
+    // accumulateItems: function (itemData, component) {
 
-	// 	return items;
-	// },
+    //     return items;
+    // },
 
-	render: function() {
-		var user = this.state.user;
-		var postData = this.state.history.posts;
-		// var commentData = this.state.history.comments;
+    render: function() {
+        var user = this.state.user;
+        var postData = this.state.history.posts;
+        // var commentData = this.state.history.comments;
 
-		// if state is unresolved, return immediately
-		if (!user) {
-			return false;
-		}
+        // if state is unresolved, return immediately
+        if (!user) {
+            return false;
+        }
 
-		var comments = {};
-		var posts = {};
+        var comments = {};
+        var posts = {};
 
-		// if (!$.isEmptyObject(commentData)) {
-		// 	var keys = Object.keys(commentData);
-		// 	keys.forEach(function (commentId) {
-		// 		var comment = commentData[commentId];
-		// 		comments[commentId] = <Comment
-		// 								postId={ postId }
-		// 								commentId={ commentId }
-		// 								comment={ comment }
-		// 								user={ user }
-		// 								key={ commentId } />;
-		// 	});
-		// }
+        // if (!$.isEmptyObject(commentData)) {
+        //     var keys = Object.keys(commentData);
+        //     keys.forEach(function (commentId) {
+        //         var comment = commentData[commentId];
+        //         comments[commentId] = <Comment
+        //                                 postId={ postId }
+        //                                 commentId={ commentId }
+        //                                 comment={ comment }
+        //                                 user={ user }
+        //                                 key={ commentId } />;
+        //     });
+        // }
 
-		if (!$.isEmptyObject(postData)) {
-			var keys = Object.keys(postData);
-			keys.forEach(function (postId) {
-				var post = postData[postId];
-				posts[postId] = <Post post={ post }
-									user={ user }
-									postId={ postId }
-									key={ postId } />;
-			});
-		}
+        if (!$.isEmptyObject(postData)) {
+            var keys = Object.keys(postData);
+            keys.forEach(function (postId) {
+                var post = postData[postId];
+                posts[postId] = <Post post={ post }
+                                    user={ user }
+                                    postId={ postId }
+                                    key={ postId } />;
+            });
+        }
 
-		return (
-			<div className="content inner">
-				<div className="user-options text-right">
-					<button onClick={this.logout} className="button">Sign Out</button>
-				</div>
-				<div className="user-posts">
-					<h2>Posts</h2>
-					{ posts }
-				</div>
-				<div className="user-comments">
-					<h2>Comments</h2>
-					{ comments }
-				</div>
-			</div>
-		);
-	}
+        return (
+            <div className="content inner">
+                <div className="user-options text-right">
+                    <button onClick={this.logout} className="button">Sign Out</button>
+                </div>
+                <div className="user-posts">
+                    <h2>Posts</h2>
+                    { posts }
+                </div>
+                <div className="user-comments">
+                    <h2>Comments</h2>
+                    { comments }
+                </div>
+            </div>
+        );
+    }
 
 });
 

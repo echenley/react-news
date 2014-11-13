@@ -19,7 +19,7 @@ var postStore = Reflux.createStore({
     },
 
     getDefaultData: function () {
-    	return this.posts;
+        return this.posts;
     }
 
 });

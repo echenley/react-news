@@ -10,14 +10,14 @@ var usersRef = ref.child('users');
 var hash = require('crypto').createHash('md5');
 
 var userActions = Reflux.createActions([
-	'login',
-	'logout',
-	'register',
-	'upvoteItem',
-	'createProfile',
-	'updateProfile',
-	'setFirebaseCallback',
-	'removeFirebaseCallback'
+    'login',
+    'logout',
+    'register',
+    'upvoteItem',
+    'createProfile',
+    'updateProfile',
+    'setFirebaseCallback',
+    'removeFirebaseCallback'
 ]);
 
 userActions.login.preEmit = function (user, username) {

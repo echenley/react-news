@@ -14,50 +14,50 @@ var Post = require('../components/post');
 var Posts = React.createClass({
 
     mixins: [
-    	Reflux.connect(userStore, 'user'),
-    	Reflux.connect(postStore, 'posts')
+        Reflux.connect(userStore, 'user'),
+        Reflux.connect(postStore, 'posts')
     ],
 
-	getInitialState: function () {
-		return {
-			user: false,
-			posts: {}
-		};
-	},
+    getInitialState: function () {
+        return {
+            user: false,
+            posts: {}
+        };
+    },
 
-	render: function() {
-		var posts = this.state.posts;
-		var user = this.state.user;
+    render: function() {
+        var posts = this.state.posts;
+        var user = this.state.user;
 
-		// if state is unresolved, return empty div
-		if ($.isEmptyObject(posts)) {
-			return false;
-		}
+        // if state is unresolved, return empty div
+        if ($.isEmptyObject(posts)) {
+            return false;
+        }
 
-		// var byUpvotes = function (a, b) {
-		// 	return b.upvotes - a.upvotes;
-		// };
+        // var byUpvotes = function (a, b) {
+        //     return b.upvotes - a.upvotes;
+        // };
 
 
-		var postsArr = [];
-		var keys = Object.keys(posts);
+        var postsArr = [];
+        var keys = Object.keys(posts);
 
-		keys.forEach(function (postId) {
-			var post = posts[postId];
-			postsArr.push(
-				<Post post={ post }
-					user={ user }
-					postId={ postId }
-					key={ postId } />
-			);
-		});
+        keys.forEach(function (postId) {
+            var post = posts[postId];
+            postsArr.push(
+                <Post post={ post }
+                    user={ user }
+                    postId={ postId }
+                    key={ postId } />
+            );
+        });
 
-		return (
-			<div className="content inner">
-				{ postsArr.reverse() }
-			</div>
-		);
-	}
+        return (
+            <div className="content inner">
+                { postsArr.reverse() }
+            </div>
+        );
+    }
 
 });
 
