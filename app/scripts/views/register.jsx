@@ -1,30 +1,49 @@
 'use strict';
 
 var React = require('react/addons');
-// var userActions = require('../actions/userActions');
+var Reflux = require('reflux');
 
-var Register = React.createClass({
+var Navigation = require('react-router').Navigation;
+var userActions = require('../actions/userActions');
+var userStore = require('../stores/userStore');
 
-	registerUser: function (e) {
-		e.preventDefault();
-		console.log(this.refs.password.getDOMNode().value.trim());
-	},
+var Login = React.createClass({
 
-	render: function() {
+    mixins: [Navigation, Reflux.ListenerMixin],
 
-		return (
-			<div className="content inner">
-				<form onSubmit={ this.registerUser }>
-                    <label for="username">Username</label>
+    componentDidMount: function () {
+        this.listenTo(userStore, function () {
+            this.transitionTo('home');
+        }.bind(this));
+    },
+
+    registerUser: function (e) {
+        e.preventDefault();
+        var username = this.refs.username.getDOMNode().value.trim();
+        var loginData = {
+            email: this.refs.email.getDOMNode().value.trim(),
+            password: this.refs.password.getDOMNode().value.trim()
+        };
+        userActions.register(username, loginData);
+    },
+
+    render: function() {
+
+        return (
+            <div className="content inner">
+                <form onSubmit={ this.registerUser }>
+                    <label htmlFor="username">Username</label>
                     <input type="text" placeholder="Username" id="username" ref="username" />
-                    <label for="password">Password</label>
+                    <label htmlFor="email">Email</label>
+                    <input type="email" placeholder="Email" id="email" ref="email" />
+                    <label htmlFor="password">Password</label>
                     <input type="password" placeholder="Password" id="password" ref="password" />
-                    <input type="submit" />
-				</form>
-			</div>
-		);
-	}
+                    <button type="submit" className="button">Register</button>
+                </form>
+            </div>
+        );
+    }
 
 });
 
-module.exports = Register;
+module.exports = Login;

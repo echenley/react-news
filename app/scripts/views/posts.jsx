@@ -1,34 +1,43 @@
 'use strict';
 
+var $ = jQuery;
 var React = require('react/addons');
 
 var Reflux = require('reflux');
 var postStore = require('../stores/postStore');
+var userStore = require('../stores/userStore');
+
+// var userActions = require('../actions/userActions');
 
 var Post = require('../components/post');
 
-
 var Posts = React.createClass({
 
-    mixins: [Reflux.connect(postStore, 'posts')],
+    mixins: [
+    	Reflux.connect(userStore, 'user'),
+    	Reflux.connect(postStore, 'posts')
+    ],
 
 	getInitialState: function () {
 		return {
-			posts: false
+			user: false,
+			posts: {}
 		};
 	},
 
 	render: function() {
+		var posts = this.state.posts;
+		var user = this.state.user;
 
-		if (!this.state.posts) {
-			return <div />;
+		// if state is unresolved, return empty div
+		if ($.isEmptyObject(posts)) {
+			return false;
 		}
 
 		// var byUpvotes = function (a, b) {
 		// 	return b.upvotes - a.upvotes;
 		// };
 
-		var posts = this.state.posts;
 
 		var postsArr = [];
 		var keys = Object.keys(posts);
@@ -37,6 +46,7 @@ var Posts = React.createClass({
 			var post = posts[postId];
 			postsArr.push(
 				<Post post={ post }
+					user={ user }
 					postId={ postId }
 					key={ postId } />
 			);
@@ -44,7 +54,7 @@ var Posts = React.createClass({
 
 		return (
 			<div className="content inner">
-				{ postsArr }
+				{ postsArr.reverse() }
 			</div>
 		);
 	}

@@ -1,54 +1,53 @@
 'use strict';
 
 var Reflux = require('reflux');
+
 var userActions = require('../actions/userActions');
 
 var Firebase = require('firebase');
 var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
-var profileRef = ref.child('profile');
-
+var usersRef = ref.child('users');
 
 var userStore = Reflux.createStore({
 
     listenables: userActions,
 
     init: function () {
-        this.user = false;
+        this.user = {
+            uid: '',
+            profile: {
+                username: 'anon'
+            }
+        };
 
-        // User Authentication
         ref.onAuth(function (authData) {
             if (authData) {
-                // user authenticated with Firebase
-                profileRef.child(authData.uid).once('value', function (profile) {
-                    this.user = {
-                        uid: authData.uid,
-                        profile: profile.val()
-                    };
-                    this.trigger(this.user);
+                var userId = authData.uid;
+                usersRef.child(userId).on('value', function(profile) {
+                    this.updateProfile(userId, profile.val());
                 }.bind(this));
             } else {
-                // user is logged out
-                this.user = false;
-                this.trigger(this.user);
+                usersRef.off('value');
             }
         }.bind(this));
     },
 
-    signIn: function (newUser) {
-        ref.authWithPassword(newUser, function(error) {
-            if (error !== null) {
-                // error during authentication
-                console.log("Error authenticating user:", error.code);
+    updateProfile: function (uid, profile) {
+        this.user = {
+            uid: uid,
+            profile: profile
+        };
+        this.trigger(this.user);
+    },
+
+    logout: function () {
+        this.user = {
+            uid: '',
+            profile: {
+                username: 'anon'
             }
-        }.bind(this));
-    },
-
-    signOut: function () {
-        ref.unauth();
-    },
-
-    isSignedIn: function () {
-        return !!ref.getAuth();
+        };
+        this.trigger(this.user);
     },
 
     getDefaultData: function () {

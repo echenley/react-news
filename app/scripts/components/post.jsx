@@ -1,16 +1,18 @@
 'use strict';
 
 var React = require('react/addons');
-
 var postActions = require('../actions/postActions');
 
-var Router = require('react-router');
-var Link = Router.Link;
+var abbreviateNumber = require('../mixins/abbreviateNumber');
+var Link = require('react-router').Link;
 
 var Post = React.createClass({
 
-	upvote: function (postId) {
-		postActions.upvote(postId);
+	mixins: [abbreviateNumber],
+
+	upvote: function (userId, postId, alreadyUpvoted) {
+		// upvote post
+		postActions.upvote(userId, postId, alreadyUpvoted);
 	},
 
 	hostnameFromUrl: function (str) {
@@ -19,32 +21,18 @@ var Post = React.createClass({
 		return url.hostname;
 	},
 
-	abbreviateNumber: function (value) {
-		// Abbreviates numbers >= 1K
-		// 100050 => 100K
-	    var newValue = value;
-	    if (value >= 1000) {
-	        var suffixes = ["", "K", "M", "B","T"];
-	        var suffixNum = Math.floor( (""+value).length/3 );
-	        var shortValue = '';
-	        for (var precision = 2; precision >= 1; precision--) {
-	            shortValue = parseFloat( (suffixNum !== 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
-	            var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
-	            if (dotLessShortValue.length <= 2) { break; }
-	        }
-	        if (shortValue % 1 !== 0) { shortValue = shortValue.toFixed(1); }
-	        newValue = shortValue + suffixes[suffixNum];
-	    }
-	    return newValue;
-	},
-
 	render: function() {
 		var postId = this.props.postId;
 		var post = this.props.post;
-		// var signedIn = !!this.props.user;
-		// var upvoteId = 'upvote' + postId;
-		// var upvotes = this.abbreviateNumber(post.upvotes);
-		var commentCount = this.abbreviateNumber(post.commentCount);
+		var user = this.props.user;
+
+		var signedIn = !!user;
+		var alreadyUpvoted = user.profile.upvoted ? user.profile.upvoted[postId] : false;
+
+		var upvoteId = 'upvote' + postId;
+		var upvotes = post.upvotes ? this.abbreviateNumber(post.upvotes) : 0;
+
+		var commentCount = post.commentCount ? this.abbreviateNumber(post.commentCount) : 0;
 
 		return (
 			<div className="post cf">
@@ -55,16 +43,19 @@ var Post = React.createClass({
 					</span>
 				</div>
 				<div className="post-info">
+					<div className="posted-by float-left">
+						Posted by <Link to="profile" params={{ userId: post.creatorUID }}>{ post.creator }</Link>
+					</div>
 					<div className="float-right">
-						{/*<input
+						<input
 							className="upvote hidden"
 							type="checkbox"
-							checked={ signedIn && user.upvoted[postId] }
+							checked={ signedIn && alreadyUpvoted }
 							id={ upvoteId }
-							onChange={ this.upvote.bind(this, postId) } />
+							onChange={ this.upvote.bind(this, user.uid, postId, alreadyUpvoted) } />
 						<label htmlFor={ upvoteId } className="pointer">
 							{ upvotes } <i className="fa fa-arrow-up"></i>
-						</label> */}
+						</label>
 						<Link to="post" params={{ postId: postId }} className="comments-link no-underline">
 							{ commentCount } <i className="fa fa-comments"></i>
 						</Link>

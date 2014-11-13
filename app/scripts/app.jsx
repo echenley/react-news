@@ -1,12 +1,13 @@
 'use strict';
 
 var $ = jQuery;
-var React = require('react/addons');
+var React = window.react = require('react/addons');
 var Reflux = require('reflux');
 
-var postActions = require('./actions/postActions');
-var postStore = require('./stores/postStore');
 var userStore = require('./stores/userStore');
+var postActions = require('./actions/postActions');
+// var userActions = require('./actions/userActions');
+// var historyActions = require('./actions/historyActions');
 
 // Routing
 var Router = require('react-router');
@@ -27,27 +28,30 @@ var Profile = require('./views/profile');
 
 var ReactNews = React.createClass({
 
-    mixins: [Reflux.connect(postStore, 'posts'), Reflux.connect(userStore, 'user')],
+    mixins: [Reflux.connect(userStore, 'user')],
 
     getInitialState: function() {
         return {
-            posts: {},
-            user: false,
+            user: userStore.getDefaultData(),
             hideMenu: true
         };
     },
 
+
+    // componentWillMount: function () {
+    //     userActions.resolveUser();
+    // },
+
     componentDidMount: function () {
         // hide the menu when clicked away
         $(document).on('touchend click', function (e) {
-            if (!(this.state.hideMenu || $(e.target).is('.panel, .panel *, .panel-toggle, .panel-icon'))) {
-                this.toggleMenu(e);
+            if (!this.state.hideMenu && !$(e.target).is('.panel, .panel *, .menu-toggle, .toggle-icon')) {
+                this.toggleMenu();
             }
         }.bind(this));
     },
 
-    toggleMenu: function (e) {
-        e.preventDefault();
+    toggleMenu: function () {
         this.setState({
             hideMenu: !this.state.hideMenu
         });
@@ -55,24 +59,33 @@ var ReactNews = React.createClass({
 
     submitPost: function (e) {
         e.preventDefault();
+
+        var titleEl = this.refs.title.getDOMNode();
+        var linkEl = this.refs.link.getDOMNode();
+
         var user = this.state.user;
         var post = {
-            title: this.refs.title.getDOMNode().value.trim(),
-            url: this.refs.link.getDOMNode().value.trim(),
+            title: titleEl.value.trim(),
+            url: linkEl.value.trim(),
             creator: user.profile.username,
-            creatorUID: user.uid,
-            commentCount: 0
+            creatorUID: user.uid
         };
+
         postActions.submitPost(post);
+        
+        titleEl.value = '';
+        linkEl.value = '';
+        this.toggleMenu();
     },
 
     render: function() {
         var cx = React.addons.classSet;
         var menuHidden = this.state.hideMenu;
         var user = this.state.user;
-        var signedIn = !!user;
-        var username = !user ? '' : user.profile.username;
-        var md5hash = !user ? '' : user.profile.md5hash;
+
+        var loggedIn = !!user.uid;
+        var username = user ? user.profile.username : '';
+        var md5hash = user ? user.profile.md5hash : '';
 
         var headerCx = cx({
             'menu': true,
@@ -81,7 +94,7 @@ var ReactNews = React.createClass({
 
         var userInfoCx = cx({
             'user-info': true,
-            'hidden': !signedIn
+            'hidden': !loggedIn
         });
 
         return (
@@ -91,25 +104,26 @@ var ReactNews = React.createClass({
                         <Link to="home" className="menu-title">react-news</Link>
                     </div>
                     <div className="float-right">
-                        <span className={ signedIn ? 'hidden' : '' }>
-                            <Link to="login" className="button">Sign In</Link><Link to="register" className="button">Register</Link>
+                        <span className={ loggedIn ? 'hidden' : '' }>
+                            <Link to="login" className="button-inverse">Sign In</Link>
+                            <Link to="register" className="button-inverse">Register</Link>
                         </span>
                         <div className={ userInfoCx }>
-                            <Link to="profile" className='profile-link'>
+                            <Link to="profile" params={{ userId: user.uid }} className="profile-link">
                                 { username }
                                 <img src={'http://www.gravatar.com/avatar/' + md5hash } className="nav-pic" />
                             </Link>
                         </div>
-                        <a href="#" className="panel-toggle" onClick={ this.toggleMenu }>
-                            <span className="panel-icon">menu</span>
+                        <a className="menu-toggle" onClick={ this.toggleMenu }>
+                            <span className="toggle-icon">menu</span>
                         </a>
                     </div>
                 </header>
                 <div className="panel text-center">
                     <form onSubmit={ this.submitPost } className="panel-form">
                         <input type="text" className="panel-input" placeholder="Title" ref="title" />
-                        <input type="text" className="panel-input" placeholder="Link" ref="link" />
-                        <button type="submit" className="panel-button">Submit</button>
+                        <input type="url" className="panel-input" placeholder="Link" ref="link" />
+                        <button type="submit" className="panel-button button">Submit</button>
                     </form>
                 </div>
                 <this.props.activeRouteHandler />
@@ -121,16 +135,16 @@ var ReactNews = React.createClass({
 var routes = (
     <Routes location="history">
         <Route handler={ ReactNews }>
-            <Route name="post" path="/post/:postId" handler={ SinglePost } />
-            <Route name="register" path="/register" handler={ Register } />
-            <Route name="login" path="/login" handler={ Login } />
-            <Route name="profile" handler={Profile} />
-            <DefaultRoute name="home" handler={ Posts } />
+            <Route name="post" path="/post/:postId" handler={ SinglePost } addHandlerKey={true} />
+            <Route name="register" path="/register" handler={ Register } addHandlerKey={true} />
+            <Route name="login" path="/login" handler={ Login } addHandlerKey={true} />
+            <Route name="profile" path="/:userId" handler={ Profile } addHandlerKey={true} />
+            <DefaultRoute name="home" handler={ Posts } addHandlerKey={true} />
         </Route>
     </Routes>
 );
 
-    // <TransitionGroup transitionName="content" transitionLeave={false} id="content" component="div">
+    // 
 
 React.render(routes, document.getElementById('app'));
 

@@ -5,7 +5,8 @@ var del = require('del');
 var path = require('path');
 var browserify = require('browserify');
 var reactify = require('reactify');
-var transform = require('vinyl-transform');
+var watchify = require('watchify');
+var source = require('vinyl-source-stream');
 // Load plugins
 var $ = require('gulp-load-plugins')();
 
@@ -19,9 +20,11 @@ var onError = function (err) {
 gulp.task('styles', function () {
     return gulp.src(['app/bower_components/normalize.css/normalize.css',
                      'app/styles/main.scss'])
-        .pipe($.plumber({
-          errorHandler: onError
-        }))
+        .on('error', function (err) {
+            $.util.beep();
+            $.util.log(err);
+            this.emit('end');
+        })
         .pipe($.concat('main.scss'))
         .pipe($.rubySass({
             style: 'compressed',
@@ -36,30 +39,39 @@ gulp.task('styles', function () {
 // Scripts
 
 gulp.task('scripts', function () {
-    var browserified = transform(function (filename) {
-        var b = browserify({
-            entries: [filename],
-            extensions: ['.jsx'],
-            debug: true
-        });
-        b.transform(reactify);
-        return b.bundle()
-            .on('error', function (err) {
-                $.util.beep();
-                $.util.log(err);
-                this.emit('end');
-            });
+    var b = browserify({
+        entries: ['./app/scripts/app.jsx'],
+        transform: [reactify],
+        extensions: ['.jsx'],
+        debug: true,
+        cache: {}, packageCache: {}, fullPaths: true
     });
 
-    return gulp.src('app/scripts/app.jsx')
-        .pipe($.plumber({
-          errorHandler: onError
-        }))
-        .pipe(browserified)
-        // .pipe($.uglify())
-        .pipe($.rename('app.js'))
-        .pipe(gulp.dest('dist/scripts'))
-        .pipe($.size());
+    var watcher = watchify(b);
+
+    return watcher
+        .on('error', function (err) {
+            $.util.beep();
+            $.util.log(err);
+            this.emit('end');
+        })
+        .on('update', function () { // When any files update
+            var updateStart = Date.now();
+            $.util.log('Updating!');
+            // Create new bundle that uses the cache for high performance
+            watcher.bundle()
+                .pipe($.plumber({
+                  errorHandler: onError
+                }))
+                .pipe(source('app.js'))
+                // .pipe($.streamify($.uglify()))
+                .pipe(gulp.dest('./dist/scripts'));
+
+            $.util.log('Updated!', (Date.now() - updateStart) + 'ms');
+        })
+        .bundle()
+        .pipe(source('app.js'))
+        .pipe(gulp.dest('dist/scripts'));
 });
 
 // HTML
@@ -139,14 +151,7 @@ gulp.task('json', function() {
 
 // Watch
 gulp.task('watch', ['html', 'bundle', 'serve'], function () {
-    // Watch .json files
-    gulp.watch('app/scripts/**/*.json', ['json']);
-    // Watch .html files
     gulp.watch('app/*.html', ['html']);
-    // Watch .scss files
     gulp.watch('app/styles/**/*.scss', ['styles']);
-    // Watch .js files
-    gulp.watch(['app/scripts/**/*.js', 'app/scripts/**/*.jsx'], ['scripts', 'jest' ]);
-    // Watch image files
     gulp.watch('app/images/**/*', ['images']);
 });

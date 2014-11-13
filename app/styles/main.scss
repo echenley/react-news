@@ -9,10 +9,12 @@ Author URI: http://henleyedition.com/
 ====================================== */
 
 // colors
-$primary: #6E9A81;
-$secondary: #7BB6A1;
+$dark-green: #6E9A81;
+$light-green: #7BB6A1;
 $tertiary: #C0B698;
-$gray: #D3DACC;
+
+$dark-gray: #666;
+$light-gray: #e5e5e5;
 
 // borders/margins/padding
 $line: 0.13rem;
@@ -54,9 +56,9 @@ $breakpoint: 800px;
 $font-size: 110%;
 $line-height: 1.55;
 
-$heading-font: "Libre Baskerville", "Times New Roman", serif;
+$heading-font: "Ubuntu Mono", "Andale Mono", AndaleMono, Consolas, monaco, monospace;
 $body-font: "Open Sans", serif;
-$monospace: "Andale Mono", AndaleMono, Consolas, monaco, monospace;
+$monospace: "Ubuntu Mono", "Andale Mono", AndaleMono, Consolas, monaco, monospace;
 
 
 
@@ -73,7 +75,7 @@ $monospace: "Andale Mono", AndaleMono, Consolas, monaco, monospace;
 
 .content-enter {
     opacity: 0.01;
-    transition: opacity 0.4s;
+    transition: opacity 0.4s ease-in-out;
 }
 .content-enter.content-enter-active {
     opacity: 1;
@@ -81,6 +83,7 @@ $monospace: "Andale Mono", AndaleMono, Consolas, monaco, monospace;
 
 .content-leave {
     opacity: 1;
+    transition: opacity 0.4s ease-in-out;
 }
 
 .content-leave.content-leave-active {
@@ -102,8 +105,8 @@ body {
     height: 100%;
     max-height: 100%;
     line-height: $line-height;
-    background: #e5e5e5;
-    color: black;
+    background: $light-gray;
+    color: $dark-gray;
     font-size: $font-size;
     text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
@@ -132,13 +135,40 @@ body {
 /* General
 ====================================== */
 
+h1,h2,h3,h4,h5,h6 {
+    // font-family: $heading-font;
+}
+
 a {
-    color: $primary;
+    color: $dark-green;
     cursor: pointer;
     text-decoration: none;
     &:hover { text-decoration: underline; }
 }
 
+// forms
+
+input,
+textarea,
+button {
+    display: block;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin-bottom: $small;
+}
+
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea {
+    padding: $x-small;
+    transition: box-shadow 0.2s;
+    &:focus {
+        box-shadow: 0 0 0 2px $light-green;
+    }
+}
 
 
 /* Utilities/Helpers
@@ -184,6 +214,10 @@ a {
 .float-right { float: right; }
 .float-left  { float: left; }
 
+.full-width {
+    width: 100% !important;
+}
+
 .pointer {
     cursor: pointer !important;
 }
@@ -193,13 +227,28 @@ a {
 }
 
 .button {
-    border: 2px solid #fff;
-    padding: $x-small $small;
-    transition: background 0.3s;
-    &:hover { background: $secondary; }
+    padding: 0.3rem $small;
+    background: $light-green;
+    border-radius: 2px;
+    border: none;
+    box-shadow: none;
+    color: #fff;
+    transition: transform 0.2s;
+    &:hover {
+        text-decoration: none;
+    }
+    &:active {
+        transform: scale(0.98);
+    }
     + .button {
         margin-left: $small;
     }
+}
+
+.button-inverse {
+    @extend .button;
+    background: #fff;
+    color: $dark-green !important;
 }
 
 
@@ -217,7 +266,7 @@ a {
         right: 0;
     height: $nav-height;
     line-height: $nav-height;
-    background: $primary;
+    background: $dark-green;
     color: #fff;
     a { color: #fff; }
     > div {
@@ -225,12 +274,7 @@ a {
     }
 }
 
-.panel-toggle {
-
-    // @media screen and (min-width: $breakpoint) {
-    //     display: none;
-    // }
-
+.menu-toggle {
     position: relative;
     display: block;
     float: right;
@@ -239,8 +283,9 @@ a {
     cursor: pointer;
     text-align: center;
     vertical-align: middle;
+    user-select: none;
 
-    .panel-icon,
+    .toggle-icon,
     &:before,
     &:after {
         position: absolute;
@@ -252,7 +297,6 @@ a {
         width: 1.6rem;
         background: #fff;
         font-size: 0;
-        user-select: none;
         transition: transform 0.3s,
                     background 0.3s;
     }
@@ -313,7 +357,7 @@ a {
     height: $nav-height;
     width: 100%;
     padding: 0 2%;
-    background: $secondary;
+    background: $light-green;
     color: #fff;
     a { color: #fff; }
     transition: transform 0.3s;
@@ -330,6 +374,7 @@ a {
     vertical-align: middle;
     > * {
         display: inline-block;
+        margin: 0;
         padding: 0 $x-small;
         height: $nav-height - 1.8rem;
     }
@@ -339,15 +384,17 @@ a {
 }
 
 .panel-input {
-    border: none;
-    color: black;
     max-width: 38%;
+    color: $dark-gray;
+    &:focus {
+        box-shadow: 0 0 0 2px $dark-green !important;
+    }
 }
 
 .panel-button {
-    background: transparent;
-    border: 2px solid #fff;
     max-width: 20%;
+    border: 2px solid #fff;
+    background: transparent;
     white-space: nowrap;
 }
 
@@ -365,15 +412,18 @@ a {
     }
 }
 
-.post-title a {
-    color: $secondary;
+.post-title {
+    padding-bottom: $x-small;
+    a {
+        color: $light-green;
+    }
 }
 
 .hostname {
     font-size: 0.9em;
     margin-left: 0.6em;
-    color: $primary; 
-    a { color: $primary; }
+    color: $dark-green; 
+    a { color: $dark-green; }
 }
 
 .comments-link {
@@ -381,21 +431,30 @@ a {
 }
 
 .upvote + label {
-    color: $tertiary;
     user-select: none;
     transition: color 0.3s;
 }
 .upvote:checked + label {
-    color: $secondary;
+    color: $light-green;
 }
 
+.post-info,
+.comment-info {
+    padding-top: $x-small;
+    border-top: 1px solid $light-gray;
+    font-size: 0.85em;
+}
 
 
 
 /* Single Post
 ====================================== */
 
+.comments {}
+
 .comment {
+    // animation: slide-in 0.5s;
+    margin: $small 0;
     padding: $x-small $small;
     background: #fff;
     & + & {
@@ -403,7 +462,15 @@ a {
     }
 }
 
+.comment-form {}
 
+.comment-text {
+    padding-bottom: $x-small;
+}
+
+.comment-input {
+    margin: $small 0;
+}
 
 
 

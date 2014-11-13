@@ -1,39 +1,45 @@
 'use strict';
 
 var React = require('react/addons');
+var Reflux = require('reflux');
 
 var Navigation = require('react-router').Navigation;
 var userActions = require('../actions/userActions');
+var userStore = require('../stores/userStore');
 
 var Login = React.createClass({
 
-	mixins: [Navigation],
+    mixins: [Navigation, Reflux.ListenerMixin],
 
-	signIn: function (e) {
-		e.preventDefault();
+    componentDidMount: function () {
+        this.listenTo(userStore, function () {
+            this.transitionTo('home');
+        }.bind(this));
+    },
 
-        userActions.signIn({
+    login: function (e) {
+        e.preventDefault();
+
+        userActions.login({
             email: this.refs.email.getDOMNode().value.trim(),
             password: this.refs.password.getDOMNode().value.trim()
         });
-        
-		this.transitionTo('home');
-	},
+    },
 
-	render: function() {
+    render: function() {
 
-		return (
-			<div className="content inner">
-				<form onSubmit={ this.signIn }>
+        return (
+            <div className="content inner">
+                <form onSubmit={ this.login }>
                     <label htmlFor="email">Email</label>
-                    <input type="text" placeholder="Username" id="email" ref="email" />
+                    <input type="email" placeholder="Email" id="email" ref="email" />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder="Password" id="password" ref="password" />
-                    <input type="submit" />
-				</form>
-			</div>
-		);
-	}
+                    <button type="submit" className="button">Sign In</button>
+                </form>
+            </div>
+        );
+    }
 
 });
 
