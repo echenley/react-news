@@ -20,11 +20,9 @@ var onError = function (err) {
 gulp.task('styles', function () {
     return gulp.src(['app/bower_components/normalize.css/normalize.css',
                      'app/styles/main.scss'])
-        .on('error', function (err) {
-            $.util.beep();
-            $.util.log(err);
-            this.emit('end');
-        })
+        .pipe($.plumber({
+          errorHandler: onError
+        }))
         .pipe($.concat('main.scss'))
         .pipe($.rubySass({
             style: 'compressed',
@@ -50,11 +48,11 @@ gulp.task('scripts', function () {
     var watcher = watchify(b);
 
     return watcher
-        .on('error', function (err) {
-            $.util.beep();
-            $.util.log(err);
-            this.emit('end');
-        })
+        // .on('error', function (err) {
+        //     $.util.beep();
+        //     $.util.log(err);
+        //     this.emit('end');
+        // })
         .on('update', function () { // When any files update
             var updateStart = Date.now();
             $.util.log('Updating!');
@@ -70,6 +68,9 @@ gulp.task('scripts', function () {
             $.util.log('Updated!', (Date.now() - updateStart) + 'ms');
         })
         .bundle()
+        .pipe($.plumber({
+          errorHandler: onError
+        }))
         .pipe(source('app.js'))
         .pipe(gulp.dest('dist/scripts'));
 });

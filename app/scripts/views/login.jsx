@@ -9,7 +9,10 @@ var userStore = require('../stores/userStore');
 
 var Login = React.createClass({
 
-    mixins: [Navigation, Reflux.ListenerMixin],
+    mixins: [
+        Navigation,
+        Reflux.ListenerMixin
+    ],
 
     componentDidMount: function () {
         this.listenTo(userStore, function () {
@@ -29,12 +32,13 @@ var Login = React.createClass({
     render: function() {
 
         return (
-            <div className="content inner">
-                <form onSubmit={ this.login }>
-                    <label htmlFor="email">Email</label>
-                    <input type="email" placeholder="Email" id="email" ref="email" />
-                    <label htmlFor="password">Password</label>
-                    <input type="password" placeholder="Password" id="password" ref="password" />
+            <div className="content inner text-center">
+                <h1>Login</h1>
+                <form onSubmit={ this.login } className="login-form text-left">
+                    <label htmlFor="email">Email</label><br />
+                    <input type="email" placeholder="Email" id="email" ref="email" /><br />
+                    <label htmlFor="password">Password</label><br />
+                    <input type="password" placeholder="Password" id="password" ref="password" /><br />
                     <button type="submit" className="button">Sign In</button>
                 </form>
             </div>

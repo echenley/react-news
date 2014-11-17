@@ -9,7 +9,7 @@ var userActions = require('../actions/userActions');
 var historyActions = require('../actions/historyActions');
 
 var historyStore = require('../stores/historyStore');
-var userStore = require('../stores/userStore');
+// var userStore = require('../stores/userStore');
 
 var Post = require('../components/post');
 // var Comment = require('../components/comment');
@@ -18,13 +18,11 @@ var Profile = React.createClass({
 
     mixins: [
         Navigation,
-        Reflux.connect(userStore, 'user'),
         Reflux.connect(historyStore, 'history')
     ],
 
     getInitialState: function () {
         return {
-            user: false,
             history: {}
         };
     },
@@ -51,7 +49,8 @@ var Profile = React.createClass({
     // },
 
     render: function() {
-        var user = this.state.user;
+    	var cx = React.addons.classSet;
+        var user = this.props.user;
         var postData = this.state.history.posts;
         // var commentData = this.state.history.comments;
 
@@ -87,11 +86,18 @@ var Profile = React.createClass({
             });
         }
 
+        var logoutCx = cx({
+        	'user-options': true,
+        	'float-right': true,
+        	'hidden': user.uid !== this.props.params.userId
+        });
+
         return (
             <div className="content inner">
-                <div className="user-options text-right">
-                    <button onClick={this.logout} className="button">Sign Out</button>
+                <div className={ logoutCx }>
+                    <button onClick={ this.logout } className="button">Sign Out</button>
                 </div>
+	            <h1>Profile</h1>
                 <div className="user-posts">
                     <h2>Posts</h2>
                     { posts }

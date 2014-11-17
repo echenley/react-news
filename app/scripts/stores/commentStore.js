@@ -11,22 +11,27 @@ var commentStore = Reflux.createStore({
     listenables: commentActions,
 
     init: function () {
-        this.comments = {};
+        this.comments = [];
     },
 
-    setFirebaseCallback: function (postId) {
+    listenToComments: function (postId) {
         // dynamically sets callback to watch current post's comments
         // called on componentWillMount
-        commentsRef.child(postId).on('value', function (comments) {
-            this.comments[postId] = comments.val();
-            this.trigger(this.comments[postId]);
+        commentsRef.orderByChild('postId').equalTo(postId).on('value', function (comments) {
+            this.comments = [];
+            comments.forEach(function (commentData) {
+                var comment = commentData.val();
+                comment.id = commentData.key();
+                this.comments.unshift(comment);
+            }.bind(this));
+            this.trigger(this.comments);
         }.bind(this));
     },
 
-    removeFirebaseCallback: function (postId) {
-        // removes callback for current post's comments
+    stopListening: function (postId) {
+        // removes callback for comments
         // called on componentWillUnmount
-        commentsRef.child(postId).off('value');
+        commentsRef.orderByChild('postId').equalTo(postId).off();
     },
 
     getDefaultData: function () {

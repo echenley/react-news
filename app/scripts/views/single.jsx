@@ -6,11 +6,11 @@ var Reflux = require('reflux');
 
 // stores
 var postStore = require('../stores/postStore'),
-    userStore = require('../stores/userStore'),
     commentStore = require('../stores/commentStore');
 
 // actions
 var commentActions = require('../actions/commentActions');
+var postActions = require('../actions/postActions');
 // var userActions = require('../actions/userActions');
 
 // components
@@ -22,25 +22,23 @@ var SinglePost = React.createClass({
 
     mixins: [
         Reflux.listenTo(commentStore, 'onCommentChange'),
-        Reflux.connect(userStore, 'user'),
-        Reflux.connect(postStore, 'posts')
+        Reflux.listenTo(postStore, 'onPostChange')
     ],
 
     getInitialState: function () {
         return {
-            user: false,
-            posts: {},
-            comments: {}
+            post: false,
+            comments: []
         };
     },
 
     componentWillMount: function() {
         // sets callback to watch current post comments
-        commentActions.setFirebaseCallback(this.props.params.postId);
+        postActions.listenToSingle(this.props.params.postId);
     },
 
     componentWillUnmount: function () {
-        commentActions.removeFirebaseCallback(this.props.params.postId);
+        postActions.stopListening(this.props.params.postId);
     },
 
     onCommentChange: function (comments) {
@@ -49,34 +47,35 @@ var SinglePost = React.createClass({
         });
     },
 
+    onPostChange: function (post) {
+        this.setState({
+            post: post
+        });
+    },
+
     addComment: function (e) {
         e.preventDefault();
         var commentTextEl = this.refs.commentText.getDOMNode();
-        var postId = this.props.params.postId;
         var comment = {
+            postId: this.props.params.postId,
             text: commentTextEl.value.trim(),
-            creator: this.state.user.profile.username,
-            creatorUID: this.state.user.uid
+            creator: this.props.user.profile.username,
+            creatorUID: this.props.user.uid
         };
-        commentActions.addComment(postId, comment);
+        commentActions.addComment(comment);
         commentTextEl.value = '';
     },
 
     render: function() {
-        var user = this.state.user;
-        var posts = this.state.posts;
+        var cx = React.addons.classSet;
+        var user = this.props.user;
+        var loggedIn = !!user.uid;
+        var post = this.state.post;
 
         // if state is unresolved, don't render
-        if ($.isEmptyObject(posts)) {
+        if (!post) {
             return false;
         }
-
-        var cx = React.addons.classSet;
-
-        var loggedIn = !!user;
-
-        var postId = this.props.params.postId;
-        var post = this.state.posts[postId];
 
         // collect comment components into object
         var commentData = this.state.comments;
@@ -87,7 +86,7 @@ var SinglePost = React.createClass({
             keys.forEach(function (commentId) {
                 var comment = commentData[commentId];
                 comments[commentId] = <Comment
-                                        postId={ postId }
+                                        post={post}
                                         commentId={ commentId }
                                         comment={ comment }
                                         user={ user }
@@ -102,12 +101,9 @@ var SinglePost = React.createClass({
 
         return (
             <div className="content inner">
-                <Post post={ post }
-                    user={ user }
-                    postId={ postId }
-                    key={ postId } />
+                <Post post={ post } user={ user } key={ post.id } />
                 <div className="comments">
-                    <h2>Comments</h2>
+                    <h2>{ comments.length ? comments.length : 'No ' }Comments</h2>
                     { comments }
                 </div>
                 <form className={ formCx } onSubmit={ this.addComment }>

@@ -17,7 +17,7 @@ $dark-gray: #666;
 $light-gray: #e5e5e5;
 
 // borders/margins/padding
-$line: 0.13rem;
+$line: 1px;
 
 // dimensions
 $nav-height: 4rem;
@@ -56,10 +56,11 @@ $breakpoint: 800px;
 $font-size: 110%;
 $line-height: 1.55;
 
-$heading-font: "Ubuntu Mono", "Andale Mono", AndaleMono, Consolas, monaco, monospace;
-$body-font: "Open Sans", serif;
+$heading-font: "Source Sans Pro", Arial, sans-serif;
+$body-font: "Open Sans", Arial, sans-serif;
 $monospace: "Ubuntu Mono", "Andale Mono", AndaleMono, Consolas, monaco, monospace;
 
+$text-small: 0.85em;
 
 
 
@@ -102,6 +103,7 @@ html {
 
 body {
     font-family: $body-font;
+    font-weight: 300;
     height: 100%;
     max-height: 100%;
     line-height: $line-height;
@@ -135,8 +137,10 @@ body {
 /* General
 ====================================== */
 
+h1 { margin-top: 0; }
 h1,h2,h3,h4,h5,h6 {
-    // font-family: $heading-font;
+    font-family: $heading-font;
+    font-weight: 400;
 }
 
 a {
@@ -148,14 +152,26 @@ a {
 
 // forms
 
+
+form {
+    input,
+    textarea,
+    button {
+        margin-bottom: $small;
+    }
+}
+
+textarea {
+    display: block;
+}
+
 input,
 textarea,
 button {
-    display: block;
     border: none;
     outline: none;
     box-shadow: none;
-    margin-bottom: $small;
+    border-radius: 2px;
 }
 
 
@@ -164,9 +180,8 @@ input[type="password"],
 input[type="email"],
 textarea {
     padding: $x-small;
-    transition: box-shadow 0.2s;
     &:focus {
-        box-shadow: 0 0 0 2px $light-green;
+        box-shadow: 0 0 0 $line $light-green;
     }
 }
 
@@ -209,6 +224,7 @@ textarea {
     display: none;
 }
 
+.text-left   { text-align: left; }
 .text-center { text-align: center; }
 .text-right  { text-align: right; }
 .float-right { float: right; }
@@ -238,7 +254,7 @@ textarea {
         text-decoration: none;
     }
     &:active {
-        transform: scale(0.98);
+        transform: scale(0.96);
     }
     + .button {
         margin-left: $small;
@@ -285,37 +301,45 @@ textarea {
     vertical-align: middle;
     user-select: none;
 
-    .toggle-icon,
     &:before,
     &:after {
+        transition: transform 0.3s;
+    }
+
+    span {
         position: absolute;
             top: 50%;
-            left: 1.2rem;
+            left: 50%;
         display: block;
-        margin-top: -1px;
-        height: $line;
-        width: 1.6rem;
-        background: #fff;
+        width: 2rem;
+        height: 2rem;
+        margin-top: -1rem;
+        margin-left: -1rem;
+        border-radius: 2px;
+        border: $line solid #fff;
         font-size: 0;
-        transition: transform 0.3s,
-                    background 0.3s;
     }
 
     &:before,
-    &:after  {
+    &:after {
+        z-index: 2;
         content: '';
+        position: absolute;
+            top: 50%;
+            left: 35%;
+        display: block;
+        height: 0;
+        border-bottom: $line solid #fff;
+        width: 30%;
+        background: $dark-green;
     }
 
-    &:before { transform: translateY(-0.5rem); }
-    &:after  { transform: translateY(0.5rem); }
+    &:before { transform: rotate(90deg); }
+    &:after  { transform: rotate(0); }
 
     .menu-open & {
-        span {
-            transform: rotateY(90deg) rotateZ(15deg);
-            // background-color: transparent;
-        }
-        &:before { transform: translateY(0) rotate(135deg); }
-        &:after  { transform: translateY(0) rotate(-135deg); }
+        &:before { transform: rotate(135deg); }
+        &:after  { transform: rotate(45deg); }
     }
 }
 
@@ -335,10 +359,10 @@ textarea {
 }
 
 .nav-pic {
-    width: 1.5em;
-    height: 1.5em;
+    width: $medium;
+    height: $medium;
     margin-right: 0.8rem;
-    margin-left: 2rem;
+    margin-left: $medium;
     vertical-align: middle;
     border-radius: 50%;
     // filter: grayscale(100%);
@@ -387,13 +411,13 @@ textarea {
     max-width: 38%;
     color: $dark-gray;
     &:focus {
-        box-shadow: 0 0 0 2px $dark-green !important;
+        box-shadow: 0 0 0 $line $dark-green !important;
     }
 }
 
 .panel-button {
     max-width: 20%;
-    border: 2px solid #fff;
+    border: $line solid #fff;
     background: transparent;
     white-space: nowrap;
 }
@@ -412,15 +436,21 @@ textarea {
     }
 }
 
-.post-title {
+.post-link {
     padding-bottom: $x-small;
     a {
         color: $light-green;
     }
 }
 
+.post-title {
+    font-family: $heading-font;
+    font-weight: 400;
+}
+
 .hostname {
-    font-size: 0.9em;
+    font-size: $text-small;
+    font-weight: 300;
     margin-left: 0.6em;
     color: $dark-green; 
     a { color: $dark-green; }
@@ -442,7 +472,7 @@ textarea {
 .comment-info {
     padding-top: $x-small;
     border-top: 1px solid $light-gray;
-    font-size: 0.85em;
+    font-size: $text-small;
 }
 
 
@@ -472,7 +502,8 @@ textarea {
     margin: $small 0;
 }
 
-
-
+.login-form {
+    display: inline-block;
+}
 
 

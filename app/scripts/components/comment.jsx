@@ -10,15 +10,14 @@ var Comment = React.createClass({
 
     mixins: [abbreviateNumber],
 
-    upvote: function (userId, postId, commentId, alreadyUpvoted) {
+    upvote: function (userId, commentId, alreadyUpvoted) {
         // add upvote to comment
-        commentActions.upvote(userId, postId, commentId, alreadyUpvoted);
+        commentActions.upvote(userId, commentId, alreadyUpvoted);
     },
 
     render: function() {
         var comment = this.props.comment;
         var commentId = this.props.commentId;
-        var postId = this.props.postId;
 
         var user = this.props.user;
         var signedIn = !!user;
@@ -41,7 +40,7 @@ var Comment = React.createClass({
                             checked={ signedIn && alreadyUpvoted }
                             disabled={ !signedIn }
                             id={ upvoteId }
-                            onChange={ this.upvote.bind(this, user.uid, postId, commentId, alreadyUpvoted) } />
+                            onChange={ this.upvote.bind(this, user.uid, commentId, alreadyUpvoted) } />
                         <label htmlFor={ upvoteId } className="pointer">
                             { upvotes } <i className="fa fa-arrow-up"></i>
                         </label>

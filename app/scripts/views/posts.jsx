@@ -1,11 +1,10 @@
 'use strict';
 
-var $ = jQuery;
 var React = require('react/addons');
 
 var Reflux = require('reflux');
 var postStore = require('../stores/postStore');
-var userStore = require('../stores/userStore');
+var postActions = require('../actions/postActions');
 
 // var userActions = require('../actions/userActions');
 
@@ -14,47 +13,46 @@ var Post = require('../components/post');
 var Posts = React.createClass({
 
     mixins: [
-        Reflux.connect(userStore, 'user'),
-        Reflux.connect(postStore, 'posts')
+        Reflux.listenTo(postStore, 'onPostChange')
     ],
 
     getInitialState: function () {
         return {
-            user: false,
-            posts: {}
+            posts: []
         };
+    },
+
+    onPostChange: function (posts) {
+    	this.setState({
+    		posts: posts
+    	});
+    },
+
+    componentWillMount: function () {
+    	var postsPerPage = 10;
+    	postActions.listenToAll(postsPerPage);
+    },
+
+    componentWillUnmount: function () {
+        postActions.stopListening();
     },
 
     render: function() {
         var posts = this.state.posts;
-        var user = this.state.user;
+        var user = this.props.user;
 
-        // if state is unresolved, return empty div
-        if ($.isEmptyObject(posts)) {
+        // if state is unresolved, don't render
+        if (posts.length === 0) {
             return false;
         }
 
-        // var byUpvotes = function (a, b) {
-        //     return b.upvotes - a.upvotes;
-        // };
-
-
-        var postsArr = [];
-        var keys = Object.keys(posts);
-
-        keys.forEach(function (postId) {
-            var post = posts[postId];
-            postsArr.push(
-                <Post post={ post }
-                    user={ user }
-                    postId={ postId }
-                    key={ postId } />
-            );
-        });
-
         return (
             <div className="content inner">
-                { postsArr.reverse() }
+                {
+                	posts.map(function (post) {
+		        		return <Post post={ post } user={ user } key={ post.id } />;
+		        	})
+                }
             </div>
         );
     }

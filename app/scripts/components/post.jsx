@@ -22,7 +22,7 @@ var Post = React.createClass({
     },
 
     render: function() {
-        var postId = this.props.postId;
+        var postId = this.props.post.id;
         var post = this.props.post;
         var user = this.props.user;
 
@@ -36,8 +36,8 @@ var Post = React.createClass({
 
         return (
             <div className="post cf">
-                <div className="post-title">
-                    <a href={ post.url }>{ post.title }</a>
+                <div className="post-link">
+                    <a className="post-title" href={ post.url }>{ post.title }</a>
                     <span className="hostname">
                         (<a href={ post.url }>{ this.hostnameFromUrl(post.url) }</a>)
                     </span>

@@ -13,8 +13,8 @@ var commentActions = Reflux.createActions([
     'upvote',
     'getComments',
     'addComment',
-    'setFirebaseCallback',
-    'removeFirebaseCallback'
+    'listenToComments',
+    'stopListening'
 ]);
 
 function updateCommentCount(postId, n) {
@@ -24,8 +24,8 @@ function updateCommentCount(postId, n) {
     });
 }
 
-commentActions.upvote.preEmit = function (userId, postId, commentId, alreadyUpvoted) {
-    commentsRef.child(postId).child(commentId).child('upvotes').transaction(function (curr) {
+commentActions.upvote.preEmit = function (userId, commentId, alreadyUpvoted) {
+    commentsRef.child(commentId).child('upvotes').transaction(function (curr) {
         curr = curr || 0;
         var n = alreadyUpvoted ? -1 : 1;
         return curr + n;
@@ -37,10 +37,10 @@ commentActions.upvote.preEmit = function (userId, postId, commentId, alreadyUpvo
     });
 };
 
-commentActions.addComment.preEmit = function (postId, comment) {
-    commentsRef.child(postId).push(comment, function (error) {
+commentActions.addComment.preEmit = function (comment) {
+    commentsRef.push(comment, function (error) {
         if (error === null) {
-            updateCommentCount(postId, 1);
+            updateCommentCount(comment.postId, 1);
         }
     }.bind(this));
 };

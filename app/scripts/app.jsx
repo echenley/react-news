@@ -45,7 +45,7 @@ var ReactNews = React.createClass({
     componentDidMount: function () {
         // hide the menu when clicked away
         $(document).on('touchend click', function (e) {
-            if (!this.state.hideMenu && !$(e.target).is('.panel, .panel *, .menu-toggle, .toggle-icon')) {
+            if (!this.state.hideMenu && !$(e.target).is('.panel, .panel *, .menu-toggle, .menu-toggle *, .toggle-icon')) {
                 this.toggleMenu();
             }
         }.bind(this));
@@ -72,7 +72,7 @@ var ReactNews = React.createClass({
         };
 
         postActions.submitPost(post);
-        
+
         titleEl.value = '';
         linkEl.value = '';
         this.toggleMenu();
@@ -115,7 +115,7 @@ var ReactNews = React.createClass({
                             </Link>
                         </div>
                         <a className="menu-toggle" onClick={ this.toggleMenu }>
-                            <span className="toggle-icon">menu</span>
+                            <span>menu</span>
                         </a>
                     </div>
                 </header>
@@ -126,7 +126,7 @@ var ReactNews = React.createClass({
                         <button type="submit" className="panel-button button">Submit</button>
                     </form>
                 </div>
-                <this.props.activeRouteHandler />
+                <this.props.activeRouteHandler user={ this.state.user } />
             </div>
         );
     }
