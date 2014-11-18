@@ -11,20 +11,20 @@ Author URI: http://henleyedition.com/
 // palette
 $dark: #040203;
 $color1: $dark;
-$color2: mix($dark, white);
-$color3: #CF0C00;
-$dark-gray: #6E7E91;
+$color2: #C7D1C0;
+$color3: #EB5252;
+$dark-gray: mix($dark, white);
 $light-gray: #e5e5e5;
 
 $text: $dark;
 $header: $color1;
-$panel: $color2;
+$panel: $color3;
 $link: $color3;
 $button-text: #fff;
 $button: $color3;
 $panel-button: $color3;
 $background: $light-gray;
-$upvoted: blue;
+$upvoted: $color3;
 
 // borders/margins/padding
 $line: 2px;
@@ -484,11 +484,16 @@ textarea {
 
 .comments-link {
     margin-left: $small;
+    color: $dark;
+    &.comments-some {
+        color: $link;
+    }
 }
 
 .upvote + label {
     user-select: none;
     transition: color 0.3s;
+    color: $dark;
 }
 .upvote:checked + label {
     color: $upvoted;

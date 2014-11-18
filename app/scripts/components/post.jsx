@@ -15,11 +15,13 @@ var Post = React.createClass({
     ],
 
     upvote: function (userId, postId, alreadyUpvoted) {
+    	console.log(userId, postId, alreadyUpvoted);
         // upvote post
         postActions.upvote(userId, postId, alreadyUpvoted);
     },
 
     render: function() {
+    	var cx = React.addons.classSet;
         var postId = this.props.post.id;
         var post = this.props.post;
         var user = this.props.user;
@@ -31,6 +33,11 @@ var Post = React.createClass({
         var upvotes = post.upvotes ? this.abbreviateNumber(post.upvotes) : 0;
 
         var commentCount = post.commentCount ? this.abbreviateNumber(post.commentCount) : 0;
+        var commentCx = cx({
+        	'comments-link': true,
+        	'comments-some': commentCount,
+        	'no-underline': true
+        });
 
         return (
             <div className="post cf">
@@ -54,7 +61,7 @@ var Post = React.createClass({
                         <label htmlFor={ upvoteId } className="pointer">
                             { upvotes } <i className="fa fa-arrow-up"></i>
                         </label>
-                        <Link to="post" params={{ postId: postId }} className="comments-link no-underline">
+                        <Link to="post" params={{ postId: postId }} className={ commentCx }>
                             { commentCount } <i className="fa fa-comments"></i>
                         </Link>
                     </div>
