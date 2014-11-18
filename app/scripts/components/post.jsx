@@ -3,22 +3,20 @@
 var React = require('react/addons');
 var postActions = require('../actions/postActions');
 
-var abbreviateNumber = require('../mixins/abbreviateNumber');
+var abbreviateNumber = require('../mixins/abbreviateNumber'),
+	hostnameFromUrl = require('../mixins/hostnameFromUrl');
 var Link = require('react-router').Link;
 
 var Post = React.createClass({
 
-    mixins: [abbreviateNumber],
+    mixins: [
+    	abbreviateNumber,
+    	hostnameFromUrl
+    ],
 
     upvote: function (userId, postId, alreadyUpvoted) {
         // upvote post
         postActions.upvote(userId, postId, alreadyUpvoted);
-    },
-
-    hostnameFromUrl: function (str) {
-        var url = document.createElement('a');
-        url.href = str;
-        return url.hostname;
     },
 
     render: function() {
@@ -26,7 +24,7 @@ var Post = React.createClass({
         var post = this.props.post;
         var user = this.props.user;
 
-        var signedIn = !!user;
+        var signedIn = !!user.uid;
         var alreadyUpvoted = user.profile.upvoted ? user.profile.upvoted[postId] : false;
 
         var upvoteId = 'upvote' + postId;

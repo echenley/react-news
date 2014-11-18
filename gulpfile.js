@@ -48,11 +48,11 @@ gulp.task('scripts', function () {
     var watcher = watchify(b);
 
     return watcher
-        // .on('error', function (err) {
-        //     $.util.beep();
-        //     $.util.log(err);
-        //     this.emit('end');
-        // })
+        .on('error', function (err) {
+            $.util.beep();
+            $.util.log(err);
+            this.emit('end');
+        })
         .on('update', function () { // When any files update
             var updateStart = Date.now();
             $.util.log('Updating!');

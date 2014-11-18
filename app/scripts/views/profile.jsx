@@ -1,14 +1,16 @@
 'use strict';
 
-var $ = jQuery;
 var React = require('react/addons');
 var Reflux = require('reflux');
 var Navigation = require('react-router').Navigation;
 
 var userActions = require('../actions/userActions');
-var historyActions = require('../actions/historyActions');
+var postActions = require('../actions/postActions');
+// var commentActions = require('../actions/commentActions');
+// var historyActions = require('../actions/historyActions');
 
-var historyStore = require('../stores/historyStore');
+var postStore = require('../stores/postStore');
+var commentStore = require('../stores/commentStore');
 // var userStore = require('../stores/userStore');
 
 var Post = require('../components/post');
@@ -18,23 +20,26 @@ var Profile = React.createClass({
 
     mixins: [
         Navigation,
-        Reflux.connect(historyStore, 'history')
+        Reflux.connect(postStore, 'posts'),
+        Reflux.connect(commentStore, 'comment')
     ],
 
     getInitialState: function () {
         return {
-            history: {}
+        	posts: [],
+        	comments: []
         };
     },
 
     componentWillMount: function() {
         // sets callback to watch current user's posts
-        historyActions.setFirebaseCallback(this.props.params.userId);
+        postActions.listenToUser(this.props.params.userId);
+        // commentActions.listenToUser(this.props.params.userId);
     },
 
     componentWillUnmount: function () {
-        // removes 
-        historyActions.removeFirebaseCallback(this.props.params.userId);
+        postActions.stopListening();
+        // commentActions.stopListening();
     },
 
     logout: function (e) {
@@ -43,47 +48,15 @@ var Profile = React.createClass({
         this.transitionTo('home');
     },
 
-    // accumulateItems: function (itemData, component) {
-
-    //     return items;
-    // },
-
     render: function() {
     	var cx = React.addons.classSet;
         var user = this.props.user;
-        var postData = this.state.history.posts;
-        // var commentData = this.state.history.comments;
+        var posts = this.state.posts;
+        var comments = this.state.comments;
 
         // if state is unresolved, return immediately
         if (!user) {
             return false;
-        }
-
-        var comments = {};
-        var posts = {};
-
-        // if (!$.isEmptyObject(commentData)) {
-        //     var keys = Object.keys(commentData);
-        //     keys.forEach(function (commentId) {
-        //         var comment = commentData[commentId];
-        //         comments[commentId] = <Comment
-        //                                 postId={ postId }
-        //                                 commentId={ commentId }
-        //                                 comment={ comment }
-        //                                 user={ user }
-        //                                 key={ commentId } />;
-        //     });
-        // }
-
-        if (!$.isEmptyObject(postData)) {
-            var keys = Object.keys(postData);
-            keys.forEach(function (postId) {
-                var post = postData[postId];
-                posts[postId] = <Post post={ post }
-                                    user={ user }
-                                    postId={ postId }
-                                    key={ postId } />;
-            });
         }
 
         var logoutCx = cx({
@@ -95,12 +68,16 @@ var Profile = React.createClass({
         return (
             <div className="content inner">
                 <div className={ logoutCx }>
-                    <button onClick={ this.logout } className="button">Sign Out</button>
+                    <button onClick={ this.logout } className="button button-primary">Sign Out</button>
                 </div>
 	            <h1>Profile</h1>
                 <div className="user-posts">
                     <h2>Posts</h2>
-                    { posts }
+	                {
+	                	posts.map(function (post) {
+			        		return <Post post={ post } user={ user } key={ post.id } />;
+			        	})
+	                }
                 </div>
                 <div className="user-comments">
                     <h2>Comments</h2>

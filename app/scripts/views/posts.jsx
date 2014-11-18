@@ -13,19 +13,13 @@ var Post = require('../components/post');
 var Posts = React.createClass({
 
     mixins: [
-        Reflux.listenTo(postStore, 'onPostChange')
+        Reflux.connect(postStore, 'posts')
     ],
 
     getInitialState: function () {
         return {
             posts: []
         };
-    },
-
-    onPostChange: function (posts) {
-    	this.setState({
-    		posts: posts
-    	});
     },
 
     componentWillMount: function () {

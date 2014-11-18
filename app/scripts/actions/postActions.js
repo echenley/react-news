@@ -7,12 +7,13 @@ var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts'
 
 var historyActions = require('./historyActions');
 var userActions = require('./userActions');
-var commentActions = require('./commentActions');
+// var commentActions = require('./commentActions');
 
 var postActions = Reflux.createActions([
     'upvote',
     'submitPost',
     'listenToAll',
+    'listenToUser',
     'listenToSingle',
     'stopListening'
 ]);
@@ -39,14 +40,6 @@ postActions.upvote.preEmit = function (userId, postId, alreadyUpvoted) {
             userActions.upvoteItem(userId, postId, alreadyUpvoted);
         }
     });
-};
-
-postActions.listenToSingle.preEmit = function (postId) {
-    commentActions.listenToComments(postId);
-};
-
-postActions.stopListening.preEmit = function () {
-    commentActions.stopListening();
 };
 
 

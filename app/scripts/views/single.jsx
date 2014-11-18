@@ -1,6 +1,5 @@
 'use strict';
 
-var $ = jQuery;
 var React = require('react/addons');
 var Reflux = require('reflux');
 
@@ -21,36 +20,26 @@ var Comment = require('../components/comment');
 var SinglePost = React.createClass({
 
     mixins: [
-        Reflux.listenTo(commentStore, 'onCommentChange'),
-        Reflux.listenTo(postStore, 'onPostChange')
+        Reflux.connect(postStore, 'posts'),
+        Reflux.connect(commentStore, 'comments')
     ],
 
     getInitialState: function () {
         return {
-            post: false,
-            comments: []
+            posts: postStore.getDefaultData(),
+            comments: commentStore.getDefaultData()
         };
     },
 
     componentWillMount: function() {
-        // sets callback to watch current post comments
+        // watch current post and comments
         postActions.listenToSingle(this.props.params.postId);
+        commentActions.listenToComments(this.props.params.postId);
     },
 
     componentWillUnmount: function () {
         postActions.stopListening(this.props.params.postId);
-    },
-
-    onCommentChange: function (comments) {
-        this.setState({
-            comments: comments
-        });
-    },
-
-    onPostChange: function (post) {
-        this.setState({
-            post: post
-        });
+        commentActions.stopListening();
     },
 
     addComment: function (e) {
@@ -70,32 +59,22 @@ var SinglePost = React.createClass({
         var cx = React.addons.classSet;
         var user = this.props.user;
         var loggedIn = !!user.uid;
-        var post = this.state.post;
+        var comments = this.state.comments;
+        var post = this.state.posts[0];
 
-        // if state is unresolved, don't render
+        // post may be undefined, in which case don't render
         if (!post) {
             return false;
         }
 
-        // collect comment components into object
-        var commentData = this.state.comments;
-        var comments = {};
-
-        if (!$.isEmptyObject(commentData)) {
-            var keys = Object.keys(commentData);
-            keys.forEach(function (commentId) {
-                var comment = commentData[commentId];
-                comments[commentId] = <Comment
-                                        post={post}
-                                        commentId={ commentId }
-                                        comment={ comment }
-                                        user={ user }
-                                        key={ commentId } />;
-            });
-        }
+        var headerText = function (n) {
+            if (n === 0) { return 'No Comments'; }
+            if (n === 1) { return '1 Comment'; }
+            return n + ' Comments';
+        };
 
         var formCx = cx({
-            'commentForm': true,
+            'comment-form': true,
             'hidden': !loggedIn
         });
 
@@ -103,12 +82,16 @@ var SinglePost = React.createClass({
             <div className="content inner">
                 <Post post={ post } user={ user } key={ post.id } />
                 <div className="comments">
-                    <h2>{ comments.length ? comments.length : 'No ' }Comments</h2>
-                    { comments }
+                    <h2>{ headerText(comments.length) }</h2>
+                    {
+                        comments.map(function (comment) {
+                            return <Comment comment={ comment } user={ user } key={ comment.id } />;
+                        })
+                    }
                 </div>
                 <form className={ formCx } onSubmit={ this.addComment }>
                     <textarea placeholder="Post a Comment" ref="commentText" className="comment-input full-width"></textarea>
-                    <button type="submit" className="button">Submit</button>
+                    <button type="submit" className="button button-primary">Submit</button>
                 </form>
             </div>
         );

@@ -13,23 +13,29 @@ var postStore = Reflux.createStore({
         this.posts = [];
     },
 
-    listenToAll: function (numPerPage) {
-        postsRef.orderByChild('upvotes').limitToFirst(numPerPage).on('value', function (posts) {
-            this.posts = [];
-            posts.forEach(function (postData) {
-                var post = postData.val();
-                post.id = postData.key();
-                this.posts.unshift(post);
-            }.bind(this));
-            this.trigger(this.posts);
+    _updatePosts: function (posts) {
+        this.posts = [];
+        posts.forEach(function (postData) {
+            var post = postData.val();
+            post.id = postData.key();
+            this.posts.unshift(post);
         }.bind(this));
+        this.trigger(this.posts);
+    },
+
+    listenToAll: function (numPerPage) {
+        postsRef.orderByChild('upvotes').limitToFirst(numPerPage).on('value', this._updatePosts.bind(this));
+    },
+
+    listenToUser: function (userId) {
+        postsRef.orderByChild('creatorUID').equalTo(userId).limitToFirst(3).on('value', this._updatePosts.bind(this));
     },
 
     listenToSingle: function (postId) {
         postsRef.child(postId).on('value', function (postData) {
             var post = postData.val();
             post.id = postData.key();
-            this.posts = post;
+            this.posts = [post];
             this.trigger(this.posts);
         }.bind(this));
     },

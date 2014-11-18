@@ -45,7 +45,17 @@ var ReactNews = React.createClass({
     componentDidMount: function () {
         // hide the menu when clicked away
         $(document).on('touchend click', function (e) {
-            if (!this.state.hideMenu && !$(e.target).is('.panel, .panel *, .menu-toggle, .menu-toggle *, .toggle-icon')) {
+            var d = e.target;
+
+            // if this node is not the one we want, move up the dom tree
+            while (d !== null && d.id !== 'header-panel' && d.id !== 'panel-toggle') {
+                d = d.parentNode;
+            }
+
+            // at this point we have found our containing div or we are out of parent nodes
+            var insideMyDiv = (d !== null && (d.id === 'header-panel'|| d.id === 'panel-toggle'));
+
+            if (!this.state.hideMenu && !insideMyDiv) {
                 this.toggleMenu();
             }
         }.bind(this));
@@ -88,8 +98,8 @@ var ReactNews = React.createClass({
         var md5hash = user ? user.profile.md5hash : '';
 
         var headerCx = cx({
-            'menu': true,
-            'menu-open': !menuHidden
+            'header': true,
+            'panel-open': !menuHidden
         });
 
         var userInfoCx = cx({
@@ -100,32 +110,34 @@ var ReactNews = React.createClass({
         return (
             <div className="wrapper">
                 <header className={ headerCx }>
-                    <div className="float-left">
-                        <Link to="home" className="menu-title">react-news</Link>
-                    </div>
-                    <div className="float-right">
-                        <span className={ loggedIn ? 'hidden' : '' }>
-                            <Link to="login" className="button-inverse">Sign In</Link>
-                            <Link to="register" className="button-inverse">Register</Link>
-                        </span>
-                        <div className={ userInfoCx }>
-                            <Link to="profile" params={{ userId: user.uid }} className="profile-link">
-                                { username }
-                                <img src={'http://www.gravatar.com/avatar/' + md5hash } className="nav-pic" />
-                            </Link>
+                    <div className="header-main">
+                        <div className="float-left">
+                            <Link to="home" className="button menu-title">react-news</Link>
                         </div>
-                        <a className="menu-toggle" onClick={ this.toggleMenu }>
-                            <span>menu</span>
-                        </a>
+                        <div className="float-right">
+                            <span className={ loggedIn ? 'hidden' : '' }>
+                                <Link to="login" className="button">Sign In</Link>
+                                <Link to="register" className="button">Register</Link>
+                            </span>
+                            <div className={ userInfoCx }>
+                                <Link to="profile" params={{ userId: user.uid }} className="profile-link">
+                                    { username }
+                                    <img src={'http://www.gravatar.com/avatar/' + md5hash } className="nav-pic" />
+                                </Link>
+                            </div>
+                            <a id="panel-toggle" className="panel-toggle" onClick={ this.toggleMenu }>
+                                <span>menu</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="header-panel" className="header-panel text-center">
+                        <form onSubmit={ this.submitPost } className="panel-form">
+                            <input type="text" className="panel-input" placeholder="Title" ref="title" />
+                            <input type="url" className="panel-input" placeholder="Link" ref="link" />
+                            <button type="submit" className="button button-panel">Submit</button>
+                        </form>
                     </div>
                 </header>
-                <div className="panel text-center">
-                    <form onSubmit={ this.submitPost } className="panel-form">
-                        <input type="text" className="panel-input" placeholder="Title" ref="title" />
-                        <input type="url" className="panel-input" placeholder="Link" ref="link" />
-                        <button type="submit" className="panel-button button">Submit</button>
-                    </form>
-                </div>
                 <this.props.activeRouteHandler user={ this.state.user } />
             </div>
         );
@@ -135,11 +147,11 @@ var ReactNews = React.createClass({
 var routes = (
     <Routes location="history">
         <Route handler={ ReactNews }>
-            <Route name="post" path="/post/:postId" handler={ SinglePost } addHandlerKey={true} />
-            <Route name="register" path="/register" handler={ Register } addHandlerKey={true} />
-            <Route name="login" path="/login" handler={ Login } addHandlerKey={true} />
-            <Route name="profile" path="/:userId" handler={ Profile } addHandlerKey={true} />
-            <DefaultRoute name="home" handler={ Posts } addHandlerKey={true} />
+            <Route name="post" path="/post/:postId" handler={ SinglePost } />
+            <Route name="register" path="/register" handler={ Register } />
+            <Route name="login" path="/login" handler={ Login } />
+            <Route name="profile" path="/:userId" handler={ Profile } />
+            <DefaultRoute name="home" handler={ Posts } />
         </Route>
     </Routes>
 );

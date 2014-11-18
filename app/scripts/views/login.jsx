@@ -11,13 +11,11 @@ var Login = React.createClass({
 
     mixins: [
         Navigation,
-        Reflux.ListenerMixin
+        Reflux.listenTo(userStore, 'onUserChange')
     ],
 
-    componentDidMount: function () {
-        this.listenTo(userStore, function () {
-            this.transitionTo('home');
-        }.bind(this));
+    onUserChange: function () {
+        this.transitionTo('home');
     },
 
     login: function (e) {
@@ -32,14 +30,14 @@ var Login = React.createClass({
     render: function() {
 
         return (
-            <div className="content inner text-center">
-                <h1>Login</h1>
+            <div className="login content text-center">
                 <form onSubmit={ this.login } className="login-form text-left">
+                    <h1>Login</h1>
                     <label htmlFor="email">Email</label><br />
                     <input type="email" placeholder="Email" id="email" ref="email" /><br />
                     <label htmlFor="password">Password</label><br />
                     <input type="password" placeholder="Password" id="password" ref="password" /><br />
-                    <button type="submit" className="button">Sign In</button>
+                    <button type="submit" className="button button-primary">Sign In</button>
                 </form>
             </div>
         );

@@ -28,10 +28,10 @@ var commentStore = Reflux.createStore({
         }.bind(this));
     },
 
-    stopListening: function (postId) {
+    stopListening: function () {
         // removes callback for comments
         // called on componentWillUnmount
-        commentsRef.orderByChild('postId').equalTo(postId).off();
+        commentsRef.off();
     },
 
     getDefaultData: function () {

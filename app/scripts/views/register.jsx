@@ -33,16 +33,16 @@ var Login = React.createClass({
     render: function() {
 
         return (
-            <div className="content inner text-center">
-                <h1>Register</h1>
+            <div className="login content text-center">
                 <form onSubmit={ this.registerUser } className="login-form text-left">
+                    <h1>Register</h1>
                     <label htmlFor="username">Username</label><br />
                     <input type="text" placeholder="Username" id="username" ref="username" /><br />
                     <label htmlFor="email">Email</label><br />
                     <input type="email" placeholder="Email" id="email" ref="email" /><br />
                     <label htmlFor="password">Password</label><br />
                     <input type="password" placeholder="Password" id="password" ref="password" /><br />
-                    <button type="submit" className="button">Register</button>
+                    <button type="submit" className="button button-primary">Register</button>
                 </form>
             </div>
         );

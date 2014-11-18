@@ -46,12 +46,12 @@ userActions.register.preEmit = function (username, loginData) {
     }.bind(this));
 };
 
-userActions.upvoteItem.preEmit = function (uid, itemId, alreadyUpvoted) {
+userActions.upvoteItem.preEmit = function (userId, itemId, alreadyUpvoted) {
     // adds or removes postId/commentId from list of upvoted items
     if (alreadyUpvoted) {
-        usersRef.child(uid).child('upvoted').child(itemId).remove();
+        usersRef.child(userId).child('upvoted').child(itemId).remove();
     } else {
-        usersRef.child(uid).child('upvoted').child(itemId).set(true);
+        usersRef.child(userId).child('upvoted').child(itemId).set(true);
     }
 };
 

@@ -8,16 +8,26 @@ Author URI: http://henleyedition.com/
 /* Colors and Other Variables
 ====================================== */
 
-// colors
-$dark-green: #6E9A81;
-$light-green: #7BB6A1;
-$tertiary: #C0B698;
-
-$dark-gray: #666;
+// palette
+$dark: #040203;
+$color1: $dark;
+$color2: mix($dark, white);
+$color3: #CF0C00;
+$dark-gray: #6E7E91;
 $light-gray: #e5e5e5;
 
+$text: $dark;
+$header: $color1;
+$panel: $color2;
+$link: $color3;
+$button-text: #fff;
+$button: $color3;
+$panel-button: $color3;
+$background: $light-gray;
+$upvoted: blue;
+
 // borders/margins/padding
-$line: 1px;
+$line: 2px;
 
 // dimensions
 $nav-height: 4rem;
@@ -57,10 +67,10 @@ $font-size: 110%;
 $line-height: 1.55;
 
 $heading-font: "Source Sans Pro", Arial, sans-serif;
-$body-font: "Open Sans", Arial, sans-serif;
+$body-font: "Source Sans Pro", Arial, sans-serif;
 $monospace: "Ubuntu Mono", "Andale Mono", AndaleMono, Consolas, monaco, monospace;
 
-$text-small: 0.85em;
+$text-small: 0.76em;
 
 
 
@@ -103,12 +113,11 @@ html {
 
 body {
     font-family: $body-font;
-    font-weight: 300;
     height: 100%;
     max-height: 100%;
     line-height: $line-height;
-    background: $light-gray;
     color: $dark-gray;
+    background: $background;
     font-size: $font-size;
     text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
@@ -129,8 +138,9 @@ body {
 
 .content {
     min-height: 100%;
-    padding-top: $nav-height + $medium;
-    padding-bottom: $medium;
+    margin-top: $nav-height + $medium !important;
+    padding: $small;
+    background: #fff;
 }
 
 
@@ -140,11 +150,10 @@ body {
 h1 { margin-top: 0; }
 h1,h2,h3,h4,h5,h6 {
     font-family: $heading-font;
-    font-weight: 400;
 }
 
 a {
-    color: $dark-green;
+    color: $link;
     cursor: pointer;
     text-decoration: none;
     &:hover { text-decoration: underline; }
@@ -172,16 +181,19 @@ button {
     outline: none;
     box-shadow: none;
     border-radius: 2px;
+    max-width: 100%;
 }
 
 
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="url"],
 textarea {
     padding: $x-small;
+    box-shadow: 0 0 0 $line $light-gray;
     &:focus {
-        box-shadow: 0 0 0 $line $light-green;
+        box-shadow: 0 0 0 $line $dark;
     }
 }
 
@@ -242,29 +254,50 @@ textarea {
     text-decoration: none !important;
 }
 
+.faded {
+    opacity: 0.7;
+}
+
+// buttons
+
 .button {
+    position: relative;
     padding: 0.3rem $small;
-    background: $light-green;
     border-radius: 2px;
     border: none;
     box-shadow: none;
-    color: #fff;
-    transition: transform 0.2s;
+    color: $button-text;
+    transition: background 0.2s;
+    &:active {
+        margin-top: 1px;
+    }
     &:hover {
         text-decoration: none;
     }
+}
+
+.button-primary {
+    background: $button;
+    border-bottom: 2px solid darken($button, 10%);
     &:active {
-        transform: scale(0.96);
+        border-bottom-width: 1px;
     }
-    + .button {
-        margin-left: $small;
+    &:hover {
+        background: darken($button, 5%);
     }
 }
 
-.button-inverse {
-    @extend .button;
-    background: #fff;
-    color: $dark-green !important;
+.button-panel {
+    line-height: 0;
+    background: transparent;
+    border: 2px solid #fff;
+    border-bottom-width: 3px;
+    &:active {
+        border-bottom-width: 2px;
+    }
+    &:hover {
+        background: lighten($panel, 5%);
+    }
 }
 
 
@@ -274,23 +307,34 @@ textarea {
 /* Navbar
 ====================================== */
 
-.menu {
+.header {
     z-index: 3;
     position: fixed;
         top: 0;
         left: 0;
         right: 0;
-    height: $nav-height;
     line-height: $nav-height;
-    background: $dark-green;
     color: #fff;
+    overflow: visible;
     a { color: #fff; }
     > div {
         display: inline-block;
     }
 }
 
-.menu-toggle {
+.header-main,
+.header-panel {
+    position: absolute;
+        left: 0; right: 0;
+    height: $nav-height;
+}
+
+.header-main {
+    z-index: 1;
+    background: $header;
+}
+
+.panel-toggle {
     position: relative;
     display: block;
     float: right;
@@ -330,22 +374,22 @@ textarea {
         display: block;
         height: 0;
         border-bottom: $line solid #fff;
+        margin-top: -1px;
         width: 30%;
-        background: $dark-green;
+        background: $dark;
     }
 
     &:before { transform: rotate(90deg); }
     &:after  { transform: rotate(0); }
 
-    .menu-open & {
+    .panel-open & {
         &:before { transform: rotate(135deg); }
         &:after  { transform: rotate(45deg); }
     }
 }
 
-.menu-title {
-    display: inline-block;
-    margin: 0 $small;
+.header-title {
+    padding: $x-small $medium;
 }
 
 .user-info,
@@ -374,32 +418,31 @@ textarea {
 /* Post Panel
 ====================================== */
 
-.panel {
-    z-index: 2;
-    position: fixed;
-    display: table;
-    height: $nav-height;
-    width: 100%;
+.header-panel {
+    z-index: -1;
     padding: 0 2%;
-    background: $light-green;
+    background: $panel;
     color: #fff;
     a { color: #fff; }
     transition: transform 0.3s;
     transform: translateY(0);
-    .menu-open + & {
+    font-size: 0;
+    line-height: $nav-height;
+    .panel-open & {
         transform: translateY($nav-height);
     }
 }
 
 .panel-form {
-    display: table-cell;
+    display: inline-block;
     height: 100%;
-    max-width: 100%;
-    vertical-align: middle;
+    width: 100%;
+    text-align: center;
+    font-size: initial;
     > * {
         display: inline-block;
         margin: 0;
-        padding: 0 $x-small;
+        padding: 0 ($nav-height - 1.8rem) / 2;
         height: $nav-height - 1.8rem;
     }
     > *:not(:first-child) {
@@ -410,18 +453,11 @@ textarea {
 .panel-input {
     max-width: 38%;
     color: $dark-gray;
+    box-shadow: 0 0 0 $line $panel !important;
     &:focus {
-        box-shadow: 0 0 0 $line $dark-green !important;
+        box-shadow: 0 0 0 $line $dark !important;
     }
 }
-
-.panel-button {
-    max-width: 20%;
-    border: $line solid #fff;
-    background: transparent;
-    white-space: nowrap;
-}
-
 
 
 
@@ -429,31 +465,21 @@ textarea {
 ====================================== */
 
 .post {
-    padding: $x-small $small;
     background: #fff;
     & + & {
         margin-top: $small;
     }
 }
 
-.post-link {
-    padding-bottom: $x-small;
-    a {
-        color: $light-green;
-    }
-}
-
 .post-title {
     font-family: $heading-font;
-    font-weight: 400;
 }
 
 .hostname {
     font-size: $text-small;
-    font-weight: 300;
     margin-left: 0.6em;
-    color: $dark-green; 
-    a { color: $dark-green; }
+    color: $dark; 
+    a { color: $dark; }
 }
 
 .comments-link {
@@ -465,14 +491,15 @@ textarea {
     transition: color 0.3s;
 }
 .upvote:checked + label {
-    color: $light-green;
+    color: $upvoted;
 }
 
 .post-info,
 .comment-info {
-    padding-top: $x-small;
-    border-top: 1px solid $light-gray;
     font-size: $text-small;
+}
+
+.posted-by {
 }
 
 
@@ -485,25 +512,37 @@ textarea {
 .comment {
     // animation: slide-in 0.5s;
     margin: $small 0;
-    padding: $x-small $small;
     background: #fff;
     & + & {
         margin-top: $small;
     }
 }
 
-.comment-form {}
+.comment-form {
+    margin-top: $medium;
+}
 
 .comment-text {
-    padding-bottom: $x-small;
 }
 
 .comment-input {
     margin: $small 0;
 }
 
+
+
+
+
+/* Login/Registration
+====================================== */
+
+.login {
+    position: relative;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
 .login-form {
     display: inline-block;
 }
-
 
