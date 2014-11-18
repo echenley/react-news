@@ -62,7 +62,7 @@ gulp.task('scripts', function () {
                   errorHandler: onError
                 }))
                 .pipe(source('app.js'))
-                // .pipe($.streamify($.uglify()))
+                .pipe($.streamify($.uglify()))
                 .pipe(gulp.dest('./dist/scripts'));
 
             $.util.log('Updated!', (Date.now() - updateStart) + 'ms');
