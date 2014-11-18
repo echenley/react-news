@@ -145,7 +145,7 @@ var ReactNews = React.createClass({
 });
 
 var routes = (
-    <Routes location="history">
+    <Routes>
         <Route handler={ ReactNews }>
             <Route name="post" path="/post/:postId" handler={ SinglePost } />
             <Route name="register" path="/register" handler={ Register } />
