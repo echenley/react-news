@@ -513,12 +513,15 @@ textarea {
     }
 }
 
-.upvote + label {
-    user-select: none;
+.upvote {
     transition: color 0.3s;
     color: $dark;
+    &:hover {
+        text-decoration: none;
+    }
 }
-.upvote:checked + label {
+
+.upvoted {
     color: $upvoted;
 }
 

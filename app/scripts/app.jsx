@@ -33,7 +33,7 @@ var ReactNews = React.createClass({
     getInitialState: function() {
         return {
             user: userStore.getDefaultData(),
-            hideMenu: true
+            panelHidden: true
         };
     },
 
@@ -46,24 +46,25 @@ var ReactNews = React.createClass({
         // hide the menu when clicked away
         $(document).on('touchend click', function (e) {
             var d = e.target;
+            var excludedIds = ['header-panel','panel-toggle'];
 
             // if this node is not the one we want, move up the dom tree
-            while (d !== null && d.id !== 'header-panel' && d.id !== 'panel-toggle') {
+            while (d !== null && excludedIds.indexOf(d.id) < 0) {
                 d = d.parentNode;
             }
 
             // at this point we have found our containing div or we are out of parent nodes
-            var insideMyDiv = (d !== null && (d.id === 'header-panel'|| d.id === 'panel-toggle'));
+            var insideMyDiv = (d !== null && excludedIds.indexOf(d.id) >= 0);
 
-            if (!this.state.hideMenu && !insideMyDiv) {
-                this.toggleMenu();
+            if (!this.state.panelHidden && !insideMyDiv) {
+                this.togglePanel();
             }
         }.bind(this));
     },
 
-    toggleMenu: function () {
+    togglePanel: function () {
         this.setState({
-            hideMenu: !this.state.hideMenu
+            panelHidden: !this.state.panelHidden
         });
     },
 
@@ -85,12 +86,12 @@ var ReactNews = React.createClass({
 
         titleEl.value = '';
         linkEl.value = '';
-        this.toggleMenu();
+        this.togglePanel();
     },
 
     render: function() {
         var cx = React.addons.classSet;
-        var menuHidden = this.state.hideMenu;
+        var menuHidden = this.state.panelHidden;
         var user = this.state.user;
 
         var loggedIn = !!user.uid;
@@ -125,7 +126,7 @@ var ReactNews = React.createClass({
                                     <img src={'http://www.gravatar.com/avatar/' + md5hash } className="nav-pic" />
                                 </Link>
                             </div>
-                            <a id="panel-toggle" className="panel-toggle" onClick={ this.toggleMenu }>
+                            <a id="panel-toggle" className="panel-toggle" onClick={ this.togglePanel }>
                                 <span>menu</span>
                             </a>
                         </div>

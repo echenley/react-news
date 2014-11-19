@@ -1,11 +1,13 @@
 'use strict';
 
 var React = require('react/addons');
-var postActions = require('../actions/postActions');
 
 var abbreviateNumber = require('../mixins/abbreviateNumber'),
 	hostnameFromUrl = require('../mixins/hostnameFromUrl');
-var Link = require('react-router').Link;
+
+// components
+var Link = require('react-router').Link,
+	Upvote = require('./upvote');
 
 var Post = React.createClass({
 
@@ -14,23 +16,9 @@ var Post = React.createClass({
     	hostnameFromUrl
     ],
 
-    upvote: function (userId, postId, alreadyUpvoted) {
-    	console.log(userId, postId, alreadyUpvoted);
-        // upvote post
-        postActions.upvote(userId, postId, alreadyUpvoted);
-    },
-
     render: function() {
     	var cx = React.addons.classSet;
-        var postId = this.props.post.id;
         var post = this.props.post;
-        var user = this.props.user;
-
-        var signedIn = !!user.uid;
-        var alreadyUpvoted = user.profile.upvoted ? user.profile.upvoted[postId] : false;
-
-        var upvoteId = 'upvote' + postId;
-        var upvotes = post.upvotes ? this.abbreviateNumber(post.upvotes) : 0;
 
         var commentCount = post.commentCount ? this.abbreviateNumber(post.commentCount) : 0;
         var commentCx = cx({
@@ -52,16 +40,11 @@ var Post = React.createClass({
                         Posted by <Link to="profile" params={{ userId: post.creatorUID }}>{ post.creator }</Link>
                     </div>
                     <div className="float-right">
-                        <input
-                            className="upvote hidden"
-                            type="checkbox"
-                            checked={ signedIn && alreadyUpvoted }
-                            id={ upvoteId }
-                            onChange={ this.upvote.bind(this, user.uid, postId, alreadyUpvoted) } />
-                        <label htmlFor={ upvoteId } className="pointer">
-                            { upvotes } <i className="fa fa-arrow-up"></i>
-                        </label>
-                        <Link to="post" params={{ postId: postId }} className={ commentCx }>
+                    	<Upvote
+                    		user={ this.props.user }
+                    		itemId={ post.id }
+                    		upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
+                        <Link to="post" params={{ postId: post.id }} className={ commentCx }>
                             { commentCount } <i className="fa fa-comments"></i>
                         </Link>
                     </div>
@@ -69,6 +52,16 @@ var Post = React.createClass({
             </div>
         );
     }
+
+                        // <input
+                        //     className="upvote hidden"
+                        //     type="checkbox"
+                        //     checked={ this.state.upvoted }
+                        //     id={ upvoteId }
+                        //     onChange={ this.upvote.bind(this, user.uid, postId) } />
+                        // <label htmlFor={ upvoteId } className="pointer">
+                        //     { upvotes } <i className="fa fa-arrow-up"></i>
+                        // </label>
 
 });
 

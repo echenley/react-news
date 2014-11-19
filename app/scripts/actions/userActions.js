@@ -14,10 +14,9 @@ var userActions = Reflux.createActions([
     'logout',
     'register',
     'upvoteItem',
+    'downvoteItem',
     'createProfile',
-    'updateProfile',
-    'setFirebaseCallback',
-    'removeFirebaseCallback'
+    'updateProfile'
 ]);
 
 userActions.login.preEmit = function (user, username) {
@@ -46,14 +45,17 @@ userActions.register.preEmit = function (username, loginData) {
     }.bind(this));
 };
 
-userActions.upvoteItem.preEmit = function (userId, itemId, alreadyUpvoted) {
-    // adds or removes postId/commentId from list of upvoted items
-    if (alreadyUpvoted) {
-        usersRef.child(userId).child('upvoted').child(itemId).remove();
-    } else {
-        usersRef.child(userId).child('upvoted').child(itemId).set(true);
-    }
+userActions.upvoteItem.preEmit = function (userId, itemId) {
+    // adds postId/commentId from list of upvoted items
+    usersRef.child(userId).child('upvoted').child(itemId).set(true);
 };
+
+userActions.downvoteItem.preEmit = function (userId, itemId) {
+    // removes postId/commentId from list of upvoted items
+    usersRef.child(userId).child('upvoted').child(itemId).remove();
+};
+
+
 
 userActions.createProfile.preEmit = function (uid, username, email) {
     var md5hash = hash.update(email).digest('hex');

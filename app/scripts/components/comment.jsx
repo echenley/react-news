@@ -4,7 +4,10 @@ var React = require('react/addons');
 var commentActions = require('../actions/commentActions');
 
 var abbreviateNumber = require('../mixins/abbreviateNumber');
-var Link = require('react-router').Link;
+
+// components
+var Link = require('react-router').Link,
+	Upvote = require('./upvote');
 
 var Comment = React.createClass({
 
@@ -18,13 +21,6 @@ var Comment = React.createClass({
     render: function() {
         var comment = this.props.comment;
 
-        var user = this.props.user;
-        var signedIn = !!user.uid;
-        var alreadyUpvoted = user.profile.upvoted ? user.profile.upvoted[comment.id] : false;
-
-        var upvoteId = 'upvote' + comment.id;
-        var upvotes = comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0;
-
         return (
             <div className="comment cf">
                 <div className="comment-text">
@@ -35,16 +31,10 @@ var Comment = React.createClass({
 		                Posted by <Link to="profile" params={{ userId: comment.creatorUID }}>{ comment.creator }</Link>
 		            </div>
 		            <div className="float-right">
-		                <input
-		                    className="upvote hidden"
-		                    type="checkbox"
-		                    checked={ signedIn && alreadyUpvoted }
-		                    disabled={ !signedIn }
-		                    id={ upvoteId }
-		                    onChange={ this.upvote.bind(this, user.uid, comment.id, alreadyUpvoted) } />
-		                <label htmlFor={ upvoteId } className="pointer">
-		                    { upvotes } <i className="fa fa-arrow-up"></i>
-		                </label>
+                    	<Upvote
+                    		user={ this.props.user }
+                    		itemId={ comment.id }
+                    		upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
 		            </div>
 	            </div>
             </div>

@@ -11,6 +11,7 @@ var userActions = require('./userActions');
 
 var commentActions = Reflux.createActions([
     'upvote',
+    'downvote',
     'getComments',
     'addComment',
     'listenToComments',
@@ -24,15 +25,24 @@ function updateCommentCount(postId, n) {
     });
 }
 
-commentActions.upvote.preEmit = function (userId, commentId, alreadyUpvoted) {
-    commentsRef.child(commentId).child('upvotes').transaction(function (curr) {
-        curr = curr || 0;
-        var n = alreadyUpvoted ? -1 : 1;
-        return curr + n;
+commentActions.upvote.preEmit = function (userId, postId) {
+    commentsRef.child(postId).child('upvotes').transaction(function (curr) {
+        return (curr || 0) + 1;
     }, function (error, success) {
         if (success) {
             // add comment to user's list of upvoted items
-            userActions.upvoteItem(userId, commentId, alreadyUpvoted);
+            userActions.upvoteItem(userId, postId);
+        }
+    });
+};
+
+commentActions.downvote.preEmit = function (userId, postId) {
+    commentsRef.child(postId).child('upvotes').transaction(function (curr) {
+        return curr - 1;
+    }, function (error, success) {
+        if (success) {
+            // add comment to user's list of upvoted items
+            userActions.downvoteItem(userId, postId);
         }
     });
 };

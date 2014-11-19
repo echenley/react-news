@@ -16,7 +16,8 @@ var userStore = Reflux.createStore({
         this.user = {
             uid: '',
             profile: {
-                username: 'anon'
+                username: 'anon',
+                upvoted: {}
             }
         };
 

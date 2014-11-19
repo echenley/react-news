@@ -71,7 +71,7 @@ var SinglePost = React.createClass({
         var comments = this.state.comments;
         var post = this.state.posts[0];
 
-        if (this.state.isLoading) {
+        if (this.state.isLoading || !post) {
             return (
                 <div className="content">
                     <Spinner />
