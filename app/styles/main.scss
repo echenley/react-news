@@ -79,7 +79,6 @@ $text-small: 0.76em;
 @keyframes fade-in {
     0% { 
         opacity: 0;
-        transform: translateY(-10px);
     }
 }
 
@@ -319,7 +318,7 @@ textarea {
 }
 
 .fade-in {
-    animation: fade-in 0.5s;
+    animation: fade-in 0.6s;
 }
 
 
