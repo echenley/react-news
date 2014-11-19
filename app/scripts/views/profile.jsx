@@ -6,13 +6,12 @@ var Navigation = require('react-router').Navigation;
 
 var userActions = require('../actions/userActions');
 var postActions = require('../actions/postActions');
-// var commentActions = require('../actions/commentActions');
-// var historyActions = require('../actions/historyActions');
 
 var postStore = require('../stores/postStore');
 var commentStore = require('../stores/commentStore');
-// var userStore = require('../stores/userStore');
 
+// components
+var Spinner = require('react-spinner');
 var Post = require('../components/post');
 // var Comment = require('../components/comment');
 
@@ -20,15 +19,23 @@ var Profile = React.createClass({
 
     mixins: [
         Navigation,
-        Reflux.connect(postStore, 'posts'),
+        Reflux.listenTo(postStore, 'onLoaded'),
         Reflux.connect(commentStore, 'comment')
     ],
 
     getInitialState: function () {
         return {
         	posts: [],
-        	comments: []
+        	comments: [],
+        	isLoading: true,
         };
+    },
+
+    onLoaded: function (posts) {
+    	this.setState({
+    		posts: posts,
+    		isLoading: false
+    	});
     },
 
     componentWillMount: function() {
@@ -54,9 +61,12 @@ var Profile = React.createClass({
         var posts = this.state.posts;
         var comments = this.state.comments;
 
-        // if state is unresolved, return immediately
-        if (!user) {
-            return false;
+        if (this.state.isLoading) {
+            return (
+	            <div className="content">
+	                <Spinner />
+	            </div>
+	        );
         }
 
         var logoutCx = cx({

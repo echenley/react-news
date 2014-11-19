@@ -46,6 +46,8 @@ var postStore = Reflux.createStore({
         } else {
             postsRef.off();
         }
+        this.posts = [];
+        this.trigger(this.posts);
     },
 
     getDefaultData: function () {

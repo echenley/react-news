@@ -8,18 +8,28 @@ var postActions = require('../actions/postActions');
 
 // var userActions = require('../actions/userActions');
 
+// components
+var Spinner = require('react-spinner');
 var Post = require('../components/post');
 
 var Posts = React.createClass({
 
     mixins: [
-        Reflux.connect(postStore, 'posts')
+        Reflux.listenTo(postStore, 'onLoaded')
     ],
 
     getInitialState: function () {
         return {
-            posts: []
+            posts: [],
+            isLoading: true
         };
+    },
+
+    onLoaded: function (posts) {
+    	this.setState({
+    		posts: posts,
+    		isLoading: false
+    	});
     },
 
     componentWillMount: function () {
@@ -35,18 +45,22 @@ var Posts = React.createClass({
         var posts = this.state.posts;
         var user = this.props.user;
 
-        // if state is unresolved, don't render
-        if (posts.length === 0) {
-            return false;
+        // if state is unresolved, render a spinner
+        if (this.state.isLoading) {
+            return (
+	            <div className="content">
+	                <Spinner />
+	            </div>
+	        );
         }
+
+        posts = posts.map(function (post) {
+    		return <Post post={ post } user={ user } key={ post.id } />;
+    	});
 
         return (
             <div className="content inner">
-                {
-                	posts.map(function (post) {
-		        		return <Post post={ post } user={ user } key={ post.id } />;
-		        	})
-                }
+                { posts }
             </div>
         );
     }

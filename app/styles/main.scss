@@ -10,21 +10,20 @@ Author URI: http://henleyedition.com/
 
 // palette
 $dark: #040203;
-$color1: $dark;
-$color2: #C7D1C0;
-$color3: #EB5252;
+$color1: #5D9E7E;
+$color2: #56704B;
 $dark-gray: mix($dark, white);
 $light-gray: #e5e5e5;
 
 $text: $dark;
 $header: $color1;
-$panel: $color3;
-$link: $color3;
+$panel: lighten($color1, 10%);
+$link: $color1;
 $button-text: #fff;
-$button: $color3;
-$panel-button: $color3;
+$button: $color1;
+$panel-button: $color1;
 $background: $light-gray;
-$upvoted: $color3;
+$upvoted: $color1;
 
 // borders/margins/padding
 $line: 2px;
@@ -136,7 +135,16 @@ body {
     min-height: 100%;
 }
 
+#content {
+    text-align: center;
+    > * {
+        text-align: left;
+    }
+}
+
 .content {
+    position: relative;
+    display: inline-block;
     min-height: 100%;
     margin-top: $nav-height + $medium !important;
     padding: $small;
@@ -190,10 +198,11 @@ input[type="password"],
 input[type="email"],
 input[type="url"],
 textarea {
+    transition: border 0.2s;
     padding: $x-small;
-    box-shadow: 0 0 0 $line $light-gray;
+    border: $line solid $light-gray;
     &:focus {
-        box-shadow: 0 0 0 $line $dark;
+        border: $line solid darken($light-gray, 10%);
     }
 }
 
@@ -236,11 +245,11 @@ textarea {
     display: none;
 }
 
-.text-left   { text-align: left; }
-.text-center { text-align: center; }
-.text-right  { text-align: right; }
-.float-right { float: right; }
-.float-left  { float: left; }
+.text-left   { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right  { text-align: right !important; }
+.float-right { float: right !important; }
+.float-left  { float: left !important; }
 
 .full-width {
     width: 100% !important;
@@ -287,19 +296,26 @@ textarea {
     }
 }
 
-.button-panel {
-    line-height: 0;
+.button-outline {
     background: transparent;
     border: 2px solid #fff;
     border-bottom-width: 3px;
     &:active {
         border-bottom-width: 2px;
     }
-    &:hover {
-        background: lighten($panel, 5%);
-    }
 }
 
+.react-spinner {
+    // position: relative;
+    // width: 32px;
+    // height: 32px;
+    // top: 50%;
+    // left: 50%;
+    transform: translateY($small);
+}
+.react-spinner_bar {
+    background: $dark;
+}
 
 
 
@@ -420,14 +436,13 @@ textarea {
 
 .header-panel {
     z-index: -1;
-    padding: 0 2%;
+    padding: $small;
     background: $panel;
-    color: #fff;
-    a { color: #fff; }
     transition: transform 0.3s;
     transform: translateY(0);
     font-size: 0;
-    line-height: $nav-height;
+    color: #fff;
+    a { color: #fff; }
     .panel-open & {
         transform: translateY($nav-height);
     }
@@ -436,14 +451,11 @@ textarea {
 .panel-form {
     display: inline-block;
     height: 100%;
-    width: 100%;
     text-align: center;
     font-size: initial;
     > * {
-        display: inline-block;
+        float: left;
         margin: 0;
-        padding: 0 ($nav-height - 1.8rem) / 2;
-        height: $nav-height - 1.8rem;
     }
     > *:not(:first-child) {
         margin-left: 2%;
@@ -451,11 +463,22 @@ textarea {
 }
 
 .panel-input {
-    max-width: 38%;
+    height: 100%;
+    width: 36%;
     color: $dark-gray;
-    box-shadow: 0 0 0 $line $panel !important;
+    border: $line solid #fff !important;
     &:focus {
-        box-shadow: 0 0 0 $line $dark !important;
+        border: $line solid $light-gray !important;
+    }
+}
+
+.panel-button {
+    width: 24%;
+    line-height: 0;
+    padding-top: 0.8rem;
+    padding-bottom: 0.9rem;
+    &:hover {
+        background: darken($panel, 5%);
     }
 }
 
@@ -542,9 +565,7 @@ textarea {
 ====================================== */
 
 .login {
-    position: relative;
-    max-width: 300px;
-    margin: 0 auto;
+    padding: $small $medium;
 }
 
 .login-form {

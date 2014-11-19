@@ -18,8 +18,11 @@ var onError = function (err) {
 
 // Styles
 gulp.task('styles', function () {
-    return gulp.src(['app/bower_components/normalize.css/normalize.css',
-                     'app/styles/main.scss'])
+    return gulp.src([
+            'app/bower_components/normalize.css/normalize.css',
+            'node_modules/react-spinner/react-spinner.css',
+            'app/styles/main.scss'
+        ])
         .pipe($.plumber({
           errorHandler: onError
         }))
@@ -62,7 +65,7 @@ gulp.task('scripts', function () {
                   errorHandler: onError
                 }))
                 .pipe(source('app.js'))
-                .pipe($.streamify($.uglify()))
+                // .pipe($.streamify($.uglify()))
                 .pipe(gulp.dest('./dist/scripts'));
 
             $.util.log('Updated!', (Date.now() - updateStart) + 'ms');

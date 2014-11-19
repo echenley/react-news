@@ -134,11 +134,13 @@ var ReactNews = React.createClass({
                         <form onSubmit={ this.submitPost } className="panel-form">
                             <input type="text" className="panel-input" placeholder="Title" ref="title" />
                             <input type="url" className="panel-input" placeholder="Link" ref="link" />
-                            <button type="submit" className="button button-panel">Submit</button>
+                            <button type="submit" className="button panel-button button-outline">Submit</button>
                         </form>
                     </div>
                 </header>
-                <this.props.activeRouteHandler user={ this.state.user } />
+                <main id="content">
+                    <this.props.activeRouteHandler user={ this.state.user } />
+                </main>
             </div>
         );
     }

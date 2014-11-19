@@ -13,6 +13,7 @@ var postActions = require('../actions/postActions');
 // var userActions = require('../actions/userActions');
 
 // components
+var Spinner = require('react-spinner');
 var Post = require('../components/post');
 var Comment = require('../components/comment');
 
@@ -20,15 +21,23 @@ var Comment = require('../components/comment');
 var SinglePost = React.createClass({
 
     mixins: [
-        Reflux.connect(postStore, 'posts'),
+        Reflux.listenTo(postStore, 'onLoaded'),
         Reflux.connect(commentStore, 'comments')
     ],
 
     getInitialState: function () {
         return {
             posts: postStore.getDefaultData(),
-            comments: commentStore.getDefaultData()
+            comments: commentStore.getDefaultData(),
+            isLoading: true
         };
+    },
+
+    onLoaded: function (posts) {
+        this.setState({
+            posts: posts,
+            isLoading: false
+        });
     },
 
     componentWillMount: function() {
@@ -62,9 +71,12 @@ var SinglePost = React.createClass({
         var comments = this.state.comments;
         var post = this.state.posts[0];
 
-        // post may be undefined, in which case don't render
-        if (!post) {
-            return false;
+        if (this.state.isLoading) {
+            return (
+                <div className="content">
+                    <Spinner />
+                </div>
+            );
         }
 
         var headerText = function (n) {
