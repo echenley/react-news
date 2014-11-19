@@ -472,8 +472,7 @@ textarea {
 .panel-button {
     width: 24%;
     line-height: 0;
-    padding-top: 0.8rem;
-    padding-bottom: 0.9rem;
+    padding: 0.8rem 0 0.9rem 0;
     &:hover {
         background: darken($panel, 5%);
     }
