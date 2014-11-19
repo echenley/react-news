@@ -76,7 +76,7 @@ $text-small: 0.76em;
 /* Animations
 ====================================== */
 
-@keyframes slide-in {
+@keyframes fade-in {
     0% { 
         opacity: 0;
         transform: translateY(-10px);
@@ -169,12 +169,13 @@ a {
 
 // forms
 
-
 form {
     input,
     textarea,
     button {
-        margin-bottom: $small;
+        &:not(:last-child) {
+            margin-bottom: $small;
+        }
     }
 }
 
@@ -317,6 +318,10 @@ textarea {
     background: $dark;
 }
 
+.fade-in {
+    animation: fade-in 0.5s;
+}
+
 
 
 
@@ -354,11 +359,11 @@ textarea {
     position: relative;
     display: block;
     float: right;
-    height: $nav-height;
-    width: $nav-height;
+    width: 2rem;
+    height: 2rem;
+    margin: 1rem;
     cursor: pointer;
     text-align: center;
-    vertical-align: middle;
     user-select: none;
 
     &:before,
@@ -367,17 +372,7 @@ textarea {
     }
 
     span {
-        position: absolute;
-            top: 50%;
-            left: 50%;
-        display: block;
-        width: 2rem;
-        height: 2rem;
-        margin-top: -1rem;
-        margin-left: -1rem;
-        border-radius: 2px;
-        border: $line solid #fff;
-        font-size: 0;
+        display: none;
     }
 
     &:before,
@@ -386,13 +381,12 @@ textarea {
         content: '';
         position: absolute;
             top: 50%;
-            left: 35%;
+            left: 15%;
         display: block;
-        height: 0;
-        border-bottom: $line solid #fff;
+        height: 2px;
+        background: #fff;
         margin-top: -1px;
-        width: 30%;
-        background: $dark;
+        width: 70%;
     }
 
     &:before { transform: rotate(90deg); }
@@ -408,10 +402,14 @@ textarea {
     padding: $x-small $medium;
 }
 
-.user-info,
-.profile-link,
-.nav-pic {
-    display: inline-block;
+// .user-info,
+// .profile-link,
+// .nav-pic {
+//     display: inline-block;
+// }
+
+.register-link {
+    margin-left: $small;
 }
 
 .profile-link {
@@ -568,7 +566,7 @@ textarea {
 ====================================== */
 
 .login {
-    padding: $small $medium;
+    padding: $small $medium $medium $medium;
 }
 
 .login-form {

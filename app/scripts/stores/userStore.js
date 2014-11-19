@@ -1,5 +1,6 @@
 'use strict';
 
+var $ = jQuery;
 var Reflux = require('reflux');
 
 var userActions = require('../actions/userActions');
@@ -33,9 +34,9 @@ var userStore = Reflux.createStore({
         }.bind(this));
     },
 
-    updateProfile: function (uid, profile) {
+    updateProfile: function (userId, profile) {
         this.user = {
-            uid: uid,
+            uid: userId,
             profile: profile
         };
         this.trigger(this.user);
@@ -49,6 +50,16 @@ var userStore = Reflux.createStore({
             }
         };
         this.trigger(this.user);
+    },
+
+    getUserId: function (username) {
+        // returns userId given username
+        var defer = $.Deferred();
+        usersRef.orderByChild('username').equalTo(username).once('value', function (user) {
+            var userId = Object.keys(user.val())[0];
+            defer.resolve(userId);
+        });
+        return defer.promise();
     },
 
     getDefaultData: function () {

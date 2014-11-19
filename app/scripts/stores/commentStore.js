@@ -14,18 +14,24 @@ var commentStore = Reflux.createStore({
         this.comments = [];
     },
 
+    _updateComments: function (comments) {
+        this.comments = [];
+        comments.forEach(function (commentData) {
+            var comment = commentData.val();
+            comment.id = commentData.key();
+            this.comments.unshift(comment);
+        }.bind(this));
+        this.trigger(this.comments);
+    },
+
     listenToComments: function (postId) {
         // dynamically sets callback to watch current post's comments
         // called on componentWillMount
-        commentsRef.orderByChild('postId').equalTo(postId).on('value', function (comments) {
-            this.comments = [];
-            comments.forEach(function (commentData) {
-                var comment = commentData.val();
-                comment.id = commentData.key();
-                this.comments.unshift(comment);
-            }.bind(this));
-            this.trigger(this.comments);
-        }.bind(this));
+        commentsRef.orderByChild('postId').equalTo(postId).on('value', this._updateComments.bind(this));
+    },
+
+    listenToUser: function (userId) {
+        commentsRef.orderByChild('creatorUID').equalTo(userId).limitToFirst(3).on('value', this._updateComments.bind(this));
     },
 
     stopListening: function () {

@@ -59,7 +59,7 @@ var Posts = React.createClass({
     	});
 
         return (
-            <div className="content inner">
+            <div className="content inner fade-in">
                 { posts }
             </div>
         );

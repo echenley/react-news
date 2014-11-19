@@ -2,12 +2,12 @@
 
 var Reflux = require('reflux');
 
+// used to create email hash for gravatar
+var hash = require('crypto').createHash('md5');
+
 var Firebase = require('firebase');
 var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
 var usersRef = ref.child('users');
-
-// used to create email hash for gravatar
-var hash = require('crypto').createHash('md5');
 
 var userActions = Reflux.createActions([
     'login',

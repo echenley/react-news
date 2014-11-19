@@ -2,12 +2,16 @@
 
 var React = require('react/addons');
 
-var abbreviateNumber = require('../mixins/abbreviateNumber'),
-	hostnameFromUrl = require('../mixins/hostnameFromUrl');
+// mixins
+var abbreviateNumber = require('../mixins/abbreviateNumber');
+var hostnameFromUrl = require('../mixins/hostnameFromUrl');
+
+// actions
+var postActions = require('../actions/postActions');
 
 // components
-var Link = require('react-router').Link,
-	Upvote = require('./upvote');
+var Link = require('react-router').Link;
+var Upvote = require('./upvote');
 
 var Post = React.createClass({
 
@@ -27,6 +31,11 @@ var Post = React.createClass({
         	'no-underline': true
         });
 
+        var upvoteActions = {
+            upvote: postActions.upvote,
+            downvote: postActions.downvote
+        };
+
         return (
             <div className="post cf">
                 <div className="post-link">
@@ -37,10 +46,11 @@ var Post = React.createClass({
                 </div>
                 <div className="post-info">
                     <div className="posted-by float-left">
-                        Posted by <Link to="profile" params={{ userId: post.creatorUID }}>{ post.creator }</Link>
+                        Posted by <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
                     </div>
                     <div className="float-right">
                     	<Upvote
+                            upvoteActions= { upvoteActions }
                     		user={ this.props.user }
                     		itemId={ post.id }
                     		upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
@@ -52,17 +62,7 @@ var Post = React.createClass({
             </div>
         );
     }
-
-                        // <input
-                        //     className="upvote hidden"
-                        //     type="checkbox"
-                        //     checked={ this.state.upvoted }
-                        //     id={ upvoteId }
-                        //     onChange={ this.upvote.bind(this, user.uid, postId) } />
-                        // <label htmlFor={ upvoteId } className="pointer">
-                        //     { upvotes } <i className="fa fa-arrow-up"></i>
-                        // </label>
-
+    
 });
 
 module.exports = Post;

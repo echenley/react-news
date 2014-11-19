@@ -15,6 +15,7 @@ var commentActions = Reflux.createActions([
     'getComments',
     'addComment',
     'listenToComments',
+    'listenToUser',
     'stopListening'
 ]);
 
@@ -25,24 +26,24 @@ function updateCommentCount(postId, n) {
     });
 }
 
-commentActions.upvote.preEmit = function (userId, postId) {
-    commentsRef.child(postId).child('upvotes').transaction(function (curr) {
+commentActions.upvote.preEmit = function (userId, commentId) {
+    commentsRef.child(commentId).child('upvotes').transaction(function (curr) {
         return (curr || 0) + 1;
     }, function (error, success) {
         if (success) {
             // add comment to user's list of upvoted items
-            userActions.upvoteItem(userId, postId);
+            userActions.upvoteItem(userId, commentId);
         }
     });
 };
 
-commentActions.downvote.preEmit = function (userId, postId) {
-    commentsRef.child(postId).child('upvotes').transaction(function (curr) {
+commentActions.downvote.preEmit = function (userId, commentId) {
+    commentsRef.child(commentId).child('upvotes').transaction(function (curr) {
         return curr - 1;
     }, function (error, success) {
         if (success) {
             // add comment to user's list of upvoted items
-            userActions.downvoteItem(userId, postId);
+            userActions.downvoteItem(userId, commentId);
         }
     });
 };

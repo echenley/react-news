@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require('react/addons');
-var postActions = require('../actions/postActions');
 
 var Upvote = React.createClass({
 
@@ -18,17 +17,18 @@ var Upvote = React.createClass({
         });
     },
 
-    upvote: function (userId, postId) {
+    upvote: function (userId, itemId) {
         if (!userId) {
             return;
         }
 
         var upvoted = this.state.upvoted;
+        var actions = this.props.upvoteActions;
 
         if (upvoted) {
-            postActions.downvote(userId, postId);
+            actions.downvote(userId, itemId);
         } else {
-            postActions.upvote(userId, postId);
+            actions.upvote(userId, itemId);
         }
 
         this.setState({

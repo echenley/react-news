@@ -30,7 +30,7 @@ var Login = React.createClass({
     render: function() {
 
         return (
-            <div className="login content text-center">
+            <div className="login content text-center fade-in">
                 <form onSubmit={ this.login } className="login-form text-left">
                     <h1>Login</h1>
                     <label htmlFor="email">Email</label><br />

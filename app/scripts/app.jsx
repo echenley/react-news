@@ -6,8 +6,6 @@ var Reflux = require('reflux');
 
 var userStore = require('./stores/userStore');
 var postActions = require('./actions/postActions');
-// var userActions = require('./actions/userActions');
-// var historyActions = require('./actions/historyActions');
 
 // Routing
 var Router = require('react-router');
@@ -36,11 +34,6 @@ var ReactNews = React.createClass({
             panelHidden: true
         };
     },
-
-
-    // componentWillMount: function () {
-    //     userActions.resolveUser();
-    // },
 
     componentDidMount: function () {
         // hide the menu when clicked away
@@ -97,6 +90,7 @@ var ReactNews = React.createClass({
         var loggedIn = !!user.uid;
         var username = user ? user.profile.username : '';
         var md5hash = user ? user.profile.md5hash : '';
+        var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash;
 
         var headerCx = cx({
             'header': true,
@@ -117,17 +111,17 @@ var ReactNews = React.createClass({
                         </div>
                         <div className="float-right">
                             <span className={ loggedIn ? 'hidden' : '' }>
-                                <Link to="login" className="button">Sign In</Link>
-                                <Link to="register" className="button">Register</Link>
+                                <Link to="login">Sign In</Link>
+                                <Link to="register" className="register-link">Register</Link>
                             </span>
-                            <div className={ userInfoCx }>
-                                <Link to="profile" params={{ userId: user.uid }} className="profile-link">
+                            <span className={ userInfoCx }>
+                                <Link to="profile" params={{ username: username }} className="profile-link">
                                     { username }
-                                    <img src={'http://www.gravatar.com/avatar/' + md5hash } className="nav-pic" />
+                                    <img src={ gravatarURI } className="nav-pic" />
                                 </Link>
-                            </div>
+                            </span>
                             <a id="panel-toggle" className="panel-toggle" onClick={ this.togglePanel }>
-                                <span>menu</span>
+                                <span>Add Post</span>
                             </a>
                         </div>
                     </div>
@@ -153,13 +147,11 @@ var routes = (
             <Route name="post" path="/post/:postId" handler={ SinglePost } />
             <Route name="register" path="/register" handler={ Register } />
             <Route name="login" path="/login" handler={ Login } />
-            <Route name="profile" path="/:userId" handler={ Profile } />
+            <Route name="profile" path="/:username" handler={ Profile } />
             <DefaultRoute name="home" handler={ Posts } />
         </Route>
     </Routes>
 );
-
-    // 
 
 React.render(routes, document.getElementById('app'));
 

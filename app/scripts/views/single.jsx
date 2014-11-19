@@ -4,13 +4,12 @@ var React = require('react/addons');
 var Reflux = require('reflux');
 
 // stores
-var postStore = require('../stores/postStore'),
-    commentStore = require('../stores/commentStore');
+var postStore = require('../stores/postStore');
+var commentStore = require('../stores/commentStore');
 
 // actions
 var commentActions = require('../actions/commentActions');
 var postActions = require('../actions/postActions');
-// var userActions = require('../actions/userActions');
 
 // components
 var Spinner = require('react-spinner');
@@ -27,7 +26,7 @@ var SinglePost = React.createClass({
 
     getInitialState: function () {
         return {
-            posts: postStore.getDefaultData(),
+            post: false,
             comments: commentStore.getDefaultData(),
             isLoading: true
         };
@@ -35,7 +34,7 @@ var SinglePost = React.createClass({
 
     onLoaded: function (posts) {
         this.setState({
-            posts: posts,
+            post: posts[0],
             isLoading: false
         });
     },
@@ -69,7 +68,7 @@ var SinglePost = React.createClass({
         var user = this.props.user;
         var loggedIn = !!user.uid;
         var comments = this.state.comments;
-        var post = this.state.posts[0];
+        var post = this.state.post;
 
         if (this.state.isLoading || !post) {
             return (
@@ -91,7 +90,7 @@ var SinglePost = React.createClass({
         });
 
         return (
-            <div className="content inner">
+            <div className="content inner fade-in">
                 <Post post={ post } user={ user } key={ post.id } />
                 <div className="comments">
                     <h2>{ headerText(comments.length) }</h2>

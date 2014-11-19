@@ -14,13 +14,13 @@ var postStore = Reflux.createStore({
     },
 
     _updatePosts: function (posts) {
-        this.posts = [];
+        var postList = [];
         posts.forEach(function (postData) {
             var post = postData.val();
             post.id = postData.key();
-            this.posts.unshift(post);
+            postList.unshift(post);
         }.bind(this));
-        this.trigger(this.posts);
+        this.trigger(postList);
     },
 
     listenToAll: function (numPerPage) {
