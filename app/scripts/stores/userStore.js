@@ -1,6 +1,5 @@
 'use strict';
 
-var $ = jQuery;
 var Reflux = require('reflux');
 
 var userActions = require('../actions/userActions');
@@ -54,7 +53,7 @@ var userStore = Reflux.createStore({
 
     getUserId: function (username) {
         // returns userId given username
-        var defer = $.Deferred();
+        var defer = jQuery.Deferred();
         usersRef.orderByChild('username').equalTo(username).once('value', function (user) {
             var userId = Object.keys(user.val())[0];
             defer.resolve(userId);

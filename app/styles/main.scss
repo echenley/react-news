@@ -185,6 +185,7 @@ textarea {
 input,
 textarea,
 button {
+    -webkit-appearance: none;
     border: none;
     outline: none;
     box-shadow: none;
@@ -319,6 +320,10 @@ textarea {
 
 .fade-in {
     animation: fade-in 0.6s;
+}
+
+.error {
+    color: red;
 }
 
 
@@ -569,5 +574,9 @@ textarea {
 
 .login-form {
     display: inline-block;
+    max-width: 195px;
+    input {
+        width: 100%;
+    }
 }
 

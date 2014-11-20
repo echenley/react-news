@@ -1,13 +1,14 @@
 'use strict';
 
 var Reflux = require('reflux');
-
-// used to create email hash for gravatar
-var hash = require('crypto').createHash('md5');
-
 var Firebase = require('firebase');
 var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
 var usersRef = ref.child('users');
+
+var errorActions = require('./errorActions');
+
+// used to create email hash for gravatar
+var hash = require('crypto').createHash('md5');
 
 var userActions = Reflux.createActions([
     'login',
@@ -23,7 +24,9 @@ userActions.login.preEmit = function (user, username) {
     // username only provided when registering a new user
     // used to create a user profile
     ref.authWithPassword(user, function(error, authData) {
-        if (username) {
+        if (error !== null) {
+            errorActions.loginError(error.code);
+        } else if (username) {
             // new user 
             var uid = authData.uid;
             var email = authData.password.email;
@@ -37,12 +40,36 @@ userActions.logout.preEmit = function () {
 };
 
 userActions.register.preEmit = function (username, loginData) {
-    ref.createUser(loginData, function (error) {
-        if (error === null) {
-            // user successfully created
-            userActions.login(loginData, username);
-        }
-    }.bind(this));
+
+    function checkUsername(name) {
+        // checks if username is taken
+        var defer = jQuery.Deferred();
+        usersRef.orderByChild('username').equalTo(name).once('value', function (user) {
+            defer.resolve(!!user.val());
+        });
+        return defer.promise();
+    }
+
+    if (!username) {
+        // no username provided
+        errorActions.loginError('NO_USERNAME');
+    } else {
+        checkUsername(username).then(function (usernameTaken) {
+            if (usernameTaken) {
+                errorActions.loginError('USERNAME_TAKEN');
+            } else {
+                ref.createUser(loginData, function (error) {
+                    if (error !== null) {
+                        // error during user creation
+                        errorActions.loginError(error.code);
+                    } else {
+                        // user successfully created
+                        userActions.login(loginData, username);
+                    }
+                }.bind(this));
+            }
+        });
+    }
 };
 
 userActions.upvoteItem.preEmit = function (userId, itemId) {
