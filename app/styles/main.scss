@@ -82,22 +82,22 @@ $text-small: 0.76em;
     }
 }
 
-.content-enter {
-    opacity: 0.01;
-    transition: opacity 0.4s ease-in-out;
-}
-.content-enter.content-enter-active {
-    opacity: 1;
-}
+// .content-enter {
+//     opacity: 0.01;
+//     transition: opacity 0.4s ease-in-out;
+// }
+// .content-enter.content-enter-active {
+//     opacity: 1;
+// }
 
-.content-leave {
-    opacity: 1;
-    transition: opacity 0.4s ease-in-out;
-}
+// .content-leave {
+//     opacity: 1;
+//     transition: opacity 0.4s ease-in-out;
+// }
 
-.content-leave.content-leave-active {
-    opacity: 0.01;
-}
+// .content-leave.content-leave-active {
+//     opacity: 0.01;
+// }
 
 
 /* Structure
@@ -146,6 +146,7 @@ body {
     display: inline-block;
     min-height: 100%;
     margin-top: $nav-height + $medium !important;
+    margin-bottom: $medium;
     padding: $small;
     background: #fff;
 }
@@ -268,6 +269,12 @@ textarea {
     opacity: 0.7;
 }
 
+.sr-only {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
 // buttons
 
 .button {
@@ -307,15 +314,17 @@ textarea {
 }
 
 .react-spinner {
-    // position: relative;
-    // width: 32px;
-    // height: 32px;
-    // top: 50%;
-    // left: 50%;
     transform: translateY($small);
+    .button & {
+        width: 28px;
+        height: 28px;
+    }
 }
 .react-spinner_bar {
     background: $dark;
+    .button & {
+        background: #fff;
+    }
 }
 
 .fade-in {
@@ -373,10 +382,6 @@ textarea {
     &:before,
     &:after {
         transition: transform 0.3s;
-    }
-
-    span {
-        display: none;
     }
 
     &:before,
@@ -472,6 +477,9 @@ textarea {
     &:focus {
         border: $line solid $light-gray !important;
     }
+    &.input-error {
+        border: $line solid red !important;
+    }
 }
 
 .panel-button {
@@ -506,13 +514,7 @@ textarea {
     a { color: $dark; }
 }
 
-.comments-link {
-    margin-left: $small;
-    color: $dark;
-    &.comments-some {
-        color: $link;
-    }
-}
+.comments-link {}
 
 .upvote {
     transition: color 0.3s;
@@ -531,8 +533,15 @@ textarea {
     font-size: $text-small;
 }
 
-.posted-by {
+.posted-by {}
+
+.post-info-item:before {
+    content: "\00b7";
+    display: inline-block;
+    margin: 0 0.3rem;
 }
+
+
 
 
 
@@ -580,3 +589,6 @@ textarea {
     }
 }
 
+.login-error {
+    margin-top: $small;
+}

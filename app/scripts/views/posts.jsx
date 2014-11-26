@@ -3,10 +3,12 @@
 var React = require('react/addons');
 
 var Reflux = require('reflux');
-var postStore = require('../stores/postStore');
-var postActions = require('../actions/postActions');
 
-// var userActions = require('../actions/userActions');
+// actions
+var actions = require('../actions/actions');
+
+// stores
+var postsStore = require('../stores/postsStore');
 
 // components
 var Spinner = require('react-spinner');
@@ -15,38 +17,30 @@ var Post = require('../components/post');
 var Posts = React.createClass({
 
     mixins: [
-        Reflux.listenTo(postStore, 'onLoaded')
+        Reflux.connect(postsStore, 'posts')
     ],
 
     getInitialState: function () {
         return {
             posts: [],
-            isLoading: true
+            sortBy: 'upvotes'
         };
     },
 
-    onLoaded: function (posts) {
-    	this.setState({
-    		posts: posts,
-    		isLoading: false
-    	});
-    },
-
     componentWillMount: function () {
-    	var postsPerPage = 10;
-    	postActions.listenToAll(postsPerPage);
+    	actions.listenToPosts(this.state.sortBy);
     },
 
     componentWillUnmount: function () {
-        postActions.stopListening();
+    	actions.stopListeningToPosts();
     },
 
-    render: function() {
+    render: function () {
         var posts = this.state.posts;
         var user = this.props.user;
 
         // if state is unresolved, render a spinner
-        if (this.state.isLoading) {
+        if (posts.length === 0) {
             return (
 	            <div className="content">
 	                <Spinner />

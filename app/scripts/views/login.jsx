@@ -7,47 +7,58 @@ var Reflux = require('reflux');
 var Navigation = require('react-router').Navigation;
 
 // actions
-var userActions = require('../actions/userActions');
+var actions = require('../actions/actions');
 
 // stores
 var userStore = require('../stores/userStore');
-var errorStore = require('../stores/errorStore');
+var loginStore = require('../stores/loginStore');
+
+// components
+var Spinner = require('react-spinner');
 
 var Login = React.createClass({
 
     mixins: [
         Navigation,
         Reflux.listenTo(userStore, 'onUserChange'),
-        Reflux.listenTo(errorStore, 'onErrorMessage')
+        Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
     getInitialState: function () {
         return {
-            error: ''
+            error: '',
+            submitted: false
         };
+    },
+
+    onErrorMessage: function (errorMessage) {
+        this.refs.submit.getDOMNode().disabled = false;
+        this.setState({
+            error: errorMessage,
+            submitted: false
+        });
     },
 
     onUserChange: function () {
         this.transitionTo('home');
     },
 
-    onErrorMessage: function (message) {
-        this.setState({
-            error: message
-        });
-    },
-
     login: function (e) {
         e.preventDefault();
 
-        userActions.login({
+        this.refs.submit.getDOMNode().disabled = true;
+        this.setState({
+            submitted: true
+        });
+
+        actions.login({
             email: this.refs.email.getDOMNode().value.trim(),
             password: this.refs.password.getDOMNode().value.trim()
         });
     },
 
-    render: function() {
-        var error = this.state.error ? <div className="error">{ this.state.error }</div> : '';
+    render: function () {
+        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
 
         return (
             <div className="login content text-center fade-in">
@@ -57,9 +68,11 @@ var Login = React.createClass({
                     <input type="email" placeholder="Email" id="email" ref="email" /><br />
                     <label htmlFor="password">Password</label><br />
                     <input type="password" placeholder="Password" id="password" ref="password" /><br />
-                    <button type="submit" className="button button-primary">Sign In</button><br />
-                    { error }
+                    <button type="submit" className="button button-primary" ref="submit">
+                        { this.state.submitted ? <Spinner /> : 'Sign In' }
+                    </button>
                 </form>
+                { error }
             </div>
         );
     }

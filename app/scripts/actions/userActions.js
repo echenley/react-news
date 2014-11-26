@@ -23,7 +23,7 @@ var userActions = Reflux.createActions([
 userActions.login.preEmit = function (user, username) {
     // username only provided when registering a new user
     // used to create a user profile
-    ref.authWithPassword(user, function(error, authData) {
+    ref.authWithPassword(user, function (error, authData) {
         if (error !== null) {
             errorActions.loginError(error.code);
         } else if (username) {
@@ -54,6 +54,7 @@ userActions.register.preEmit = function (username, loginData) {
         // no username provided
         errorActions.loginError('NO_USERNAME');
     } else {
+        // check if username is already taken
         checkUsername(username).then(function (usernameTaken) {
             if (usernameTaken) {
                 errorActions.loginError('USERNAME_TAKEN');

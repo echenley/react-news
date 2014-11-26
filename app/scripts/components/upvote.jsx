@@ -36,14 +36,14 @@ var Upvote = React.createClass({
         });
     },
 
-    render: function() {
+    render: function () {
         var cx = React.addons.classSet;
 
         var userId = this.props.user.uid;
         var itemId = this.props.itemId;
+        var upvotes = this.props.upvotes;
 
         var upvoted = this.state.upvoted;
-        var upvotes = this.props.upvotes;
         var upvoteCx = cx({
             'upvote': true,
             'upvoted': upvoted

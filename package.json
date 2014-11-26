@@ -1,6 +1,10 @@
 {
   "name": "react-news",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/echenley/react-news.git"
+  },
   "dependencies": {},
   "devDependencies": {
     "browserify": "^6.2.0",

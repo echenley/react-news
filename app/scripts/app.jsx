@@ -1,21 +1,22 @@
 'use strict';
 
-var $ = jQuery;
 var React = window.react = require('react/addons');
 var Reflux = require('reflux');
 
+// stores
 var userStore = require('./stores/userStore');
-var postActions = require('./actions/postActions');
+// var appStore = require('./stores/appStore');
+
+// actions
+var actions = require('./actions/actions');
 
 // Routing
 var Router = require('react-router');
+var RouteHandler = Router.RouteHandler;
 var Route = Router.Route;
-var Routes = Router.Routes;
 // var NotFoundRoute = Router.NotFoundRoute;
 var DefaultRoute = Router.DefaultRoute;
 var Link = Router.Link;
-
-// var TransitionGroup = React.addons.CSSTransitionGroup;
 
 // Views
 var Posts = require('./views/posts');
@@ -26,31 +27,39 @@ var Profile = require('./views/profile');
 
 var ReactNews = React.createClass({
 
-    mixins: [Reflux.connect(userStore, 'user')],
+    mixins: [
+        Reflux.connect(userStore, 'user')
+    ],
 
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             user: userStore.getDefaultData(),
             panelHidden: true
         };
     },
 
+    // onUIError: function (error) {
+    //     window.alert(error);
+    // },
+
     componentDidMount: function () {
         // hide the menu when clicked away
-        $(document).on('touchend click', function (e) {
-            var d = e.target;
-            var excludedIds = ['header-panel','panel-toggle'];
+        jQuery(document).on('touchend click', function (e) {
+            if (!this.state.panelHidden) {
+                var d = e.target;
+                var excludedIds = ['header-panel','panel-toggle'];
 
-            // if this node is not the one we want, move up the dom tree
-            while (d !== null && excludedIds.indexOf(d.id) < 0) {
-                d = d.parentNode;
-            }
+                // if this node is not the one we want, move up the dom tree
+                while (d !== null && excludedIds.indexOf(d.id) < 0) {
+                    d = d.parentNode;
+                }
 
-            // at this point we have found our containing div or we are out of parent nodes
-            var insideMyDiv = (d !== null && excludedIds.indexOf(d.id) >= 0);
+                // at this point we have found our containing div or we are out of parent nodes
+                var insideMyDiv = (d !== null && excludedIds.indexOf(d.id) >= 0);
 
-            if (!this.state.panelHidden && !insideMyDiv) {
-                this.togglePanel();
+                if (!insideMyDiv) {
+                    this.togglePanel();
+                }
             }
         }.bind(this));
     },
@@ -68,6 +77,26 @@ var ReactNews = React.createClass({
         var linkEl = this.refs.link.getDOMNode();
 
         var user = this.state.user;
+
+        if (!user.isLoggedIn) {
+            actions.loginRequired();
+            return;
+        }
+
+        if (titleEl.value.trim() === '') {
+            this.setState({
+                'postError': 'title_error'
+            });
+            return;
+        }
+
+        if (linkEl.value.trim() === '') {
+            this.setState({
+                'postError': 'link_error'
+            });
+            return;
+        }
+
         var post = {
             title: titleEl.value.trim(),
             url: linkEl.value.trim(),
@@ -75,19 +104,20 @@ var ReactNews = React.createClass({
             creatorUID: user.uid
         };
 
-        postActions.submitPost(post);
+        actions.submitPost(post);
 
         titleEl.value = '';
         linkEl.value = '';
+
         this.togglePanel();
     },
 
-    render: function() {
+    render: function () {
         var cx = React.addons.classSet;
         var menuHidden = this.state.panelHidden;
         var user = this.state.user;
+        var postError = this.state.postError;
 
-        var loggedIn = !!user.uid;
         var username = user ? user.profile.username : '';
         var md5hash = user ? user.profile.md5hash : '';
         var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash;
@@ -99,7 +129,17 @@ var ReactNews = React.createClass({
 
         var userInfoCx = cx({
             'user-info': true,
-            'hidden': !loggedIn
+            'hidden': !user.isLoggedIn
+        });
+
+        var titleInputCx = cx({
+            'panel-input': true,
+            'input-error': postError === 'title_error'
+        });
+
+        var linkInputCx = cx({
+            'panel-input': true,
+            'input-error': postError === 'link_error'
         });
 
         return (
@@ -110,7 +150,7 @@ var ReactNews = React.createClass({
                             <Link to="home" className="button menu-title">react-news</Link>
                         </div>
                         <div className="float-right">
-                            <span className={ loggedIn ? 'hidden' : '' }>
+                            <span className={ user.isLoggedIn ? 'hidden' : '' }>
                                 <Link to="login">Sign In</Link>
                                 <Link to="register" className="register-link">Register</Link>
                             </span>
@@ -121,20 +161,20 @@ var ReactNews = React.createClass({
                                 </Link>
                             </span>
                             <a id="panel-toggle" className="panel-toggle" onClick={ this.togglePanel }>
-                                <span>Add Post</span>
+                                <span className="sr-only">Add Post</span>
                             </a>
                         </div>
                     </div>
                     <div id="header-panel" className="header-panel text-center">
                         <form onSubmit={ this.submitPost } className="panel-form">
-                            <input type="text" className="panel-input" placeholder="Title" ref="title" />
-                            <input type="url" className="panel-input" placeholder="Link" ref="link" />
+                            <input type="text" className={ titleInputCx } placeholder="Title" ref="title" />
+                            <input type="url" className={ linkInputCx } placeholder="Link" ref="link" />
                             <button type="submit" className="button panel-button button-outline">Submit</button>
                         </form>
                     </div>
                 </header>
                 <main id="content">
-                    <this.props.activeRouteHandler user={ this.state.user } />
+                    <RouteHandler { ...this.props } user={ this.state.user } />
                 </main>
             </div>
         );
@@ -142,16 +182,19 @@ var ReactNews = React.createClass({
 });
 
 var routes = (
-    <Routes>
-        <Route handler={ ReactNews }>
-            <Route name="post" path="/post/:postId" handler={ SinglePost } />
-            <Route name="register" path="/register" handler={ Register } />
-            <Route name="login" path="/login" handler={ Login } />
-            <Route name="profile" path="/:username" handler={ Profile } />
-            <DefaultRoute name="home" handler={ Posts } />
-        </Route>
-    </Routes>
+    <Route handler={ ReactNews }>
+        <Route name="post" path="/post/:postId" handler={ SinglePost } />
+        <Route name="register" path="/register" handler={ Register } />
+        <Route name="login" path="/login" handler={ Login } />
+        <Route name="profile" path="/:username" handler={ Profile } />
+        <DefaultRoute name="home" handler={ Posts } />
+    </Route>
 );
 
-React.render(routes, document.getElementById('app'));
+
+Router.run(routes, function (Handler, state) {
+    React.render(<Handler params={ state.params } />, document.getElementById('app'));
+});
+
+
 

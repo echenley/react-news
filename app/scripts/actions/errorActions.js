@@ -3,7 +3,8 @@
 var Reflux = require('reflux');
 
 var errorActions = Reflux.createActions([
-    'loginError'
+    'loginError',
+    'postError'
 ]);
 
 module.exports = errorActions;

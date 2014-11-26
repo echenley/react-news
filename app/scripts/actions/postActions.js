@@ -3,7 +3,8 @@
 var Reflux = require('reflux');
 
 var Firebase = require('firebase');
-var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts');
+var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+var postsRef = ref.child('posts');
 
 var userActions = require('./userActions');
 // var commentActions = require('./commentActions');
@@ -12,15 +13,33 @@ var postActions = Reflux.createActions([
     'upvote',
     'downvote',
     'submitPost',
-    'listenToAll',
-    'listenToUser',
-    'listenToSingle',
-    'stopListening'
+    'deletePost',
+    'listenToProfile',
+    'listenToPage',
+    'listenToPosts',
+    'stopListeningToProfile',
+    'stopListeningToPosts',
+    'stopListeningToPost'
 ]);
 
 postActions.submitPost.preEmit = function (post) {
     // postsRef.push() returns reference to post
-    postsRef.push(post);
+    postsRef.push(post, function (error) {
+        console.log(error);
+
+        // SHOULD ADD ERROR HANDLER AND STUFF
+
+    });
+};
+
+postActions.deletePost.preEmit = function (postId) {
+    postsRef.child(postId).remove(function (error) {
+        if (error === null) {
+
+            // SHOULD ADD ERROR HANDLER AND STUFF
+
+        } 
+    });
 };
 
 postActions.upvote.preEmit = function (userId, postId) {

@@ -2,12 +2,8 @@
 
 var React = require('react/addons');
 
-// mixins
-var abbreviateNumber = require('../mixins/abbreviateNumber');
-var hostnameFromUrl = require('../mixins/hostnameFromUrl');
-
 // actions
-var postActions = require('../actions/postActions');
+var actions = require('../actions/actions');
 
 // components
 var Link = require('react-router').Link;
@@ -16,24 +12,29 @@ var Upvote = require('./upvote');
 var Post = React.createClass({
 
     mixins: [
-    	abbreviateNumber,
-    	hostnameFromUrl
+        require('../mixins/pluralize'),
+    	require('../mixins/abbreviateNumber'),
+    	require('../mixins/hostnameFromUrl')
     ],
 
-    render: function() {
-    	var cx = React.addons.classSet;
+    render: function () {
+        var user = this.props.user;
         var post = this.props.post;
 
-        var commentCount = post.commentCount ? this.abbreviateNumber(post.commentCount) : 0;
-        var commentCx = cx({
-        	'comments-link': true,
-        	'comments-some': commentCount,
-        	'no-underline': true
-        });
+        var commentCount = post.commentCount || 0;
+
+        var deleteOption = '';
+        if (user.uid === post.creatorUID) {   
+            deleteOption = (
+                <span className="delete post-info-item">
+                    <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
+                </span>
+            );
+        }
 
         var upvoteActions = {
-            upvote: postActions.upvote,
-            downvote: postActions.downvote
+            upvote: actions.upvotePost,
+            downvote: actions.downvotePost
         };
 
         return (
@@ -46,17 +47,20 @@ var Post = React.createClass({
                 </div>
                 <div className="post-info">
                     <div className="posted-by float-left">
-                        Posted by <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
+                        <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
+                        <span className="post-info-item">
+                            <Link to="post" params={{ postId: post.id }}>
+                                { this.pluralize(commentCount, 'comment') }
+                            </Link>
+                        </span>
+                        { deleteOption }
                     </div>
                     <div className="float-right">
                     	<Upvote
                             upvoteActions= { upvoteActions }
-                    		user={ this.props.user }
+                    		user={ user }
                     		itemId={ post.id }
                     		upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
-                        <Link to="post" params={{ postId: post.id }} className={ commentCx }>
-                            { commentCount } <i className="fa fa-comments"></i>
-                        </Link>
                     </div>
                 </div>
             </div>

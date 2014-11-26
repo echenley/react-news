@@ -14,6 +14,7 @@ var commentActions = Reflux.createActions([
     'downvote',
     'getComments',
     'addComment',
+    'deleteComment',
     'listenToComments',
     'listenToUser',
     'stopListening'
@@ -21,7 +22,7 @@ var commentActions = Reflux.createActions([
 
 function updateCommentCount(postId, n) {
     // updates comment count on post
-    postsRef.child(postId).child('commentCount').transaction(function(curr) {
+    postsRef.child(postId).child('commentCount').transaction(function (curr) {
         return curr + n;
     });
 }
@@ -55,5 +56,15 @@ commentActions.addComment.preEmit = function (comment) {
         }
     }.bind(this));
 };
+
+commentActions.deleteComment.preEmit = function (commentId, postId) {
+    commentsRef.child(commentId).remove(function (error) {
+        if (error === null) {
+            updateCommentCount(postId, -1);
+        }
+    });
+};
+
+
 
 module.exports = commentActions;

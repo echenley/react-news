@@ -4,12 +4,12 @@ var React = require('react/addons');
 var Reflux = require('reflux');
 
 // stores
-var postStore = require('../stores/postStore');
-var commentStore = require('../stores/commentStore');
+// var postStore = require('../stores/postStore');
+// var commentStore = require('../stores/commentStore');
+var singleStore = require('../stores/singleStore');
 
 // actions
-var commentActions = require('../actions/commentActions');
-var postActions = require('../actions/postActions');
+var actions = require('../actions/actions');
 
 // components
 var Spinner = require('react-spinner');
@@ -20,34 +20,32 @@ var Comment = require('../components/comment');
 var SinglePost = React.createClass({
 
     mixins: [
-        Reflux.listenTo(postStore, 'onLoaded'),
-        Reflux.connect(commentStore, 'comments')
+        require('../mixins/pluralize'),
+        Reflux.listenTo(singleStore, 'onUpdate')
     ],
 
     getInitialState: function () {
         return {
             post: false,
-            comments: commentStore.getDefaultData(),
+            comments: [],
             isLoading: true
         };
     },
 
-    onLoaded: function (posts) {
+    onUpdate: function (postData) {
         this.setState({
-            post: posts[0],
-            isLoading: false
+            post: postData.post,
+            comments: postData.comments
         });
     },
 
-    componentWillMount: function() {
+    componentWillMount: function () {
         // watch current post and comments
-        postActions.listenToSingle(this.props.params.postId);
-        commentActions.listenToComments(this.props.params.postId);
+        actions.listenToPost(this.props.params.postId);
     },
 
     componentWillUnmount: function () {
-        postActions.stopListening(this.props.params.postId);
-        commentActions.stopListening();
+        actions.stopListeningToPost(this.props.params.postId);
     },
 
     addComment: function (e) {
@@ -55,34 +53,29 @@ var SinglePost = React.createClass({
         var commentTextEl = this.refs.commentText.getDOMNode();
         var comment = {
             postId: this.props.params.postId,
+            postTitle: this.state.post.title,
             text: commentTextEl.value.trim(),
             creator: this.props.user.profile.username,
             creatorUID: this.props.user.uid
         };
-        commentActions.addComment(comment);
+        actions.addComment(comment);
         commentTextEl.value = '';
     },
 
-    render: function() {
+    render: function () {
         var cx = React.addons.classSet;
         var user = this.props.user;
         var loggedIn = !!user.uid;
         var comments = this.state.comments;
         var post = this.state.post;
 
-        if (this.state.isLoading || !post) {
+        if (!post) {
             return (
                 <div className="content">
                     <Spinner />
                 </div>
             );
         }
-
-        var headerText = function (n) {
-            if (n === 0) { return 'No Comments'; }
-            if (n === 1) { return '1 Comment'; }
-            return n + ' Comments';
-        };
 
         var formCx = cx({
             'comment-form': true,
@@ -93,7 +86,7 @@ var SinglePost = React.createClass({
             <div className="content inner fade-in">
                 <Post post={ post } user={ user } key={ post.id } />
                 <div className="comments">
-                    <h2>{ headerText(comments.length) }</h2>
+                    <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
                     {
                         comments.map(function (comment) {
                             return <Comment comment={ comment } user={ user } key={ comment.id } />;

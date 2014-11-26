@@ -5,13 +5,9 @@ var Reflux = require('reflux');
 var Navigation = require('react-router').Navigation;
 
 // actions
-var userActions = require('../actions/userActions');
-var postActions = require('../actions/postActions');
-var commentActions = require('../actions/commentActions');
+var actions = require('../actions/actions');
 
 // stores
-// var postStore = require('../stores/postStore');
-// var commentStore = require('../stores/commentStore');
 var profileStore = require('../stores/profileStore');
 var userStore = require('../stores/userStore');
 
@@ -29,28 +25,25 @@ var Profile = React.createClass({
 
     getInitialState: function () {
         return {
-        	profileUserId: '',
-        	posts: [],
-        	comments: [],
-        	isLoading: true,
+        	profileUserId: 'anon',
+        	profileData: profileStore.getDefaultData(),
+        	isLoading: true
         };
     },
 
-    onLoaded: function (posts, comments) {
+    onLoaded: function (profileData) {
     	this.setState({
-    		posts: posts,
-    		comments: comments,
+    		profileData: profileData,
     		isLoading: false
     	});
     },
 
-    componentWillMount: function() {
+    componentWillMount: function () {
     	var username = this.props.params.username;
-        // sets callback to watch current user's posts
 
+        // sets callback to watch current user's posts
         userStore.getUserId(username).then(function (userId) {
-	        postActions.listenToUser(userId);
-	        commentActions.listenToUser(userId);
+	        actions.listenToProfile(userId);
 	        this.setState({
 	        	profileUserId: userId
 	        });
@@ -58,28 +51,40 @@ var Profile = React.createClass({
     },
 
     componentWillUnmount: function () {
-        postActions.stopListening();
-        commentActions.stopListening();
+        actions.stopListeningToProfile();
     },
 
     logout: function (e) {
         e.preventDefault();
-        userActions.logout();
+        actions.logout();
         this.transitionTo('home');
     },
 
-    render: function() {
+    render: function () {
     	var cx = React.addons.classSet;
         var user = this.props.user;
-        var posts = this.state.posts;
-        var comments = this.state.comments;
+    	var profileData = this.state.profileData;
+    	var posts = profileData.posts;
+    	var comments = profileData.comments;
+
+        var postList = false,
+        	commentList = false,
+        	postHeader,
+        	commentsHeader;
 
         if (this.state.isLoading) {
-            return (
-	            <div className="content">
-	                <Spinner />
-	            </div>
-	        );
+        	postHeader = <h2>Loading Posts... <Spinner /></h2>;
+        	commentsHeader = <h2>Loading Comments... <Spinner /></h2>;
+        } else {
+        	postHeader = <h2>{ posts.length ? 'Latest' : 'No'} Posts</h2>;
+        	commentsHeader = <h2>{ comments.length ? 'Latest' : 'No'} Comments</h2>;
+
+        	postList = posts.map(function (post) {
+        		return <Post post={ post } user={ user } key={ post.id } />;
+        	});
+        	commentList = comments.map(function (comment) {
+        		return <Comment comment={ comment } user={ user } key={ comment.id } showPostTitle={ true } />;
+        	});
         }
 
         var logoutCx = cx({
@@ -95,20 +100,12 @@ var Profile = React.createClass({
                 </div>
 	            <h1>{ this.props.params.username + '\'s' } Profile</h1>
                 <div className="user-posts">
-                    <h2>{ posts.length ? 'Latest' : 'No'} Posts</h2>
-	                {
-	                	posts.map(function (post) {
-			        		return <Post post={ post } user={ user } key={ post.id } />;
-			        	})
-	                }
+                    { postHeader }
+	                { postList }
                 </div>
                 <div className="user-comments">
-                    <h2>{ comments.length ? 'Latest' : 'No'} Comments</h2>
-	                {
-	                	comments.map(function (comment) {
-			        		return <Comment comment={ comment } user={ user } key={ comment.id } />;
-			        	})
-	                }
+                    { commentsHeader }
+	                { commentList }
                 </div>
             </div>
         );

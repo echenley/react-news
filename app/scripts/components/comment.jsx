@@ -2,11 +2,8 @@
 
 var React = require('react/addons');
 
-// mixins
-var abbreviateNumber = require('../mixins/abbreviateNumber');
-
 // actions
-var commentActions = require('../actions/commentActions');
+var actions = require('../actions/actions');
 
 // components
 var Link = require('react-router').Link;
@@ -14,14 +11,36 @@ var Upvote = require('./upvote');
 
 var Comment = React.createClass({
 
-    mixins: [abbreviateNumber],
+    mixins: [
+        require('../mixins/abbreviateNumber')
+    ],
 
-    render: function() {
+    render: function () {
+        var user = this.props.user;
         var comment = this.props.comment;
+        var showPostTitle = this.props.showPostTitle;
+
+        var postLink = '';
+        if (showPostTitle) {
+            postLink = (
+                <span className="post-info-item">
+                    <Link to="post" params={{ postId: comment.postId }}>{ comment.postTitle }</Link>
+                </span>
+            );
+        }
+
+        var deleteOption = '';
+        if (user.uid === comment.creatorUID) {   
+            deleteOption = (
+                <span className="delete post-info-item">
+                    <a onClick={ actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
+                </span>
+            );
+        }
 
         var upvoteActions = {
-            upvote: commentActions.upvote,
-            downvote: commentActions.downvote
+            upvote: actions.upvoteComment,
+            downvote: actions.downvoteComment
         };
 
         return (
@@ -31,12 +50,14 @@ var Comment = React.createClass({
                 </div>
                 <div className="comment-info">
 		            <div className="posted-by float-left">
-		                Posted by <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+		                <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+                        { postLink }
+                        { deleteOption }
 		            </div>
 		            <div className="float-right">
                     	<Upvote
                             upvoteActions={ upvoteActions }
-                    		user={ this.props.user }
+                    		user={ user }
                     		itemId={ comment.id }
                     		upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
 		            </div>
