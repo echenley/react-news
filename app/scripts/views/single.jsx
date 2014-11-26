@@ -50,6 +50,12 @@ var SinglePost = React.createClass({
 
     addComment: function (e) {
         e.preventDefault();
+
+        if (!this.props.user.isLoggedIn) {
+            actions.showLoginOverlay();
+            return;
+        }
+
         var commentTextEl = this.refs.commentText.getDOMNode();
         var comment = {
             postId: this.props.params.postId,
@@ -63,9 +69,7 @@ var SinglePost = React.createClass({
     },
 
     render: function () {
-        var cx = React.addons.classSet;
         var user = this.props.user;
-        var loggedIn = !!user.uid;
         var comments = this.state.comments;
         var post = this.state.post;
 
@@ -76,11 +80,6 @@ var SinglePost = React.createClass({
                 </div>
             );
         }
-
-        var formCx = cx({
-            'comment-form': true,
-            'hidden': !loggedIn
-        });
 
         return (
             <div className="content inner fade-in">
@@ -93,7 +92,7 @@ var SinglePost = React.createClass({
                         })
                     }
                 </div>
-                <form className={ formCx } onSubmit={ this.addComment }>
+                <form className='comment-form' onSubmit={ this.addComment }>
                     <textarea placeholder="Post a Comment" ref="commentText" className="comment-input full-width"></textarea>
                     <button type="submit" className="button button-primary">Submit</button>
                 </form>

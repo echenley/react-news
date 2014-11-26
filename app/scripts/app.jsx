@@ -3,11 +3,10 @@
 var React = window.react = require('react/addons');
 var Reflux = require('reflux');
 
-// stores
+// Stores
 var userStore = require('./stores/userStore');
-// var appStore = require('./stores/appStore');
 
-// actions
+// Actions
 var actions = require('./actions/actions');
 
 // Routing
@@ -21,17 +20,18 @@ var Link = Router.Link;
 // Views
 var Posts = require('./views/posts');
 var SinglePost = require('./views/single');
-// var Register = require('./views/register');
-// var Login = require('./views/login');
 var Profile = require('./views/profile');
 
+// Components
 var Login = require('./components/login');
 var Register = require('./components/register');
 
 var ReactNews = React.createClass({
 
     mixins: [
-        Reflux.listenTo(userStore, 'onUserChange')
+        Reflux.listenTo(userStore, 'onUserChange'),
+        Reflux.listenTo(actions.showLoginOverlay, 'showLoginOverlay'),
+        Reflux.listenTo(actions.showRegisterOverlay, 'showRegisterOverlay')
     ],
 
     getInitialState: function () {
@@ -121,7 +121,7 @@ var ReactNews = React.createClass({
         var user = this.state.user;
 
         if (!user.isLoggedIn) {
-            this.showLoginOverlay();
+            actions.showLoginOverlay();
             return;
         }
 
@@ -203,8 +203,8 @@ var ReactNews = React.createClass({
                         </div>
                         <div className="float-right">
                             <span className={ user.isLoggedIn ? 'hidden' : '' }>
-                                <a onClick={ this.showLoginOverlay }>Sign In</a>
-                                <a onClick={ this.showRegisterOverlay } className="register-link">Register</a>
+                                <a onClick={ actions.showLoginOverlay }>Sign In</a>
+                                <a onClick={ actions.showRegisterOverlay } className="register-link">Register</a>
                             </span>
                             <span className={ userInfoCx }>
                                 <Link to="profile" params={{ username: username }} className="profile-link">

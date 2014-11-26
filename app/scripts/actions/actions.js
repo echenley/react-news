@@ -2,8 +2,8 @@
 
 var Reflux = require('reflux');
 var Firebase = require('firebase');
-var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/'),
-    commentsRef = ref.child('comments'),
+var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
+var commentsRef = ref.child('comments'),
     postsRef = ref.child('posts'),
     usersRef = ref.child('users');
 
@@ -11,29 +11,36 @@ var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/'),
 var hash = require('crypto').createHash('md5');
 
 var actions = Reflux.createActions([
+    // user actions
     'login',
     'logout',
     'register',
     'createProfile',
     'updateProfile',
+    // post actions
     'upvotePost',
     'downvotePost',
+    'submitPost',
+    'deletePost',
+    // comment actions
     'upvoteComment',
     'downvoteComment',
     'updateCommentCount',
-    'submitPost',
-    'deletePost',
     'addComment',
     'deleteComment',
+    // firebase actions
     'listenToProfile',
     'listenToPost',
     'listenToPosts',
     'stopListeningToProfile',
     'stopListeningToPosts',
     'stopListeningToPost',
+    // error actions
     'loginError',
     'postError',
-    'uiError'
+    // ui actions
+    'showLoginOverlay',
+    'showRegisterOverlay'
 ]);
 
 
