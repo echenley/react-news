@@ -21,45 +21,57 @@ var Link = Router.Link;
 // Views
 var Posts = require('./views/posts');
 var SinglePost = require('./views/single');
-var Register = require('./views/register');
-var Login = require('./views/login');
+// var Register = require('./views/register');
+// var Login = require('./views/login');
 var Profile = require('./views/profile');
+
+var Login = require('./components/login');
+var Register = require('./components/register');
 
 var ReactNews = React.createClass({
 
     mixins: [
-        Reflux.connect(userStore, 'user')
+        Reflux.listenTo(userStore, 'onUserChange')
     ],
 
     getInitialState: function () {
         return {
             user: userStore.getDefaultData(),
-            panelHidden: true
+            panelHidden: true,
+            showOverlay: false,
+            overlayType: 'Login'
         };
+    },
+
+    onUserChange: function (user) {
+        this.setState({
+            user: user,
+            showOverlay: false
+        });
     },
 
     // onUIError: function (error) {
     //     window.alert(error);
     // },
 
+    isChildNodeOf: function (target, excludedIds) {
+        // excludedIds is a string or an array
+        if (typeof excludedIds === 'string') {
+            excludedIds = [excludedIds];
+        }
+        // if this node is not the one we want, move up the dom tree
+        while (target !== null && excludedIds.indexOf(target.id) < 0) {
+            target = target.parentNode;
+        }
+        // at this point we have found our containing div or we are out of parent nodes
+        return (target !== null && excludedIds.indexOf(target.id) >= 0);
+    },
+
     componentDidMount: function () {
         // hide the menu when clicked away
         jQuery(document).on('touchend click', function (e) {
-            if (!this.state.panelHidden) {
-                var d = e.target;
-                var excludedIds = ['header-panel','panel-toggle'];
-
-                // if this node is not the one we want, move up the dom tree
-                while (d !== null && excludedIds.indexOf(d.id) < 0) {
-                    d = d.parentNode;
-                }
-
-                // at this point we have found our containing div or we are out of parent nodes
-                var insideMyDiv = (d !== null && excludedIds.indexOf(d.id) >= 0);
-
-                if (!insideMyDiv) {
-                    this.togglePanel();
-                }
+            if (!this.state.panelHidden && !this.isChildNodeOf(e.target, ['header-panel','panel-toggle'])) {
+                this.togglePanel();
             }
         }.bind(this));
     },
@@ -68,6 +80,36 @@ var ReactNews = React.createClass({
         this.setState({
             panelHidden: !this.state.panelHidden
         });
+    },
+
+    hideOverlay: function (overlay, e) {
+        if (!this.isChildNodeOf(e.target, ['overlay-content'])) {
+            this.setState({
+                showOverlay: false
+            });
+        }
+    },
+
+    showOverlay: function () {
+        var overlay = this.refs.overlay.getDOMNode();
+        overlay.addEventListener('click', this.hideOverlay.bind(this, overlay));
+        this.setState({
+            showOverlay: true
+        });
+    },
+
+    showLoginOverlay: function () {
+        this.setState({
+            overlayType: 'Login'
+        });
+        this.showOverlay();
+    },
+
+    showRegisterOverlay: function () {
+        this.setState({
+            overlayType: 'Register'
+        });
+        this.showOverlay();
     },
 
     submitPost: function (e) {
@@ -79,7 +121,7 @@ var ReactNews = React.createClass({
         var user = this.state.user;
 
         if (!user.isLoggedIn) {
-            actions.loginRequired();
+            this.showLoginOverlay();
             return;
         }
 
@@ -142,6 +184,16 @@ var ReactNews = React.createClass({
             'input-error': postError === 'link_error'
         });
 
+        var overlayCx = cx({
+            'md-overlay': true,
+            'md-show': this.state.showOverlay
+        });
+
+        var overlayContent = <Login />;
+        if (this.state.overlayType === 'Register') {
+            overlayContent = <Register />;
+        }
+
         return (
             <div className="wrapper">
                 <header className={ headerCx }>
@@ -151,8 +203,8 @@ var ReactNews = React.createClass({
                         </div>
                         <div className="float-right">
                             <span className={ user.isLoggedIn ? 'hidden' : '' }>
-                                <Link to="login">Sign In</Link>
-                                <Link to="register" className="register-link">Register</Link>
+                                <a onClick={ this.showLoginOverlay }>Sign In</a>
+                                <a onClick={ this.showRegisterOverlay } className="register-link">Register</a>
                             </span>
                             <span className={ userInfoCx }>
                                 <Link to="profile" params={{ username: username }} className="profile-link">
@@ -176,6 +228,7 @@ var ReactNews = React.createClass({
                 <main id="content">
                     <RouteHandler { ...this.props } user={ this.state.user } />
                 </main>
+                <div className={ overlayCx } ref="overlay">{ overlayContent }</div>
             </div>
         );
     }
@@ -184,8 +237,6 @@ var ReactNews = React.createClass({
 var routes = (
     <Route handler={ ReactNews }>
         <Route name="post" path="/post/:postId" handler={ SinglePost } />
-        <Route name="register" path="/register" handler={ Register } />
-        <Route name="login" path="/login" handler={ Login } />
         <Route name="profile" path="/:username" handler={ Profile } />
         <DefaultRoute name="home" handler={ Posts } />
     </Route>

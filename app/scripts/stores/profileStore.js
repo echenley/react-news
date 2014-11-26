@@ -22,8 +22,10 @@ var profileStore = Reflux.createStore({
     },
 
     listenToProfile: function (userId) {
-        postListener = postsRef.orderByChild('creatorUID').equalTo(userId).limitToFirst(3).on('value', this.updatePosts.bind(this));
-        commentListener = commentsRef.orderByChild('creatorUID').equalTo(userId).limitToFirst(3).on('value', this.updateComments.bind(this));
+        postListener = postsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
+            .on('value', this.updatePosts.bind(this));
+        commentListener = commentsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
+            .on('value', this.updateComments.bind(this));
     },
 
     stopListeningToProfile: function () {

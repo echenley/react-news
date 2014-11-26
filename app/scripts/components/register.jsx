@@ -10,17 +10,17 @@ var Navigation = require('react-router').Navigation;
 var actions = require('../actions/actions');
 
 // stores
-var userStore = require('../stores/userStore');
 var loginStore = require('../stores/loginStore');
+var userStore = require('../stores/userStore');
 
 // components
 var Spinner = require('react-spinner');
 
-var Login = React.createClass({
+var Register = React.createClass({
 
     mixins: [
         Navigation,
-        Reflux.listenTo(userStore, 'onUserChange'),
+        Reflux.listenTo(userStore, 'resetForm'),
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
@@ -31,16 +31,22 @@ var Login = React.createClass({
         };
     },
 
+    resetForm: function () {
+        this.setState({
+            submitted: false,
+        });
+        this.refs.username.getDOMNode().value = '';
+        this.refs.email.getDOMNode().value = '';
+        this.refs.password.getDOMNode().value = '';
+        this.refs.submit.getDOMNode().disabled = false;
+    },
+
     onErrorMessage: function (errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
             submitted: false
         });
-    },
-
-    onUserChange: function () {
-        this.transitionTo('home');
     },
 
     registerUser: function (e) {
@@ -63,7 +69,7 @@ var Login = React.createClass({
         var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
 
         return (
-            <div className="login content text-center fade-in">
+            <div className="login md-modal text-center" id="overlay-content">
                 <form onSubmit={ this.registerUser } className="login-form text-left">
                     <h1>Register</h1>
                     <label htmlFor="username">Username</label><br />
@@ -83,4 +89,4 @@ var Login = React.createClass({
 
 });
 
-module.exports = Login;
+module.exports = Register;
