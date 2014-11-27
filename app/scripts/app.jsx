@@ -66,7 +66,7 @@ var ReactNews = React.createClass({
 
     componentDidMount: function () {
         // hide the menu when clicked away
-        jQuery(document).on('touchend click', function (e) {
+        jQuery(document).on('click', function (e) {
             if (!this.state.panelHidden && !this.isChildNodeOf(e.target, ['header-panel','panel-toggle'])) {
                 this.togglePanel();
             }
