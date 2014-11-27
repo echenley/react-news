@@ -10,10 +10,11 @@ Author URI: http://henleyedition.com/
 
 // palette
 $dark: #040203;
-$color1: #5D9E7E;
-$color2: #56704B;
-$dark-gray: mix($dark, white);
+$color1: #5d9e7e;
+$color2: #56704b;
+$dark-gray: mix($dark, #fff);
 $light-gray: #e5e5e5;
+$error: #d00;
 
 $text: $dark;
 $header: $color1;
@@ -48,12 +49,12 @@ $breakpoint: 800px;
 ====================================== */
 
 * {
+    hyphens: auto;
     -ms-word-wrap: break-word;
     word-wrap: break-word;
-    hyphens: auto;
 }
 
-*, *:before, *:after {
+*,*:before, *:after {
     box-sizing: border-box;
 }
 
@@ -110,12 +111,12 @@ html {
 }
 
 body {
-    font-family: $body-font;
     height: 100%;
     max-height: 100%;
     line-height: $line-height;
     color: $dark-gray;
     background: $background;
+    font-family: $body-font;
     font-size: $font-size;
     text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
@@ -187,7 +188,7 @@ input,
 textarea,
 button {
     -webkit-appearance: none;
-    border: none;
+    border: 0;
     outline: none;
     box-shadow: none;
     border-radius: 2px;
@@ -195,10 +196,10 @@ button {
 }
 
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
+[type="text"],
+[type="password"],
+[type="email"],
+[type="url"],
 textarea {
     transition: border 0.2s;
     padding: $x-small;
@@ -216,7 +217,7 @@ textarea {
     *zoom: 1;
     &:before,
     &:after {
-        content: "";
+        content: '';
         display: table;
     }
     &:after {
@@ -230,7 +231,7 @@ textarea {
 }
 
 .shadow {
-    text-shadow: 0px 0px 100px black;
+    text-shadow: 0 0 100px $dark;
 }
 
 // responsive wrapper
@@ -247,11 +248,11 @@ textarea {
     display: none;
 }
 
-.text-left   { text-align: left !important; }
+.text-left { text-align: left !important; }
 .text-center { text-align: center !important; }
-.text-right  { text-align: right !important; }
+.text-right { text-align: right !important; }
 .float-right { float: right !important; }
-.float-left  { float: left !important; }
+.float-left { float: left !important; }
 
 .full-width {
     width: 100% !important;
@@ -281,7 +282,7 @@ textarea {
     position: relative;
     padding: 0.3rem $small;
     border-radius: 2px;
-    border: none;
+    border: 0;
     box-shadow: none;
     color: $button-text;
     transition: background 0.2s;
@@ -300,7 +301,7 @@ textarea {
         border-bottom-width: 1px;
     }
     &:hover {
-        background: darken($button, 5%);
+        background: darken($button, 3%);
     }
 }
 
@@ -332,7 +333,7 @@ textarea {
 }
 
 .error {
-    color: red;
+    color: $error;
 }
 
 
@@ -344,9 +345,9 @@ textarea {
 .header {
     z-index: 3;
     position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     line-height: $nav-height;
     color: #fff;
     overflow: visible;
@@ -359,7 +360,8 @@ textarea {
 .header-main,
 .header-panel {
     position: absolute;
-        left: 0; right: 0;
+    left: 0;
+    right: 0;
     height: $nav-height;
 }
 
@@ -381,29 +383,25 @@ textarea {
 
     &:before,
     &:after {
-        transition: transform 0.3s;
-    }
-
-    &:before,
-    &:after {
         z-index: 2;
         content: '';
         position: absolute;
-            top: 50%;
-            left: 15%;
+        top: 50%;
+        left: 15%;
         display: block;
         height: 2px;
+        width: 70%;
         background: #fff;
         margin-top: -1px;
-        width: 70%;
+        transition: transform 0.3s;
     }
 
     &:before { transform: rotate(90deg); }
-    &:after  { transform: rotate(0); }
+    &:after { transform: rotate(0); }
 
     .panel-open & {
         &:before { transform: rotate(135deg); }
-        &:after  { transform: rotate(45deg); }
+        &:after { transform: rotate(45deg); }
     }
 }
 
@@ -421,9 +419,9 @@ textarea {
     margin-left: $small;
 }
 
-.profile-link {
+// .profile-link {
 
-}
+// }
 
 .nav-pic {
     width: $medium;
@@ -478,7 +476,7 @@ textarea {
         border: $line solid $light-gray !important;
     }
     &.input-error {
-        border: $line solid red !important;
+        border: $line solid $error !important;
     }
 }
 
@@ -514,7 +512,7 @@ textarea {
     a { color: $dark; }
 }
 
-.comments-link {}
+// .comments-link {}
 
 .upvote {
     transition: color 0.3s;
@@ -533,10 +531,10 @@ textarea {
     font-size: $text-small;
 }
 
-.posted-by {}
+// .posted-by {}
 
 .post-info-item:before {
-    content: "\00b7";
+    content: '\00b7';
     display: inline-block;
     margin: 0 0.3rem;
 }
@@ -548,7 +546,7 @@ textarea {
 /* Single Post
 ====================================== */
 
-.comments {}
+// .comments {}
 
 .comment {
     // animation: slide-in 0.5s;
@@ -563,8 +561,7 @@ textarea {
     margin-top: $medium;
 }
 
-.comment-text {
-}
+// .comment-text {}
 
 .comment-input {
     margin: $small 0;
@@ -612,8 +609,8 @@ textarea {
 .md-overlay {
     z-index: 1000;
     position: fixed;
-        top: 0;
-        left: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     visibility: hidden;

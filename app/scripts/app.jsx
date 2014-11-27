@@ -50,12 +50,9 @@ var ReactNews = React.createClass({
         });
     },
 
-    // onUIError: function (error) {
-    //     window.alert(error);
-    // },
-
     isChildNodeOf: function (target, excludedIds) {
-        // excludedIds is a string or an array
+        // returns boolean whether target is child of a list of ids
+        // excludedIds can be a string or an array
         if (typeof excludedIds === 'string') {
             excludedIds = [excludedIds];
         }
@@ -162,7 +159,7 @@ var ReactNews = React.createClass({
 
         var username = user ? user.profile.username : '';
         var md5hash = user ? user.profile.md5hash : '';
-        var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash;
+        var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
 
         var headerCx = cx({
             'header': true,
