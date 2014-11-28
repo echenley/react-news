@@ -62,7 +62,8 @@ var SinglePost = React.createClass({
             postTitle: this.state.post.title,
             text: commentTextEl.value.trim(),
             creator: this.props.user.profile.username,
-            creatorUID: this.props.user.uid
+            creatorUID: this.props.user.uid,
+            time: Date.now()
         };
         actions.addComment(comment);
         commentTextEl.value = '';

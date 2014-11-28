@@ -4,7 +4,7 @@ var React = window.react = require('react/addons');
 var Reflux = require('reflux');
 
 // Stores
-var userStore = require('./stores/userStore');
+var appStore = require('./stores/appStore');
 
 // Actions
 var actions = require('./actions/actions');
@@ -29,23 +29,25 @@ var Register = require('./components/register');
 var ReactNews = React.createClass({
 
     mixins: [
-        Reflux.listenTo(userStore, 'onUserChange'),
+        Reflux.listenTo(appStore, 'onStoreUpdate'),
         Reflux.listenTo(actions.showLoginOverlay, 'showLoginOverlay'),
         Reflux.listenTo(actions.showRegisterOverlay, 'showRegisterOverlay')
     ],
 
     getInitialState: function () {
+        var defaultData = appStore.getDefaultData();
         return {
-            user: userStore.getDefaultData(),
+            user: defaultData.user,
             panelHidden: true,
             showOverlay: false,
             overlayType: 'Login'
         };
     },
 
-    onUserChange: function (user) {
+    onStoreUpdate: function (appData) {
         this.setState({
-            user: user,
+            user: appData.user,
+            sortBy: appData.sortBy,
             showOverlay: false
         });
     },
@@ -71,6 +73,12 @@ var ReactNews = React.createClass({
                 this.togglePanel();
             }
         }.bind(this));
+
+        jQuery(document).keyup(function(e) {
+            if (e.keyCode === 27) { // esc
+                this.hideOverlay();
+            }
+        }.bind(this));
     },
 
     togglePanel: function () {
@@ -79,17 +87,21 @@ var ReactNews = React.createClass({
         });
     },
 
-    hideOverlay: function (overlay, e) {
+    hideOverlayListener: function (e) {
         if (!this.isChildNodeOf(e.target, ['overlay-content'])) {
-            this.setState({
-                showOverlay: false
-            });
+            this.hideOverlay();
         }
+    },
+
+    hideOverlay: function () {
+        this.setState({
+            showOverlay: false
+        });
     },
 
     showOverlay: function () {
         var overlay = this.refs.overlay.getDOMNode();
-        overlay.addEventListener('click', this.hideOverlay.bind(this, overlay));
+        overlay.addEventListener('click', this.hideOverlayListener);
         this.setState({
             showOverlay: true
         });
@@ -140,7 +152,8 @@ var ReactNews = React.createClass({
             title: titleEl.value.trim(),
             url: linkEl.value.trim(),
             creator: user.profile.username,
-            creatorUID: user.uid
+            creatorUID: user.uid,
+            time: Date.now()
         };
 
         actions.submitPost(post);
@@ -196,7 +209,7 @@ var ReactNews = React.createClass({
                 <header className={ headerCx }>
                     <div className="header-main">
                         <div className="float-left">
-                            <Link to="home" className="button menu-title">react-news</Link>
+                            <Link to="home" className="menu-title">react-news</Link>
                         </div>
                         <div className="float-right">
                             <span className={ user.isLoggedIn ? 'hidden' : '' }>

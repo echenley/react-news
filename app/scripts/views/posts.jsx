@@ -17,43 +17,62 @@ var Post = require('../components/post');
 var Posts = React.createClass({
 
     mixins: [
-        Reflux.connect(postsStore, 'posts')
+        Reflux.listenTo(postsStore, 'onStoreUpdate')
     ],
 
     getInitialState: function () {
-        return {
-            posts: [],
-            sortBy: 'upvotes'
-        };
+        return postsStore.getDefaultData();
+    },
+
+    onStoreUpdate: function (postsData) {
+        this.setState(postsData);
     },
 
     componentWillMount: function () {
-    	actions.listenToPosts(this.state.sortBy);
+        // triggers listenToPosts
+        actions.setSortBy(this.state.sortOptions.currentIndex);
     },
 
     componentWillUnmount: function () {
-    	actions.stopListeningToPosts();
+        actions.stopListeningToPosts();
+    },
+
+    updateSortby: function (e) {
+        e.preventDefault();
+        actions.setSortBy(this.refs.sortBy.getDOMNode().selectedIndex);
     },
 
     render: function () {
         var posts = this.state.posts;
+        var sortOptions = this.state.sortOptions;
         var user = this.props.user;
 
         // if state is unresolved, render a spinner
         if (posts.length === 0) {
             return (
-	            <div className="content">
-	                <Spinner />
-	            </div>
-	        );
+                <div className="content">
+                    <Spinner />
+                </div>
+            );
         }
 
         posts = posts.map(function (post) {
-    		return <Post post={ post } user={ user } key={ post.id } />;
-    	});
+            return <Post post={ post } user={ user } key={ post.id } />;
+        });
+
+        var options = sortOptions.values.map(function (optionText, i) {
+            return <option value={ i } key={ i }>{ optionText }</option>;
+        });
 
         return (
             <div className="content inner fade-in">
+                <div className="sortby">
+                    <label htmlFor="sortby-select">Sort by </label>
+                    <select id="sortby-select" onChange={ this.updateSortby } value={ sortOptions.currentIndex } ref="sortBy">
+                        { options }
+                    </select>
+                </div>
+                <hr />
                 { posts }
             </div>
         );

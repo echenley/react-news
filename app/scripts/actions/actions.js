@@ -22,6 +22,7 @@ var actions = Reflux.createActions([
     'downvotePost',
     'submitPost',
     'deletePost',
+    'setSortBy',
     // comment actions
     'upvoteComment',
     'downvoteComment',
@@ -120,16 +121,15 @@ actions.createProfile.preEmit = function (uid, username, email) {
 ===============================*/
 
 actions.submitPost.preEmit = function (post) {
-    // postsRef.push() returns reference to post
     postsRef.push(post, function (error) {
-        actions.postError(error.code);
+        if (error !== null) {
+            actions.postError(error.code);
+        }
     });
 };
 
 actions.deletePost.preEmit = function (postId) {
-    postsRef.child(postId).remove(function (error) {
-        actions.uiError(error.code);
-    });
+    postsRef.child(postId).remove();
 };
 
 actions.upvotePost.preEmit = function (userId, postId) {
@@ -139,9 +139,6 @@ actions.upvotePost.preEmit = function (userId, postId) {
         if (success) {
             // register upvote in user's profile
             usersRef.child(userId).child('upvoted').child(postId).set(true);
-        }
-        if (error !== null) {
-            actions.uiError(error.code);
         }
     });
 };
@@ -154,12 +151,8 @@ actions.downvotePost.preEmit = function (userId, postId) {
             // register upvote in user's profile
             usersRef.child(userId).child('upvoted').child(postId).remove();
         }
-        if (error !== null) {
-            actions.userError(error.code);
-        }
     });
 };
-
 
 /* Comment Actions
 ===============================*/

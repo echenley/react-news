@@ -14,7 +14,8 @@ var Post = React.createClass({
     mixins: [
         require('../mixins/pluralize'),
     	require('../mixins/abbreviateNumber'),
-    	require('../mixins/hostnameFromUrl')
+    	require('../mixins/hostnameFromUrl'),
+        require('../mixins/timeAgo')
     ],
 
     render: function () {
@@ -48,6 +49,9 @@ var Post = React.createClass({
                 <div className="post-info">
                     <div className="posted-by float-left">
                         <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
+                        <span className="post-info-item">
+                            { this.timeAgo(post.time) }
+                        </span>
                         <span className="post-info-item">
                             <Link to="post" params={{ postId: post.id }}>
                                 { this.pluralize(commentCount, 'comment') }

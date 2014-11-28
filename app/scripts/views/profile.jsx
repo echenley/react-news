@@ -9,7 +9,7 @@ var actions = require('../actions/actions');
 
 // stores
 var profileStore = require('../stores/profileStore');
-var userStore = require('../stores/userStore');
+var appStore = require('../stores/appStore');
 
 // components
 var Spinner = require('react-spinner');
@@ -42,7 +42,7 @@ var Profile = React.createClass({
     	var username = this.props.params.username;
 
         // sets callback to watch current user's posts
-        userStore.getUserId(username).then(function (userId) {
+        appStore.getUserId(username).then(function (userId) {
 	        actions.listenToProfile(userId);
 	        this.setState({
 	        	profileUserId: userId

@@ -30,6 +30,7 @@
     "gulp-util": "^3.0.1",
     "gulp-webserver": "^0.8.3",
     "jest": "~0.1.37",
+    "moment": "^2.8.4",
     "react": "^0.12",
     "react-router": "^0.10.2",
     "react-spinner": "^0.2.0",

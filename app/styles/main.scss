@@ -22,6 +22,7 @@ $panel: lighten($color1, 10%);
 $link: $color1;
 $button-text: #fff;
 $button: $color1;
+$button-gray: #cccfd0;
 $panel-button: $color1;
 $background: $light-gray;
 $upvoted: $color1;
@@ -137,6 +138,8 @@ body {
 
 #content {
     text-align: center;
+    padding-top: $nav-height + $medium !important;
+    padding-bottom: $medium;
     > * {
         text-align: left;
     }
@@ -146,8 +149,6 @@ body {
     position: relative;
     display: inline-block;
     min-height: 100%;
-    margin-top: $nav-height + $medium !important;
-    margin-bottom: $medium;
     padding: $small;
     background: #fff;
 }
@@ -166,6 +167,11 @@ a {
     cursor: pointer;
     text-decoration: none;
     &:hover { text-decoration: underline; }
+}
+
+hr {
+    border: 0;
+    border-bottom: 1px solid $light-gray;
 }
 
 // forms
@@ -285,21 +291,22 @@ textarea {
     border: 0;
     box-shadow: none;
     color: $button-text;
+    background: $button-gray;
+    border-bottom: 2px solid darken($button-gray, 10%);
     transition: background 0.2s;
     &:active {
         margin-top: 1px;
+        border-bottom-width: 1px;
     }
     &:hover {
         text-decoration: none;
+        background: darken($button-gray, 3%);
     }
 }
 
 .button-primary {
     background: $button;
     border-bottom: 2px solid darken($button, 10%);
-    &:active {
-        border-bottom-width: 1px;
-    }
     &:hover {
         background: darken($button, 3%);
     }
@@ -313,6 +320,17 @@ textarea {
         border-bottom-width: 2px;
     }
 }
+
+// .button-gray {
+//     background: $dark-gray;
+
+//     &:active {
+//         border-bottom-width: 1px;
+//     }
+//     &:hover {
+//         background: darken($button, 3%);
+//     }
+// }
 
 .react-spinner {
     transform: translateY($small);
@@ -370,13 +388,17 @@ textarea {
     background: $header;
 }
 
+.menu-title {
+    padding: $x-small $small;
+}
+
 .panel-toggle {
     position: relative;
     display: block;
     float: right;
     width: 2rem;
     height: 2rem;
-    margin: 1rem;
+    padding: 2rem;
     cursor: pointer;
     text-align: center;
     user-select: none;
@@ -387,10 +409,10 @@ textarea {
         content: '';
         position: absolute;
         top: 50%;
-        left: 15%;
+        left: 32%;
         display: block;
         height: 2px;
-        width: 70%;
+        width: 36%;
         background: #fff;
         margin-top: -1px;
         transition: transform 0.3s;
@@ -409,19 +431,9 @@ textarea {
     padding: $x-small $medium;
 }
 
-// .user-info,
-// .profile-link,
-// .nav-pic {
-//     display: inline-block;
-// }
-
 .register-link {
     margin-left: $small;
 }
-
-// .profile-link {
-
-// }
 
 .nav-pic {
     width: $medium;
@@ -537,6 +549,20 @@ textarea {
     content: '\00b7';
     display: inline-block;
     margin: 0 0.3rem;
+}
+
+.sortby {
+    position: relative;
+}
+
+.sortby-options {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.sortby-show {
+    opacity: 1;
 }
 
 

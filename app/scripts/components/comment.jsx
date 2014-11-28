@@ -12,7 +12,8 @@ var Upvote = require('./upvote');
 var Comment = React.createClass({
 
     mixins: [
-        require('../mixins/abbreviateNumber')
+        require('../mixins/abbreviateNumber'),
+        require('../mixins/timeAgo')
     ],
 
     render: function () {
@@ -51,6 +52,9 @@ var Comment = React.createClass({
                 <div className="comment-info">
 		            <div className="posted-by float-left">
 		                <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+                        <span className="post-info-item">
+                            { this.timeAgo(comment.time) }
+                        </span>
                         { postLink }
                         { deleteOption }
 		            </div>
