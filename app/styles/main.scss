@@ -201,7 +201,6 @@ button {
     max-width: 100%;
 }
 
-
 [type="text"],
 [type="password"],
 [type="email"],
@@ -582,13 +581,18 @@ textarea {
 .sortby-select {
     z-index: 2;
     position: relative;
-    width: 130%;
+    width: 140%;
     padding-left: $x-small;
     border: 0;
     background: transparent;
     color: $dark;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    &:-moz-focusring {
+        text-shadow: 0 0 0 #000;
+    }
     &:focus {
+        color: transparent;
         outline: none;
     }
 }
