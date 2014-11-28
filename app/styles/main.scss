@@ -589,10 +589,10 @@ textarea {
     -webkit-appearance: none;
     -moz-appearance: none;
     &:-moz-focusring {
-        text-shadow: 0 0 0 #000;
+        color: transparent;
+        text-shadow: 0 0 0 $dark;
     }
     &:focus {
-        color: transparent;
         outline: none;
     }
 }
