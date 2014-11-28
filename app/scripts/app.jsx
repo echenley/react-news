@@ -218,7 +218,7 @@ var ReactNews = React.createClass({
                             </span>
                             <span className={ userInfoCx }>
                                 <Link to="profile" params={{ username: username }} className="profile-link">
-                                    { username }
+                                    <span className="username">{ username }</span>
                                     <img src={ gravatarURI } className="nav-pic" />
                                 </Link>
                             </span>

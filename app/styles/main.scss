@@ -442,8 +442,12 @@ textarea {
     vertical-align: middle;
     border-radius: 50%;
     // filter: grayscale(100%);
+    @media screen and (max-width: 600px) {
+        display: none;
+    }
 }
 
+// .username {}
 
 
 
