@@ -553,6 +553,44 @@ textarea {
 
 .sortby {
     position: relative;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 $x-small;
+    padding-right: 1.5rem;
+    background: lighten($light-gray, 3%);
+    transition: background 0.2s;
+    &:after {
+        content: '\f0dd';
+        font-family: FontAwesome;
+        z-index: 0;
+        position: absolute;
+        right: $x-small;
+        top: 20%;
+        font-size: 10px;
+    }
+    &:hover {
+        background: $light-gray;
+    }
+}
+
+.sortby-label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sortby-select {
+    z-index: 2;
+    position: relative;
+    width: 130%;
+    padding-left: $x-small;
+    border: 0;
+    background: transparent;
+    color: $dark;
+    -webkit-appearance: none;
+    &:focus {
+        outline: none;
+    }
 }
 
 .sortby-options {

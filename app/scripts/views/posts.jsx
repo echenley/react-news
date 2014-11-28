@@ -21,11 +21,20 @@ var Posts = React.createClass({
     ],
 
     getInitialState: function () {
-        return postsStore.getDefaultData();
+        var postsData = postsStore.getDefaultData();
+        return {
+            posts: postsData.posts,
+            sortOptions: postsData.sortOptions,
+            loading: true
+        };
     },
 
     onStoreUpdate: function (postsData) {
-        this.setState(postsData);
+        this.setState({
+            posts: postsData.posts,
+            sortOptions: postsData.sortOptions,
+            loading: false
+        });
     },
 
     componentWillMount: function () {
@@ -37,9 +46,15 @@ var Posts = React.createClass({
         actions.stopListeningToPosts();
     },
 
-    updateSortby: function (e) {
+    updateSortBy: function (e) {
         e.preventDefault();
-        actions.setSortBy(this.refs.sortBy.getDOMNode().selectedIndex);
+        var sortOptions = this.state.sortOptions;
+        sortOptions.currentIndex = this.refs.sortBy.getDOMNode().selectedIndex;
+        this.setState({
+            loading: true,
+            sortOptions: sortOptions
+        });
+        actions.setSortBy(sortOptions.currentIndex);
     },
 
     render: function () {
@@ -66,14 +81,14 @@ var Posts = React.createClass({
 
         return (
             <div className="content inner fade-in">
+                <label htmlFor="sortby-select" className="sortby-label">Sort by </label>
                 <div className="sortby">
-                    <label htmlFor="sortby-select">Sort by </label>
-                    <select id="sortby-select" onChange={ this.updateSortby } value={ sortOptions.currentIndex } ref="sortBy">
+                    <select id="sortby-select" className="sortby-select" onChange={ this.updateSortBy } value={ sortOptions.currentIndex } ref="sortBy">
                         { options }
                     </select>
                 </div>
                 <hr />
-                { posts }
+                { this.state.loading ? <Spinner /> : posts }
             </div>
         );
     }
