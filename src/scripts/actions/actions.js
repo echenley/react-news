@@ -24,6 +24,7 @@ var actions = Reflux.createActions([
     'submitPost',
     'deletePost',
     'setSortBy',
+    'setPostsPage',
     // comment actions
     'upvoteComment',
     'downvoteComment',
@@ -42,7 +43,8 @@ var actions = Reflux.createActions([
     'postError',
     // ui actions
     'showLoginOverlay',
-    'showRegisterOverlay'
+    'showRegisterOverlay',
+    'goToPost'
 ]);
 
 
@@ -122,9 +124,11 @@ actions.createProfile.preEmit = function (uid, username, email) {
 ===============================*/
 
 actions.submitPost.preEmit = function (post) {
-    postsRef.push(post, function (error) {
+    var newPostRef = postsRef.push(post, function (error) {
         if (error !== null) {
             actions.postError(error.code);
+        } else {
+            actions.goToPost(newPostRef.key());
         }
     });
 };

@@ -1,10 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
 var Reflux = require('reflux');
-
-// mixins
-var Navigation = require('react-router').Navigation;
 
 // actions
 var actions = require('../actions/actions');
@@ -14,12 +10,11 @@ var loginStore = require('../stores/loginStore');
 var appStore = require('../stores/appStore');
 
 // components
-var Spinner = require('react-spinner');
+var Spinner = require('../components/spinner');
 
 var Register = React.createClass({
 
     mixins: [
-        Navigation,
         Reflux.listenTo(appStore, 'resetForm'),
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],

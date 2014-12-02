@@ -1,7 +1,5 @@
 'use strict';
 
-var React = require('react/addons');
-
 // actions
 var actions = require('../actions/actions');
 

@@ -1,6 +1,5 @@
 'use strict';
 
-var React = require('react/addons');
 var Reflux = require('reflux');
 
 // stores
@@ -12,10 +11,9 @@ var singleStore = require('../stores/singleStore');
 var actions = require('../actions/actions');
 
 // components
-var Spinner = require('react-spinner');
+var Spinner = require('../components/spinner');
 var Post = require('../components/post');
 var Comment = require('../components/comment');
-
 
 var SinglePost = React.createClass({
 
@@ -28,14 +26,15 @@ var SinglePost = React.createClass({
         return {
             post: false,
             comments: [],
-            isLoading: true
+            loading: true
         };
     },
 
     onUpdate: function (postData) {
         this.setState({
             post: postData.post,
-            comments: postData.comments
+            comments: postData.comments,
+            loading: false
         });
     },
 
@@ -73,26 +72,29 @@ var SinglePost = React.createClass({
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
+        var content;
 
-        if (!post) {
-            return (
-                <div className="content">
-                    <Spinner />
+
+        if (this.state.loading) {
+            content = <Spinner />;
+        } else {
+            comments = comments.map(function (comment) {
+                return <Comment comment={ comment } user={ user } key={ comment.id } />;
+            });
+            content = (
+                <div>
+                    <Post post={ post } user={ user } key={ post.id } />
+                    <div className="comments">
+                        <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
+                        { comments }
+                    </div>
                 </div>
             );
         }
 
         return (
             <div className="content inner fade-in">
-                <Post post={ post } user={ user } key={ post.id } />
-                <div className="comments">
-                    <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
-                    {
-                        comments.map(function (comment) {
-                            return <Comment comment={ comment } user={ user } key={ comment.id } />;
-                        })
-                    }
-                </div>
+                { content }
                 <form className='comment-form' onSubmit={ this.addComment }>
                     <textarea placeholder="Post a Comment" ref="commentText" className="comment-input full-width"></textarea>
                     <button type="submit" className="button button-primary">Submit</button>

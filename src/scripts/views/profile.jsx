@@ -1,6 +1,5 @@
 'use strict';
 
-var React = require('react/addons');
 var Reflux = require('reflux');
 var Navigation = require('react-router').Navigation;
 
@@ -12,7 +11,7 @@ var profileStore = require('../stores/profileStore');
 var appStore = require('../stores/appStore');
 
 // components
-var Spinner = require('react-spinner');
+var Spinner = require('../components/spinner');
 var Post = require('../components/post');
 var Comment = require('../components/comment');
 

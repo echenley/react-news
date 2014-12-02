@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = jQuery;
-var React = window.react = require('react/addons');
+window.React = require('react/addons');
 var Reflux = require('reflux');
 
 // Stores
@@ -30,19 +30,25 @@ var Register = require('./components/register');
 var ReactNews = React.createClass({
 
     mixins: [
+        require('react-router').Navigation,
         Reflux.listenTo(appStore, 'onStoreUpdate'),
         Reflux.listenTo(actions.showLoginOverlay, 'showLoginOverlay'),
-        Reflux.listenTo(actions.showRegisterOverlay, 'showRegisterOverlay')
+        Reflux.listenTo(actions.showRegisterOverlay, 'showRegisterOverlay'),
+        Reflux.listenTo(actions.goToPost, 'goToPost')
     ],
 
     getInitialState: function () {
         var defaultData = appStore.getDefaultData();
         return {
             user: defaultData.user,
-            panelHidden: true,
+            showPanel: false,
             showOverlay: false,
             overlayType: 'Login'
         };
+    },
+
+    goToPost: function (postId) {
+        this.transitionTo('post', { postId: postId });
     },
 
     onStoreUpdate: function (appData) {
@@ -70,13 +76,14 @@ var ReactNews = React.createClass({
     componentDidMount: function () {
         // hide the menu when clicked away
         $(document).on('click', function (e) {
-            if (!this.state.panelHidden && !this.isChildNodeOf(e.target, ['header-panel', 'panel-toggle'])) {
+            if (this.state.showPanel && !this.isChildNodeOf(e.target, ['header-panel', 'panel-toggle'])) {
                 this.togglePanel();
             }
         }.bind(this));
 
         $(document).keyup(function(e) {
             if (e.keyCode === 27) { // esc
+                e.preventDefault();
                 this.hideOverlay();
             }
         }.bind(this));
@@ -84,7 +91,7 @@ var ReactNews = React.createClass({
 
     togglePanel: function () {
         this.setState({
-            panelHidden: !this.state.panelHidden
+            showPanel: !this.state.showPanel
         });
     },
 
@@ -167,7 +174,6 @@ var ReactNews = React.createClass({
 
     render: function () {
         var cx = React.addons.classSet;
-        var menuHidden = this.state.panelHidden;
         var user = this.state.user;
         var postError = this.state.postError;
 
@@ -177,7 +183,7 @@ var ReactNews = React.createClass({
 
         var headerCx = cx({
             'header': true,
-            'panel-open': !menuHidden
+            'panel-open': this.state.showPanel
         });
 
         var userInfoCx = cx({
@@ -249,6 +255,7 @@ var routes = (
     <Route handler={ ReactNews }>
         <Route name="post" path="/post/:postId" handler={ SinglePost } />
         <Route name="profile" path="/:username" handler={ Profile } />
+        <Route name="posts" path="/posts/:pageNum" handler={ Posts } />
         <DefaultRoute name="home" handler={ Posts } />
     </Route>
 );

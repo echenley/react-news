@@ -332,17 +332,37 @@ textarea {
 // }
 
 .react-spinner {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    top: 50%;
+    left: 50%;
+    // my changes
     transform: translateY($small);
     .button & {
-        width: 28px;
-        height: 28px;
+        width: 27px;
+        height: 27px;
     }
 }
+
 .react-spinner_bar {
+    animation: react-spinner_spin 1.2s linear infinite;
+    border-radius: 5px;
+    position: absolute;
+    width: 20%;
+    height: 7.8%;
+    top: -3.9%;
+    left: -10%;
+    // my changes
     background: $dark;
     .button & {
         background: #fff;
     }
+}
+
+@keyframes react-spinner_spin {
+    0% { opacity: 1; }
+    100% { opacity: 0.15; }
 }
 
 .fade-in {
@@ -596,8 +616,7 @@ textarea {
     border: 0;
     background: transparent;
     color: $dark;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     &:-moz-focusring {
         color: transparent;
         text-shadow: 0 0 0 $dark;
@@ -617,6 +636,9 @@ textarea {
     opacity: 1;
 }
 
+.next-page {
+    float: right;
+}
 
 
 
@@ -701,3 +723,5 @@ textarea {
         visibility: visible;
     }
 }
+
+

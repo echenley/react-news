@@ -1,6 +1,5 @@
 'use strict';
 
-var React = require('react/addons');
 var actions = require('../actions/actions');
 
 var Upvote = React.createClass({

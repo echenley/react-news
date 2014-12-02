@@ -5,29 +5,48 @@ var Firebase = require('firebase');
 var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts');
 var actions = require('../actions/actions');
 
+var postsPerPage = 6;
+
 var postStore = Reflux.createStore({
 
     listenables: actions,
 
     init: function () {
+        this.posts = [];
         this.postsData = {
             posts: [],
+            currentPage: 1,
             sortOptions: {
-                currentIndex: 0,
-                values: ['upvotes', 'newest', 'comments']
+                currentValue: 'upvotes',
+                values: {
+                    // values mapped to firebase locations
+                    'upvotes': 'upvotes',
+                    'newest': 'time',
+                    'comments': 'commentCount'
+                },
             }
         };
-        this.sortBy = ['upvotes', 'time', 'commentCount'];
     },
 
-    setSortBy: function (index) {
-        this.postsData.sortOptions.currentIndex = index;
+    setSortBy: function (value) {
+        var sortOptions = this.postsData.sortOptions;
+        this.postsData.currentPage = 1;
+        sortOptions.currentValue = value;
+        this.listenToPosts();
+    },
+
+    setPostsPage: function (pageNum) {
+        this.postsData.currentPage = pageNum;
+        this.listenToPosts();
+    },
+
+    listenToPosts: function () {
+        var sortOptions = this.postsData.sortOptions;
         this.stopListeningToPosts();
-        this.listenToPosts(this.sortBy[index]);
-    },
-
-    listenToPosts: function (sortBy) {
-        postsRef.orderByChild(sortBy).limitToLast(20).on('value', this.updatePosts.bind(this));
+        postsRef
+            .orderByChild(sortOptions.values[sortOptions.currentValue])
+            .limitToLast(this.postsData.currentPage * postsPerPage)
+            .on('value', this.updatePosts.bind(this));
     },
 
     stopListeningToPosts: function () {
@@ -35,12 +54,19 @@ var postStore = Reflux.createStore({
     },
 
     updatePosts: function (posts) {
-        this.postsData.posts = [];
+        this.posts = [];
         posts.forEach(function (postData) {
             var post = postData.val();
             post.id = postData.key();
-            this.postsData.posts.unshift(post);
+            this.posts.unshift(post);
         }.bind(this));
+        this.triggerUpdate();
+    },
+
+    triggerUpdate: function () {
+        var startAt = (this.postsData.currentPage - 1) * postsPerPage;
+        var endAt = startAt + postsPerPage;
+        this.postsData.posts = this.posts.slice(startAt, endAt);
         this.trigger(this.postsData);
     },
 
