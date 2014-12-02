@@ -24,10 +24,26 @@ var Profile = React.createClass({
 
     getInitialState: function () {
         return {
-        	profileUserId: 'anon',
         	profileData: profileStore.getDefaultData(),
         	isLoading: true
         };
+    },
+
+    statics: {
+
+        willTransitionTo: function (transition, params) {
+            transition.wait(
+                // set callback to watch current user's posts
+                appStore.getUserId(params.username).then(function (userId) {
+                    actions.listenToProfile(userId);
+                })
+            );
+        },
+
+        willTransitionFrom: function () {
+            actions.stopListeningToProfile();
+        }
+        
     },
 
     onLoaded: function (profileData) {
@@ -35,22 +51,6 @@ var Profile = React.createClass({
     		profileData: profileData,
     		isLoading: false
     	});
-    },
-
-    componentWillMount: function () {
-    	var username = this.props.params.username;
-
-        // sets callback to watch current user's posts
-        appStore.getUserId(username).then(function (userId) {
-	        actions.listenToProfile(userId);
-	        this.setState({
-	        	profileUserId: userId
-	        });
-        }.bind(this));
-    },
-
-    componentWillUnmount: function () {
-        actions.stopListeningToProfile();
     },
 
     logout: function (e) {
@@ -85,15 +85,15 @@ var Profile = React.createClass({
         	});
         }
 
-        // var logoutCx = cx({
-        // 	'hidden': user.uid !== this.state.profileUserId
-        // });
-
         return (
             <div className="content inner fade-in">
-                <div className="user-options text-right">
-                    <button onClick={ this.logout } className="button button-primary">Sign Out</button>
-                </div>
+                {
+                    user.uid !== this.state.profileData.userId ? '' : (
+                        <div className="user-options text-right">
+                            <button onClick={ this.logout } className="button button-primary">Sign Out</button>
+                        </div>
+                    )
+                }
 	            <h1>{ this.props.params.username + '\'s' } Profile</h1>
                 <div className="user-posts">
                     { postHeader }

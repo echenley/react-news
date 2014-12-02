@@ -16,6 +16,7 @@ var postStore = Reflux.createStore({
         this.postsData = {
             posts: [],
             currentPage: 1,
+            perPage: postsPerPage,
             sortOptions: {
                 currentValue: 'upvotes',
                 values: {

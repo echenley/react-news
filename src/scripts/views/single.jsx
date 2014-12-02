@@ -30,21 +30,25 @@ var SinglePost = React.createClass({
         };
     },
 
+    statics: {
+
+        willTransitionTo: function (transition, params) {
+            // watch current post and comments
+            actions.listenToPost(params.postId);
+        },
+
+        willTransitionFrom: function (transition, component) {
+            actions.stopListeningToPost(component.state.post.id);
+        }
+        
+    },
+
     onUpdate: function (postData) {
         this.setState({
             post: postData.post,
             comments: postData.comments,
             loading: false
         });
-    },
-
-    componentWillMount: function () {
-        // watch current post and comments
-        actions.listenToPost(this.props.params.postId);
-    },
-
-    componentWillUnmount: function () {
-        actions.stopListeningToPost(this.props.params.postId);
     },
 
     addComment: function (e) {

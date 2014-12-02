@@ -10,7 +10,7 @@ var usersRef = ref.child('users');
 var defaultUser = {
     uid: '',
     profile: {
-        username: 'anon',
+        username: '',
         upvoted: {}
     },
     isLoggedIn: false
@@ -33,6 +33,7 @@ var appStore = Reflux.createStore({
                 }.bind(this));
             } else {
                 usersRef.off('value');
+                this.logout();
             }
         }.bind(this));
     },

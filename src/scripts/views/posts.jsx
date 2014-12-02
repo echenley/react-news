@@ -31,19 +31,9 @@ var Posts = React.createClass({
     statics: {
 
         willTransitionTo: function (transition, params) {
-            
-        },
-
-        willTransitionFrom: function (transition, component) {
-            
+            actions.setPostsPage(+params.pageNum || 1);
         }
         
-    },
-
-    componentWillMount: function () {
-        var pageNum = +this.props.params.pageNum || 1;
-        actions.setSortBy(this.state.sortOptions.currentValue);
-        actions.setPostsPage(pageNum);
     },
 
     onStoreUpdate: function (postsData) {
@@ -66,20 +56,6 @@ var Posts = React.createClass({
         });
 
         actions.setSortBy(sortOptions.currentValue);
-    },
-
-    previousPage: function () {
-        this.setState({
-            loading: true
-        });
-        actions.setPostsPage((+this.props.params.pageNum || 1) - 1);
-    },
-
-    nextPage: function () {
-        this.setState({
-            loading: true
-        });
-        actions.setPostsPage((+this.props.params.pageNum || 1) + 1);
     },
 
     render: function () {
@@ -115,8 +91,8 @@ var Posts = React.createClass({
                 { this.state.loading ? <Spinner /> : posts }
                 <hr />
                 <nav className="pagination">
-                    <Link to="posts" params={{ pageNum: +pageNum - 1 }} className="previous-page" onClick={ this.previousPage }>Previous</Link>
-                    <Link to="posts" params={{ pageNum: +pageNum + 1 }} className="next-page" onClick={ this.nextPage }>Next</Link>
+                    <Link to="posts" params={{ pageNum: +pageNum - 1 }} className="previous-page" >Previous</Link>
+                    <Link to="posts" params={{ pageNum: +pageNum + 1 }} className="next-page">Next</Link>
                 </nav>
             </div>
         );

@@ -11,9 +11,16 @@ var Upvote = React.createClass({
     },
 
     componentDidMount: function () {
-        var upvoted = this.props.user.profile.upvoted || {};
+        var upvoted = this.props.user.profile.upvoted;
         this.setState({
             upvoted: upvoted[this.props.itemId]
+        });
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        var upvoted = nextProps.user.profile.upvoted;
+        this.setState({
+            upvoted: upvoted[nextProps.itemId]
         });
     },
 

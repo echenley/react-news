@@ -16,12 +16,14 @@ var profileStore = Reflux.createStore({
 
     init: function () {
         this.profileData = {
+            userId: '',
             posts: [],
             comments: []
         };
     },
 
     listenToProfile: function (userId) {
+        this.profileData.userId = userId;
         postListener = postsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
             .on('value', this.updatePosts.bind(this));
         commentListener = commentsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
