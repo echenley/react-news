@@ -6,6 +6,7 @@
     "url": "https://github.com/echenley/react-news.git"
   },
   "dependencies": {
+    "fastclick": "^1.0.3",
     "jquery": "^2.1.1"
   },
   "devDependencies": {

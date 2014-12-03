@@ -4,6 +4,9 @@ var $ = jQuery;
 window.React = require('react/addons');
 var Reflux = require('reflux');
 
+// fastclick eliminates 300ms click delay on mobile
+var attachFastClick = require('fastclick');
+
 // Stores
 var appStore = require('./stores/appStore');
 
@@ -271,6 +274,8 @@ var routes = (
 Router.run(routes, function (Handler, state) {
     React.render(<Handler params={ state.params } />, document.getElementById('app'));
 });
+
+attachFastClick(document.body);
 
 
 
