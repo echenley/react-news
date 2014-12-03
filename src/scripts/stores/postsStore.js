@@ -5,7 +5,7 @@ var Firebase = require('firebase');
 var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts');
 var actions = require('../actions/actions');
 
-var postsPerPage = 6;
+var postsPerPage = 8;
 
 var postsStore = Reflux.createStore({
 

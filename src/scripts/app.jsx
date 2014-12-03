@@ -186,11 +186,6 @@ var ReactNews = React.createClass({
             'panel-open': this.state.showPanel
         });
 
-        var userInfoCx = cx({
-            'user-info': true,
-            'hidden': !user.isLoggedIn
-        });
-
         var titleInputCx = cx({
             'panel-input': true,
             'input-error': postError === 'title_error'
@@ -211,24 +206,36 @@ var ReactNews = React.createClass({
             overlayContent = <Register />;
         }
 
+        var userArea;
+        if (user.isLoggedIn) {
+            // show profile info
+            userArea = (
+                <span className="user-info">
+                    <Link to="profile" params={{ username: username }} className="profile-link">
+                        <span className="username">{ username }</span>
+                        <img src={ gravatarURI } className="nav-pic" />
+                    </Link>
+                </span>
+            );
+        } else {
+            // show login/register
+            userArea = (
+                <span>
+                    <a onClick={ actions.showLoginOverlay }>Sign In</a>
+                    <a onClick={ actions.showRegisterOverlay } className="register-link">Register</a>
+                </span>
+            );
+        }
+
         return (
-            <div className="wrapper">
+            <div className="wrapper full-height">
                 <header className={ headerCx }>
                     <div className="header-main">
                         <div className="float-left">
                             <Link to="home" className="menu-title">react-news</Link>
                         </div>
                         <div className="float-right">
-                            <span className={ user.isLoggedIn ? 'hidden' : '' }>
-                                <a onClick={ actions.showLoginOverlay }>Sign In</a>
-                                <a onClick={ actions.showRegisterOverlay } className="register-link">Register</a>
-                            </span>
-                            <span className={ userInfoCx }>
-                                <Link to="profile" params={{ username: username }} className="profile-link">
-                                    <span className="username">{ username }</span>
-                                    <img src={ gravatarURI } className="nav-pic" />
-                                </Link>
-                            </span>
+                            { userArea }
                             <a id="panel-toggle" className="panel-toggle" onClick={ this.togglePanel }>
                                 <span className="sr-only">Add Post</span>
                             </a>
@@ -242,7 +249,7 @@ var ReactNews = React.createClass({
                         </form>
                     </div>
                 </header>
-                <main id="content">
+                <main id="content" className="full-height inner">
                     <RouteHandler { ...this.props } user={ this.state.user } />
                 </main>
                 <div className={ overlayCx } ref="overlay">{ overlayContent }</div>

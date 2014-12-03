@@ -94,7 +94,7 @@ var Posts = React.createClass({
         });
 
         return (
-            <div className="content inner fade-in">
+            <div className="content full-width fade-in">
                 <label htmlFor="sortby-select" className="sortby-label">Sort by </label>
                 <div className="sortby">
                     <select

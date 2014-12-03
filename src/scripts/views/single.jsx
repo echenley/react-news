@@ -85,17 +85,21 @@ var SinglePost = React.createClass({
             });
             content = (
                 <div>
+                    <hr />
                     <Post post={ post } user={ user } key={ post.id } />
+                    <hr />
                     <div className="comments">
                         <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
+                        <hr />
                         { comments }
+                        <hr />
                     </div>
                 </div>
             );
         }
 
         return (
-            <div className="content inner fade-in">
+            <div className="content full-width fade-in">
                 { content }
                 <form className='comment-form' onSubmit={ this.addComment }>
                     <textarea placeholder="Post a Comment" ref="commentText" className="comment-input full-width"></textarea>

@@ -117,24 +117,15 @@ body {
     padding: 0.2em 0;
 }
 
-.wrapper {
-    min-height: 100%;
-}
-
 #content {
-    text-align: center;
-    padding-top: $nav-height + $medium !important;
-    padding-bottom: $medium;
-    > * {
-        text-align: left;
-    }
+    margin: 0 auto;
+    padding-top: $nav-height !important;
 }
 
 .content {
     position: relative;
     display: inline-block;
-    min-height: 100%;
-    padding: $small;
+    padding: $medium $small;
     background: #fff;
 }
 
@@ -227,7 +218,7 @@ textarea {
 // responsive wrapper
 .inner {
     position: relative;
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -246,6 +237,10 @@ textarea {
 
 .full-width {
     width: 100% !important;
+}
+
+.full-height {
+    height: 100% !important;
 }
 
 .pointer {

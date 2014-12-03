@@ -85,7 +85,7 @@ var Profile = React.createClass({
         }
 
         return (
-            <div className="content inner fade-in">
+            <div className="content full-width fade-in">
                 {
                     user.uid !== this.state.profileData.userId ? '' : (
                         <div className="user-options text-right">
@@ -96,11 +96,15 @@ var Profile = React.createClass({
 	            <h1>{ this.props.params.username + '\'s' } Profile</h1>
                 <div className="user-posts">
                     { postHeader }
+                    <hr />
 	                { postList }
+                    <hr />
                 </div>
                 <div className="user-comments">
                     { commentsHeader }
+                    <hr />
 	                { commentList }
+                    <hr />
                 </div>
             </div>
         );
