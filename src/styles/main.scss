@@ -596,7 +596,8 @@ textarea {
     border: 0;
     background: transparent;
     color: $dark;
-    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     &:-moz-focusring {
         color: transparent;
         text-shadow: 0 0 0 $dark;
