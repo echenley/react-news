@@ -26,11 +26,7 @@ function onError () {
 
 // Styles
 gulp.task('styles', function () {
-    return gulp.src([
-            'src/bower_components/normalize.css/normalize.css',
-            'node_modules/react-spinner/react-spinner.css',
-            'src/styles/main.scss'
-        ])
+    return gulp.src('src/styles/**/*')
         .pipe($.plumber({
             errorHandler: onError
         }))

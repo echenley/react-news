@@ -49,6 +49,8 @@ $breakpoint: 800px;
 /* Reset
 ====================================== */
 
+@import 'normalize';
+
 * {
     hyphens: auto;
     -ms-word-wrap: break-word;
@@ -83,23 +85,6 @@ $text-small: 0.76em;
         opacity: 0;
     }
 }
-
-// .content-enter {
-//     opacity: 0.01;
-//     transition: opacity 0.4s ease-in-out;
-// }
-// .content-enter.content-enter-active {
-//     opacity: 1;
-// }
-
-// .content-leave {
-//     opacity: 1;
-//     transition: opacity 0.4s ease-in-out;
-// }
-
-// .content-leave.content-leave-active {
-//     opacity: 0.01;
-// }
 
 
 /* Structure
@@ -529,6 +514,10 @@ textarea {
 /* Posts
 ====================================== */
 
+.posts {
+
+}
+
 .post {
     background: #fff;
     & + & {
@@ -635,11 +624,6 @@ textarea {
 .sortby-show {
     opacity: 1;
 }
-
-.next-page {
-    float: right;
-}
-
 
 
 

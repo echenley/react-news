@@ -3,8 +3,6 @@
 var Reflux = require('reflux');
 
 // stores
-// var postStore = require('../stores/postStore');
-// var commentStore = require('../stores/commentStore');
 var singleStore = require('../stores/singleStore');
 
 // actions

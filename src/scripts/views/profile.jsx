@@ -1,7 +1,6 @@
 'use strict';
 
 var Reflux = require('reflux');
-var Navigation = require('react-router').Navigation;
 
 // actions
 var actions = require('../actions/actions');
@@ -18,7 +17,7 @@ var Comment = require('../components/comment');
 var Profile = React.createClass({
 
     mixins: [
-        Navigation,
+        require('react-router').Navigation,
         Reflux.listenTo(profileStore, 'onLoaded')
     ],
 
@@ -33,7 +32,7 @@ var Profile = React.createClass({
 
         willTransitionTo: function (transition, params) {
             transition.wait(
-                // set callback to watch current user's posts
+                // set callback to watch current user's posts/comments
                 appStore.getUserId(params.username).then(function (userId) {
                     actions.listenToProfile(userId);
                 })

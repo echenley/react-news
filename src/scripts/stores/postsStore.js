@@ -7,46 +7,35 @@ var actions = require('../actions/actions');
 
 var postsPerPage = 6;
 
-var postStore = Reflux.createStore({
+var postsStore = Reflux.createStore({
 
     listenables: actions,
 
     init: function () {
         this.posts = [];
-        this.postsData = {
-            posts: [],
-            currentPage: 1,
-            perPage: postsPerPage,
-            sortOptions: {
-                currentValue: 'upvotes',
-                values: {
-                    // values mapped to firebase locations
-                    'upvotes': 'upvotes',
-                    'newest': 'time',
-                    'comments': 'commentCount'
-                },
-            }
+        this.currentPage = 1;
+        this.nextPage = true;
+        this.sortOptions = {
+            currentValue: 'upvotes',
+            values: {
+                // values mapped to firebase locations
+                'upvotes': 'upvotes',
+                'newest': 'time',
+                'comments': 'commentCount'
+            },
         };
     },
 
     setSortBy: function (value) {
-        var sortOptions = this.postsData.sortOptions;
-        this.postsData.currentPage = 1;
-        sortOptions.currentValue = value;
-        this.listenToPosts();
+        this.sortOptions.currentValue = value;
     },
 
-    setPostsPage: function (pageNum) {
-        this.postsData.currentPage = pageNum;
-        this.listenToPosts();
-    },
-
-    listenToPosts: function () {
-        var sortOptions = this.postsData.sortOptions;
-        this.stopListeningToPosts();
+    listenToPosts: function (pageNum) {
+        this.currentPage = pageNum;
         postsRef
-            .orderByChild(sortOptions.values[sortOptions.currentValue])
-            .limitToLast(this.postsData.currentPage * postsPerPage)
+            .orderByChild(this.sortOptions.values[this.sortOptions.currentValue])
+            // + 1 extra post to determine whether another page exists
+            .limitToLast((this.currentPage * postsPerPage) + 1)
             .on('value', this.updatePosts.bind(this));
     },
 
@@ -55,29 +44,42 @@ var postStore = Reflux.createStore({
     },
 
     updatePosts: function (posts) {
-        this.posts = [];
+        // posts is all posts through current page + 1
+        var endAt = this.currentPage * postsPerPage;
+        var startAt = endAt - postsPerPage;
+
+        var allPosts = [];
         posts.forEach(function (postData) {
             var post = postData.val();
             post.id = postData.key();
-            this.posts.unshift(post);
+            allPosts.unshift(post);
         }.bind(this));
-        this.triggerUpdate();
-    },
 
-    triggerUpdate: function () {
-        var startAt = (this.postsData.currentPage - 1) * postsPerPage;
-        var endAt = startAt + postsPerPage;
-        this.postsData.posts = this.posts.slice(startAt, endAt);
-        this.trigger(this.postsData);
+        // if extra post doesn't exist, indicate that there are no more posts
+        this.nextPage = (allPosts.length === endAt + 1);        
+        // slice off the last page worth
+        this.posts = allPosts.slice(startAt, endAt);
+
+        this.trigger({
+            posts: this.posts,
+            currentPage: this.currentPage,
+            nextPage: this.nextPage,
+            sortOptions: this.sortOptions
+        });
     },
 
     getDefaultData: function () {
-        return this.postsData;
+        return {
+            posts: this.posts,
+            currentPage: this.currentPage,
+            nextPage: this.nextPage,
+            sortOptions: this.sortOptions
+        };
     }
 
 });
 
-module.exports = postStore;
+module.exports = postsStore;
 
 
 

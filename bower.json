@@ -1,8 +1,0 @@
-{
-  "name": "react-news",
-  "version": "0.0.1",
-  "devDependencies": {
-    "normalize.css": "~3.0.2",
-    "components-font-awesome": "~4.2.0"
-  }
-}

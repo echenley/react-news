@@ -11,56 +11,75 @@ var postsStore = require('../stores/postsStore');
 // components
 var Spinner = require('../components/spinner');
 var Post = require('../components/post');
-var Link = require('react-router').Link;
+var Router = require('react-router');
+var Link = Router.Link;
 
 var Posts = React.createClass({
 
     mixins: [
+        Router.Navigation,
         Reflux.listenTo(postsStore, 'onStoreUpdate')
     ],
 
     getInitialState: function () {
         var postsData = postsStore.getDefaultData();
         return {
+            loading: true,
             posts: postsData.posts,
             sortOptions: postsData.sortOptions,
-            loading: true
+            nextPage: postsData.nextPage,
+            currentPage: postsData.currentPage
         };
     },
 
     statics: {
 
         willTransitionTo: function (transition, params) {
-            actions.setPostsPage(+params.pageNum || 1);
+            actions.listenToPosts(+params.pageNum || 1);
+        },
+
+        willTransitionFrom: function (transition, component) {
+            actions.stopListeningToPosts();
+            component.setState({
+                loading: true
+            });
         }
         
     },
 
     onStoreUpdate: function (postsData) {
         this.setState({
+            loading: false,
             posts: postsData.posts,
             sortOptions: postsData.sortOptions,
-            loading: false
+            nextPage: postsData.nextPage,
+            currentPage: postsData.currentPage
         });
     },
 
     updateSortBy: function (e) {
         e.preventDefault();
 
-        var sortOptions = this.state.sortOptions;
-        sortOptions.currentValue = this.refs.sortBy.getDOMNode().value;
+        var currentPage = this.state.currentPage || 1;
+        var newSortValue = this.refs.sortBy.getDOMNode().value;
+        this.state.sortOptions.currentValue = newSortValue;
 
         this.setState({
-            loading: true,
-            sortOptions: sortOptions
+            loading: true
         });
 
-        actions.setSortBy(sortOptions.currentValue);
+        actions.setSortBy(newSortValue);
+
+        if (currentPage === 1) {
+            actions.listenToPosts(currentPage);
+        } else {
+            this.transitionTo('posts', { pageNum: 1 });
+        }
     },
 
     render: function () {
         var posts = this.state.posts;
-        var pageNum = this.props.params.pageNum || 1;
+        var currentPage = this.state.currentPage || 1;
         var sortOptions = this.state.sortOptions;
         // possible sort values (defined in postsStore)
         var sortValues = Object.keys(sortOptions.values);
@@ -88,11 +107,13 @@ var Posts = React.createClass({
                     </select>
                 </div>
                 <hr />
-                { this.state.loading ? <Spinner /> : posts }
+                <div className="posts">
+                    { this.state.loading ? <Spinner /> : posts }
+                </div>
                 <hr />
-                <nav className="pagination">
-                    <Link to="posts" params={{ pageNum: +pageNum - 1 }} className="previous-page" >Previous</Link>
-                    <Link to="posts" params={{ pageNum: +pageNum + 1 }} className="next-page">Next</Link>
+                <nav className="pagination cf">
+                    { currentPage > 1 && <Link to="posts" params={{ pageNum: currentPage - 1 }} className="previous-page float-left">Previous</Link> }
+                    { this.state.nextPage && <Link to="posts" params={{ pageNum: currentPage + 1 }} className="next-page float-right">Next</Link> }
                 </nav>
             </div>
         );
