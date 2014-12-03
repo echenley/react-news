@@ -49,19 +49,19 @@ var Comment = React.createClass({
                 </div>
                 <div className="comment-info">
 		            <div className="posted-by float-left">
-		                <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+                        <Upvote
+                            upvoteActions={ upvoteActions }
+                            user={ user }
+                            itemId={ comment.id }
+                            upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
+                        <span className="post-info-item">
+                            <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+                        </span>
                         <span className="post-info-item">
                             { this.timeAgo(comment.time) }
                         </span>
                         { postLink }
                         { deleteOption }
-		            </div>
-		            <div className="float-right">
-                    	<Upvote
-                            upvoteActions={ upvoteActions }
-                    		user={ user }
-                    		itemId={ comment.id }
-                    		upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
 		            </div>
 	            </div>
             </div>

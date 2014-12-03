@@ -509,10 +509,6 @@ textarea {
 /* Posts
 ====================================== */
 
-.posts {
-
-}
-
 .post {
     background: #fff;
     & + & {
@@ -540,7 +536,7 @@ textarea {
 
 .upvote {
     transition: color 0.3s;
-    color: $dark;
+    color: $dark-gray;
     &:hover {
         text-decoration: none;
     }

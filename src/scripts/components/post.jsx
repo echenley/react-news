@@ -45,8 +45,15 @@ var Post = React.createClass({
                     </span>
                 </div>
                 <div className="post-info">
-                    <div className="posted-by float-left">
-                        <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
+                    <div className="posted-by">
+                        <Upvote
+                            upvoteActions= { upvoteActions }
+                            user={ user }
+                            itemId={ post.id }
+                            upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
+                        <span className="post-info-item">
+                            <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
+                        </span>
                         <span className="post-info-item">
                             { this.timeAgo(post.time) }
                         </span>
@@ -56,13 +63,6 @@ var Post = React.createClass({
                             </Link>
                         </span>
                         { deleteOption }
-                    </div>
-                    <div className="float-right">
-                    	<Upvote
-                            upvoteActions= { upvoteActions }
-                    		user={ user }
-                    		itemId={ post.id }
-                    		upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
                     </div>
                 </div>
             </div>
