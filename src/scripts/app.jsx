@@ -8,7 +8,7 @@ var Reflux = require('reflux');
 var attachFastClick = require('fastclick');
 
 // Stores
-var appStore = require('./stores/appStore');
+var userStore = require('./stores/userStore');
 
 // Actions
 var actions = require('./actions/actions');
@@ -17,7 +17,7 @@ var actions = require('./actions/actions');
 var Router = require('react-router');
 var RouteHandler = Router.RouteHandler;
 var Route = Router.Route;
-// var NotFoundRoute = Router.NotFoundRoute;
+var NotFoundRoute = Router.NotFoundRoute;
 var DefaultRoute = Router.DefaultRoute;
 var Link = Router.Link;
 
@@ -34,19 +34,17 @@ var ReactNews = React.createClass({
 
     mixins: [
         require('react-router').Navigation,
-        Reflux.listenTo(appStore, 'onStoreUpdate'),
-        Reflux.listenTo(actions.showLoginOverlay, 'showLoginOverlay'),
-        Reflux.listenTo(actions.showRegisterOverlay, 'showRegisterOverlay'),
+        Reflux.listenTo(userStore, 'onStoreUpdate'),
+        Reflux.listenTo(actions.showOverlay, 'showOverlay'),
         Reflux.listenTo(actions.goToPost, 'goToPost')
     ],
 
     getInitialState: function () {
-        var defaultData = appStore.getDefaultData();
         return {
-            user: defaultData.user,
+            user: userStore.getDefaultData(),
             showPanel: false,
             showOverlay: false,
-            overlayType: 'Login'
+            overlayType: 'login'
         };
     },
 
@@ -54,10 +52,9 @@ var ReactNews = React.createClass({
         this.transitionTo('post', { postId: postId });
     },
 
-    onStoreUpdate: function (appData) {
+    onStoreUpdate: function (user) {
         this.setState({
-            user: appData.user,
-            sortBy: appData.sortBy,
+            user: user,
             showOverlay: false
         });
     },
@@ -110,26 +107,13 @@ var ReactNews = React.createClass({
         });
     },
 
-    showOverlay: function () {
+    showOverlay: function (type) {
         var overlay = this.refs.overlay.getDOMNode();
         overlay.addEventListener('click', this.hideOverlayListener);
         this.setState({
+            overlayType: type,
             showOverlay: true
         });
-    },
-
-    showLoginOverlay: function () {
-        this.setState({
-            overlayType: 'Login'
-        });
-        this.showOverlay();
-    },
-
-    showRegisterOverlay: function () {
-        this.setState({
-            overlayType: 'Register'
-        });
-        this.showOverlay();
     },
 
     submitPost: function (e) {
@@ -141,7 +125,7 @@ var ReactNews = React.createClass({
         var user = this.state.user;
 
         if (!user.isLoggedIn) {
-            actions.showLoginOverlay();
+            actions.showOverlay('login');
             return;
         }
 
@@ -205,7 +189,7 @@ var ReactNews = React.createClass({
         });
 
         var overlayContent = <Login />;
-        if (this.state.overlayType === 'Register') {
+        if (this.state.overlayType === 'register') {
             overlayContent = <Register />;
         }
 
@@ -224,8 +208,8 @@ var ReactNews = React.createClass({
             // show login/register
             userArea = (
                 <span>
-                    <a onClick={ actions.showLoginOverlay }>Sign In</a>
-                    <a onClick={ actions.showRegisterOverlay } className="register-link">Register</a>
+                    <a onClick={ actions.showOverlay.bind(this, 'login') }>Sign In</a>
+                    <a onClick={ actions.showOverlay.bind(this, 'register') } className="register-link">Register</a>
                 </span>
             );
         }
@@ -267,6 +251,7 @@ var routes = (
         <Route name="profile" path="/:username" handler={ Profile } />
         <Route name="posts" path="/posts/:pageNum" handler={ Posts } />
         <DefaultRoute name="home" handler={ Posts } />
+        <NotFoundRoute handler={ Posts } />
     </Route>
 );
 

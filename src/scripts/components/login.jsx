@@ -7,7 +7,7 @@ var actions = require('../actions/actions');
 
 // stores
 var loginStore = require('../stores/loginStore');
-var appStore = require('../stores/appStore');
+var userStore = require('../stores/userStore');
 
 // components
 var Spinner = require('../components/spinner');
@@ -15,7 +15,7 @@ var Spinner = require('../components/spinner');
 var Login = React.createClass({
 
     mixins: [
-        Reflux.listenTo(appStore, 'resetForm'),
+        Reflux.listenTo(userStore, 'resetForm'),
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 

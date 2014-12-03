@@ -7,7 +7,7 @@ var actions = require('../actions/actions');
 
 // stores
 var profileStore = require('../stores/profileStore');
-var appStore = require('../stores/appStore');
+var userStore = require('../stores/userStore');
 
 // components
 var Spinner = require('../components/spinner');
@@ -33,14 +33,17 @@ var Profile = React.createClass({
         willTransitionTo: function (transition, params) {
             transition.wait(
                 // set callback to watch current user's posts/comments
-                appStore.getUserId(params.username).then(function (userId) {
+                userStore.getUserId(params.username).then(function (userId) {
                     actions.listenToProfile(userId);
                 })
             );
         },
 
-        willTransitionFrom: function () {
+        willTransitionFrom: function (transition, component) {
             actions.stopListeningToProfile();
+            component.setState({
+                isLoading: true
+            });
         }
         
     },
@@ -70,8 +73,10 @@ var Profile = React.createClass({
         	commentsHeader;
 
         if (this.state.isLoading) {
-        	postHeader = <h2>Loading Posts... <Spinner /></h2>;
+        	postHeader = <h2>Loading Posts...</h2>;
+            postList = <Spinner />;
         	commentsHeader = <h2>Loading Comments... <Spinner /></h2>;
+            commentList = <Spinner />;
         } else {
         	postHeader = <h2>{ posts.length ? 'Latest' : 'No'} Posts</h2>;
         	commentsHeader = <h2>{ comments.length ? 'Latest' : 'No'} Comments</h2>;
@@ -85,7 +90,7 @@ var Profile = React.createClass({
         }
 
         return (
-            <div className="content full-width fade-in">
+            <div className="content full-width">
                 {
                     user.uid !== this.state.profileData.userId ? '' : (
                         <div className="user-options text-right">

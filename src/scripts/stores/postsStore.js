@@ -53,7 +53,7 @@ var postsStore = Reflux.createStore({
             var post = postData.val();
             post.id = postData.key();
             allPosts.unshift(post);
-        }.bind(this));
+        });
 
         // if extra post doesn't exist, indicate that there are no more posts
         this.nextPage = (allPosts.length === endAt + 1);        

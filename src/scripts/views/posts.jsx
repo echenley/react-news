@@ -59,18 +59,16 @@ var Posts = React.createClass({
 
     updateSortBy: function (e) {
         e.preventDefault();
-
         var currentPage = this.state.currentPage || 1;
-        var newSortValue = this.refs.sortBy.getDOMNode().value;
-        this.state.sortOptions.currentValue = newSortValue;
+        
+        actions.setSortBy(this.refs.sortBy.getDOMNode().value);
 
         this.setState({
             loading: true
         });
 
-        actions.setSortBy(newSortValue);
-
         if (currentPage === 1) {
+            actions.stopListeningToPosts();
             actions.listenToPosts(currentPage);
         } else {
             this.transitionTo('posts', { pageNum: 1 });
@@ -94,7 +92,7 @@ var Posts = React.createClass({
         });
 
         return (
-            <div className="content full-width fade-in">
+            <div className="content full-width">
                 <label htmlFor="sortby-select" className="sortby-label">Sort by </label>
                 <div className="sortby">
                     <select

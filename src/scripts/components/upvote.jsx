@@ -26,7 +26,7 @@ var Upvote = React.createClass({
 
     upvote: function (userId, itemId) {
         if (!this.props.user.isLoggedIn) {
-            actions.showLoginOverlay();
+            actions.showOverlay('login');
             return;
         }
 

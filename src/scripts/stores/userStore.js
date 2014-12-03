@@ -16,14 +16,12 @@ var defaultUser = {
     isLoggedIn: false
 };
 
-var appStore = Reflux.createStore({
+var userStore = Reflux.createStore({
 
     listenables: actions,
 
     init: function () {
-        this.appData = {
-            user: defaultUser
-        };
+        this.user = defaultUser;
 
         ref.onAuth(function (authData) {
             if (authData) {
@@ -39,17 +37,17 @@ var appStore = Reflux.createStore({
     },
 
     updateProfile: function (userId, profile) {
-        this.appData.user = {
+        this.user = {
             uid: userId,
             profile: profile,
             isLoggedIn: true
         };
-        this.trigger(this.appData);
+        this.trigger(this.user);
     },
 
     logout: function () {
-        this.appData.user = defaultUser;
-        this.trigger(this.appData);
+        this.user = defaultUser;
+        this.trigger(this.user);
     },
 
     getUserId: function (username) {
@@ -63,11 +61,11 @@ var appStore = Reflux.createStore({
     },
 
     getDefaultData: function () {
-        return this.appData;
+        return this.user;
     }
 });
 
-module.exports = appStore;
+module.exports = userStore;
 
 
 

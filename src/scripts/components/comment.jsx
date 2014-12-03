@@ -43,7 +43,7 @@ var Comment = React.createClass({
         };
 
         return (
-            <div className="comment cf fade-in">
+            <div className="comment cf">
                 <div className="comment-text">
                     { comment.text }
                 </div>

@@ -53,7 +53,7 @@ var SinglePost = React.createClass({
         e.preventDefault();
 
         if (!this.props.user.isLoggedIn) {
-            actions.showLoginOverlay();
+            actions.showOverlay('login');
             return;
         }
 
@@ -74,9 +74,8 @@ var SinglePost = React.createClass({
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
+        
         var content;
-
-
         if (this.state.loading) {
             content = <Spinner />;
         } else {
@@ -99,7 +98,7 @@ var SinglePost = React.createClass({
         }
 
         return (
-            <div className="content full-width fade-in">
+            <div className="content full-width">
                 { content }
                 <form className='comment-form' onSubmit={ this.addComment }>
                     <textarea placeholder="Post a Comment" ref="commentText" className="comment-input full-width"></textarea>

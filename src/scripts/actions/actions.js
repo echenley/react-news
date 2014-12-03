@@ -24,7 +24,6 @@ var actions = Reflux.createActions([
     'submitPost',
     'deletePost',
     'setSortBy',
-    'setPostsPage',
     // comment actions
     'upvoteComment',
     'downvoteComment',
@@ -42,8 +41,7 @@ var actions = Reflux.createActions([
     'loginError',
     'postError',
     // ui actions
-    'showLoginOverlay',
-    'showRegisterOverlay',
+    'showOverlay',
     'goToPost'
 ]);
 
@@ -63,7 +61,7 @@ actions.login.preEmit = function (user, username) {
             var email = authData.password.email;
             actions.createProfile(uid, username, email);
         }
-    }.bind(this));
+    });
 };
 
 actions.logout.preEmit = function () {
@@ -98,7 +96,7 @@ actions.register.preEmit = function (username, loginData) {
                         // user successfully created
                         actions.login(loginData, username);
                     }
-                }.bind(this));
+                });
             }
         });
     }
@@ -116,7 +114,7 @@ actions.createProfile.preEmit = function (uid, username, email) {
             // user profile successfully created
             actions.updateProfile(uid, profile);
         }
-    }.bind(this));
+    });
 };
 
 
@@ -196,7 +194,7 @@ actions.addComment.preEmit = function (comment) {
         if (error === null) {
             actions.updateCommentCount(comment.postId, 1);
         }
-    }.bind(this));
+    });
 };
 
 actions.deleteComment.preEmit = function (commentId, postId) {

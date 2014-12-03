@@ -15,15 +15,13 @@ var profileStore = Reflux.createStore({
     listenables: actions,
 
     init: function () {
-        this.profileData = {
-            userId: '',
-            posts: [],
-            comments: []
-        };
+        this.userId = '';
+        this.posts = [];
+        this.comments = [];
     },
 
     listenToProfile: function (userId) {
-        this.profileData.userId = userId;
+        this.userId = userId;
         postListener = postsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
             .on('value', this.updatePosts.bind(this));
         commentListener = commentsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
@@ -36,27 +34,35 @@ var profileStore = Reflux.createStore({
     },
 
     updatePosts: function (posts) {
-        this.profileData.posts = [];
+        this.posts = [];
         posts.forEach(function (postData) {
             var post = postData.val();
             post.id = postData.key();
-            this.profileData.posts.unshift(post);
+            this.posts.unshift(post);
         }.bind(this));
-        this.trigger(this.profileData);
+        this.trigger(this);
     },
 
     updateComments: function (comments) {
-        this.profileData.comments = [];
+        this.comments = [];
         comments.forEach(function (commentData) {
             var comment = commentData.val();
             comment.id = commentData.key();
-            this.profileData.comments.unshift(comment);
+            this.comments.unshift(comment);
         }.bind(this));
-        this.trigger(this.profileData);
+        this.trigger({
+            userId: this.userId,
+            posts: this.posts,
+            comments: this.comments
+        });
     },
 
     getDefaultData: function () {
-        return this.profileData;
+        return {
+            userId: this.userId,
+            posts: this.posts,
+            comments: this.comments
+        };
     }
 });
 

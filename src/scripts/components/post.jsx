@@ -37,7 +37,7 @@ var Post = React.createClass({
         };
 
         return (
-            <div className="post cf fade-in">
+            <div className="post cf">
                 <div className="post-link">
                     <a className="post-title" href={ post.url }>{ post.title }</a>
                     <span className="hostname">
