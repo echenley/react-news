@@ -4,3 +4,4 @@ node_modules/
 .scss-lint.yml
 .bowerrc
 .jshintrc
+.DS_Store
