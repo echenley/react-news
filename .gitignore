@@ -3,3 +3,4 @@ node_modules/
 .editorconfig
 .scss-lint.yml
 .bowerrc
+.jshintrc
