@@ -1,34 +1,31 @@
+/*
+Project:    react-news
+Author:     Evan Henley
+Author URI: http://henleyedition.com/
+====================================== */
+
 'use strict';
 
 var $ = jQuery;
 window.React = require('react/addons');
-var Reflux = require('reflux');
+var Reflux   = require('reflux');
 
-// fastclick eliminates 300ms click delay on mobile
 var attachFastClick = require('fastclick');
 
-// Stores
-var userStore = require('./stores/userStore');
-
-// Actions
-var actions = require('./actions/actions');
-
-// Routing
-var Router = require('react-router');
-var RouteHandler = Router.RouteHandler;
-var Route = Router.Route;
+var Router        = require('react-router');
+var RouteHandler  = Router.RouteHandler;
+var Route         = Router.Route;
 var NotFoundRoute = Router.NotFoundRoute;
-var DefaultRoute = Router.DefaultRoute;
-var Link = Router.Link;
+var DefaultRoute  = Router.DefaultRoute;
+var Link          = Router.Link;
 
-// Views
-var Posts = require('./views/posts');
+var userStore  = require('./stores/userStore');
+var actions    = require('./actions/actions');
+var Posts      = require('./views/posts');
 var SinglePost = require('./views/single');
-var Profile = require('./views/profile');
-
-// Components
-var Login = require('./components/login');
-var Register = require('./components/register');
+var Profile    = require('./views/profile');
+var Login      = require('./components/login');
+var Register   = require('./components/register');
 
 var ReactNews = React.createClass({
 
@@ -260,6 +257,7 @@ Router.run(routes, function (Handler, state) {
     React.render(<Handler params={ state.params } />, document.getElementById('app'));
 });
 
+// fastclick eliminates 300ms click delay on mobile
 attachFastClick(document.body);
 
 
