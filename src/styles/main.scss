@@ -69,9 +69,9 @@ $breakpoint: 800px;
 $font-size: 110%;
 $line-height: 1.55;
 
-$heading-font: "Source Sans Pro", Arial, sans-serif;
-$body-font: "Source Sans Pro", Arial, sans-serif;
-$monospace: "Ubuntu Mono", "Andale Mono", AndaleMono, Consolas, monaco, monospace;
+$heading-font: 'Source Sans Pro', Arial, sans-serif;
+$body-font: 'Source Sans Pro', Arial, sans-serif;
+$monospace: 'Ubuntu Mono', 'Andale Mono', AndaleMono, Consolas, monaco, monospace;
 
 $text-small: 0.76em;
 
@@ -81,7 +81,7 @@ $text-small: 0.76em;
 ====================================== */
 
 @keyframes fade-in {
-    0% { 
+    0% {
         opacity: 0;
     }
 }
@@ -106,7 +106,7 @@ body {
     font-size: $font-size;
     text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "kern" 1;
+    font-feature-settings: 'kern' 1;
     font-kerning: normal;
 }
 
@@ -177,10 +177,10 @@ button {
     max-width: 100%;
 }
 
-[type="text"],
-[type="password"],
-[type="email"],
-[type="url"],
+[type='text'],
+[type='password'],
+[type='email'],
+[type='url'],
 textarea {
     transition: border 0.2s;
     padding: $x-small;
@@ -528,7 +528,7 @@ textarea {
 
 .hostname {
     font-size: $text-small;
-    color: $dark; 
+    color: $dark;
     a { color: $dark; }
 }
 
