@@ -7,11 +7,11 @@ var loginStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function () {
+    init: function() {
         this.message = '';
     },
 
-    loginError: function (errorCode) {
+    loginError: function(errorCode) {
         var message;
         switch (errorCode) {
             case 'INVALID_EMAIL':

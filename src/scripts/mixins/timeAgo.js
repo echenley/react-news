@@ -3,7 +3,7 @@
 var moment = require('moment');
 
 module.exports = {
-    timeAgo: function (timePosted) {
+    timeAgo: function(timePosted) {
         return moment(timePosted, 'x').fromNow();
     },
 };

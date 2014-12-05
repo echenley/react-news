@@ -36,7 +36,7 @@ var ReactNews = React.createClass({
         Reflux.listenTo(actions.goToPost, 'goToPost')
     ],
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             user: userStore.getDefaultData(),
             showPanel: false,
@@ -45,18 +45,18 @@ var ReactNews = React.createClass({
         };
     },
 
-    goToPost: function (postId) {
+    goToPost: function(postId) {
         this.transitionTo('post', { postId: postId });
     },
 
-    onStoreUpdate: function (user) {
+    onStoreUpdate: function(user) {
         this.setState({
             user: user,
             showOverlay: false
         });
     },
 
-    isChildNodeOf: function (target, excludedIds) {
+    isChildNodeOf: function(target, excludedIds) {
         // returns boolean whether target is child of a list of ids
         // excludedIds can be a string or an array
         if (typeof excludedIds === 'string') {
@@ -70,9 +70,9 @@ var ReactNews = React.createClass({
         return (target !== null && excludedIds.indexOf(target.id) >= 0);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         // hide the menu when clicked away
-        $(document).on('click', function (e) {
+        $(document).on('click', function(e) {
             if (this.state.showPanel && !this.isChildNodeOf(e.target, ['header-panel', 'panel-toggle'])) {
                 this.togglePanel();
             }
@@ -86,25 +86,25 @@ var ReactNews = React.createClass({
         }.bind(this));
     },
 
-    togglePanel: function () {
+    togglePanel: function() {
         this.setState({
             showPanel: !this.state.showPanel
         });
     },
 
-    hideOverlayListener: function (e) {
+    hideOverlayListener: function(e) {
         if (!this.isChildNodeOf(e.target, ['overlay-content'])) {
             this.hideOverlay();
         }
     },
 
-    hideOverlay: function () {
+    hideOverlay: function() {
         this.setState({
             showOverlay: false
         });
     },
 
-    showOverlay: function (type) {
+    showOverlay: function(type) {
         var overlay = this.refs.overlay.getDOMNode();
         overlay.addEventListener('click', this.hideOverlayListener);
         this.setState({
@@ -113,7 +113,7 @@ var ReactNews = React.createClass({
         });
     },
 
-    submitPost: function (e) {
+    submitPost: function(e) {
         e.preventDefault();
 
         var titleEl = this.refs.title.getDOMNode();
@@ -156,7 +156,7 @@ var ReactNews = React.createClass({
         this.togglePanel();
     },
 
-    render: function () {
+    render: function() {
         var cx = React.addons.classSet;
         var user = this.state.user;
         var postError = this.state.postError;
@@ -248,17 +248,13 @@ var routes = (
         <Route name="profile" path="/:username" handler={ Profile } />
         <Route name="posts" path="/posts/:pageNum" handler={ Posts } />
         <DefaultRoute name="home" handler={ Posts } />
-        <NotFoundRoute handler={ Posts } />
     </Route>
 );
 
 
-Router.run(routes, function (Handler, state) {
+Router.run(routes, function(Handler, state) {
     React.render(<Handler params={ state.params } />, document.getElementById('app'));
 });
 
 // fastclick eliminates 300ms click delay on mobile
 attachFastClick(document.body);
-
-
-

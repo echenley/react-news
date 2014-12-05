@@ -11,7 +11,7 @@ var postsStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function () {
+    init: function() {
         this.posts = [];
         this.currentPage = 1;
         this.nextPage = true;
@@ -26,11 +26,11 @@ var postsStore = Reflux.createStore({
         };
     },
 
-    setSortBy: function (value) {
+    setSortBy: function(value) {
         this.sortOptions.currentValue = value;
     },
 
-    listenToPosts: function (pageNum) {
+    listenToPosts: function(pageNum) {
         this.currentPage = pageNum;
         postsRef
             .orderByChild(this.sortOptions.values[this.sortOptions.currentValue])
@@ -39,17 +39,17 @@ var postsStore = Reflux.createStore({
             .on('value', this.updatePosts.bind(this));
     },
 
-    stopListeningToPosts: function () {
+    stopListeningToPosts: function() {
         postsRef.off();
     },
 
-    updatePosts: function (posts) {
+    updatePosts: function(posts) {
         // posts is all posts through current page + 1
         var endAt = this.currentPage * postsPerPage;
         var startAt = endAt - postsPerPage;
 
         var allPosts = [];
-        posts.forEach(function (postData) {
+        posts.forEach(function(postData) {
             var post = postData.val();
             post.id = postData.key();
             allPosts.unshift(post);
@@ -68,7 +68,7 @@ var postsStore = Reflux.createStore({
         });
     },
 
-    getDefaultData: function () {
+    getDefaultData: function() {
         return {
             posts: this.posts,
             currentPage: this.currentPage,

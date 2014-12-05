@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    abbreviateNumber: function (value) {
+    abbreviateNumber: function(value) {
         // Abbreviates numbers >= 1K
         // 100050 => 100K
         var newValue = value;

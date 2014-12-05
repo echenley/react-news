@@ -1,14 +1,13 @@
 'use strict';
 
-var gulp = require('gulp');
-var del = require('del');
-var path = require('path');
+var gulp       = require('gulp');
+var del        = require('del');
+var path       = require('path');
 var browserify = require('browserify');
-var reactify = require('reactify');
-var watchify = require('watchify');
-var source = require('vinyl-source-stream');
-// Load plugins
-var $ = require('gulp-load-plugins')();
+var reactify   = require('reactify');
+var watchify   = require('watchify');
+var source     = require('vinyl-source-stream');
+var $          = require('gulp-load-plugins')();
 
 // gulp-plumber for error handling
 function onError () {

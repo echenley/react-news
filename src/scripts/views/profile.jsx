@@ -21,7 +21,7 @@ var Profile = React.createClass({
         Reflux.listenTo(profileStore, 'onLoaded')
     ],
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
         	profileData: profileStore.getDefaultData(),
         	isLoading: true
@@ -30,16 +30,16 @@ var Profile = React.createClass({
 
     statics: {
 
-        willTransitionTo: function (transition, params) {
+        willTransitionTo: function(transition, params) {
             transition.wait(
                 // set callback to watch current user's posts/comments
-                userStore.getUserId(params.username).then(function (userId) {
+                userStore.getUserId(params.username).then(function(userId) {
                     actions.listenToProfile(userId);
                 })
             );
         },
 
-        willTransitionFrom: function (transition, component) {
+        willTransitionFrom: function(transition, component) {
             actions.stopListeningToProfile();
             component.setState({
                 isLoading: true
@@ -48,20 +48,20 @@ var Profile = React.createClass({
         
     },
 
-    onLoaded: function (profileData) {
+    onLoaded: function(profileData) {
     	this.setState({
     		profileData: profileData,
     		isLoading: false
     	});
     },
 
-    logout: function (e) {
+    logout: function(e) {
         e.preventDefault();
         actions.logout();
         this.transitionTo('home');
     },
 
-    render: function () {
+    render: function() {
         var user = this.props.user;
     	var profileData = this.state.profileData;
     	var posts = profileData.posts;
@@ -81,10 +81,10 @@ var Profile = React.createClass({
         	postHeader = <h2>{ posts.length ? 'Latest' : 'No'} Posts</h2>;
         	commentsHeader = <h2>{ comments.length ? 'Latest' : 'No'} Comments</h2>;
 
-        	postList = posts.map(function (post) {
+        	postList = posts.map(function(post) {
         		return <Post post={ post } user={ user } key={ post.id } />;
         	});
-        	commentList = comments.map(function (comment) {
+        	commentList = comments.map(function(comment) {
         		return <Comment comment={ comment } user={ user } key={ comment.id } showPostTitle={ true } />;
         	});
         }
@@ -101,15 +101,11 @@ var Profile = React.createClass({
 	            <h1>{ this.props.params.username + '\'s' } Profile</h1>
                 <div className="user-posts">
                     { postHeader }
-                    <hr />
 	                { postList }
-                    <hr />
                 </div>
                 <div className="user-comments">
                     { commentsHeader }
-                    <hr />
 	                { commentList }
-                    <hr />
                 </div>
             </div>
         );

@@ -14,28 +14,28 @@ var postStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function () {
+    init: function() {
         this.postData = {
             post: {},
             comments: []
         };
     },
 
-    listenToPost: function (postId) {
+    listenToPost: function(postId) {
         postListener = postsRef.child(postId).on('value', this.updatePost.bind(this));
         commentListener = commentsRef.orderByChild('postId').equalTo(postId).on('value', this.updateComments.bind(this));
     },
 
-    updatePost: function (postData) {
+    updatePost: function(postData) {
         var post = postData.val();
         post.id = postData.key();
         this.postData.post = post;
         this.trigger(this.postData);
     },
 
-    updateComments: function (comments) {
+    updateComments: function(comments) {
         this.postData.comments = [];
-        comments.forEach(function (commentData) {
+        comments.forEach(function(commentData) {
             var comment = commentData.val();
             comment.id = commentData.key();
             this.postData.comments.unshift(comment);
@@ -43,12 +43,12 @@ var postStore = Reflux.createStore({
         this.trigger(this.postData);
     },
 
-    stopListening: function (postId) {
+    stopListening: function(postId) {
         postsRef.child(postId).off('value', postListener);
         commentsRef.off('value', commentListener);
     },
 
-    getDefaultData: function () {
+    getDefaultData: function() {
         return this.postData;
     }
 

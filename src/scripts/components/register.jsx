@@ -19,14 +19,14 @@ var Register = React.createClass({
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             error: '',
             submitted: false
         };
     },
 
-    resetForm: function () {
+    resetForm: function() {
         this.setState({
             submitted: false,
         });
@@ -36,7 +36,7 @@ var Register = React.createClass({
         this.refs.submit.getDOMNode().disabled = false;
     },
 
-    onErrorMessage: function (errorMessage) {
+    onErrorMessage: function(errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
@@ -44,7 +44,7 @@ var Register = React.createClass({
         });
     },
 
-    registerUser: function (e) {
+    registerUser: function(e) {
         e.preventDefault();
 
         this.refs.submit.getDOMNode().disabled = true;
@@ -60,7 +60,7 @@ var Register = React.createClass({
         actions.register(username, loginData);
     },
 
-    render: function () {
+    render: function() {
         var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
 
         return (

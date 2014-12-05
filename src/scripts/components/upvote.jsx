@@ -4,27 +4,27 @@ var actions = require('../actions/actions');
 
 var Upvote = React.createClass({
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             upvoted: false
         };
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         var upvoted = this.props.user.profile.upvoted;
         this.setState({
             upvoted: upvoted[this.props.itemId]
         });
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         var upvoted = nextProps.user.profile.upvoted;
         this.setState({
             upvoted: upvoted[nextProps.itemId]
         });
     },
 
-    upvote: function (userId, itemId) {
+    upvote: function(userId, itemId) {
         if (!this.props.user.isLoggedIn) {
             actions.showOverlay('login');
             return;
@@ -44,7 +44,7 @@ var Upvote = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         var cx = React.addons.classSet;
 
         var userId = this.props.user.uid;

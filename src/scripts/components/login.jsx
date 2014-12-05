@@ -19,14 +19,14 @@ var Login = React.createClass({
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             error: '',
             submitted: false
         };
     },
 
-    resetForm: function () {
+    resetForm: function() {
         this.setState({
             submitted: false,
         });
@@ -35,7 +35,7 @@ var Login = React.createClass({
         this.refs.submit.getDOMNode().disabled = false;
     },
 
-    onErrorMessage: function (errorMessage) {
+    onErrorMessage: function(errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
@@ -43,7 +43,7 @@ var Login = React.createClass({
         });
     },
 
-    login: function (e) {
+    login: function(e) {
         e.preventDefault();
 
         this.refs.submit.getDOMNode().disabled = true;
@@ -57,7 +57,7 @@ var Login = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
 
         return (

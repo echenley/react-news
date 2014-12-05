@@ -49,10 +49,10 @@ var actions = Reflux.createActions([
 /* User Actions
 ===============================*/
 
-actions.login.preEmit = function (user, username) {
+actions.login.preEmit = function(user, username) {
     // username only provided when registering a new user
     // used to create a user profile
-    ref.authWithPassword(user, function (error, authData) {
+    ref.authWithPassword(user, function(error, authData) {
         if (error !== null) {
             actions.loginError(error.code);
         } else if (username) {
@@ -64,16 +64,16 @@ actions.login.preEmit = function (user, username) {
     });
 };
 
-actions.logout.preEmit = function () {
+actions.logout.preEmit = function() {
     ref.unauth();
 };
 
-actions.register.preEmit = function (username, loginData) {
+actions.register.preEmit = function(username, loginData) {
 
     function checkForUsername(name) {
         // checks if username is taken
         var defer = $.Deferred();
-        usersRef.orderByChild('username').equalTo(name).once('value', function (user) {
+        usersRef.orderByChild('username').equalTo(name).once('value', function(user) {
             defer.resolve(!!user.val());
         });
         return defer.promise();
@@ -84,11 +84,11 @@ actions.register.preEmit = function (username, loginData) {
         actions.loginError('NO_USERNAME');
     } else {
         // check if username is already taken
-        checkForUsername(username).then(function (usernameTaken) {
+        checkForUsername(username).then(function(usernameTaken) {
             if (usernameTaken) {
                 actions.loginError('USERNAME_TAKEN');
             } else {
-                ref.createUser(loginData, function (error) {
+                ref.createUser(loginData, function(error) {
                     if (error !== null) {
                         // error during user creation
                         actions.loginError(error.code);
@@ -102,14 +102,14 @@ actions.register.preEmit = function (username, loginData) {
     }
 };
 
-actions.createProfile.preEmit = function (uid, username, email) {
+actions.createProfile.preEmit = function(uid, username, email) {
     var md5hash = hash.update(email).digest('hex');
     var profile = {
         username: username,
         md5hash: md5hash,
         upvoted: {}
     };
-    usersRef.child(uid).set(profile, function (error) {
+    usersRef.child(uid).set(profile, function(error) {
         if (error === null) {
             // user profile successfully created
             actions.updateProfile(uid, profile);
@@ -121,8 +121,8 @@ actions.createProfile.preEmit = function (uid, username, email) {
 /* Post Actions
 ===============================*/
 
-actions.submitPost.preEmit = function (post) {
-    var newPostRef = postsRef.push(post, function (error) {
+actions.submitPost.preEmit = function(post) {
+    var newPostRef = postsRef.push(post, function(error) {
         if (error !== null) {
             actions.postError(error.code);
         } else {
@@ -131,14 +131,14 @@ actions.submitPost.preEmit = function (post) {
     });
 };
 
-actions.deletePost.preEmit = function (postId) {
+actions.deletePost.preEmit = function(postId) {
     postsRef.child(postId).remove();
 };
 
-actions.upvotePost.preEmit = function (userId, postId) {
-    postsRef.child(postId).child('upvotes').transaction(function (curr) {
+actions.upvotePost.preEmit = function(userId, postId) {
+    postsRef.child(postId).child('upvotes').transaction(function(curr) {
         return (curr || 0) + 1;
-    }, function (error, success) {
+    }, function(error, success) {
         if (success) {
             // register upvote in user's profile
             usersRef.child(userId).child('upvoted').child(postId).set(true);
@@ -146,10 +146,10 @@ actions.upvotePost.preEmit = function (userId, postId) {
     });
 };
 
-actions.downvotePost.preEmit = function (userId, postId) {
-    postsRef.child(postId).child('upvotes').transaction(function (curr) {
+actions.downvotePost.preEmit = function(userId, postId) {
+    postsRef.child(postId).child('upvotes').transaction(function(curr) {
         return curr - 1;
-    }, function (error, success) {
+    }, function(error, success) {
         if (success) {
             // register upvote in user's profile
             usersRef.child(userId).child('upvoted').child(postId).remove();
@@ -160,17 +160,17 @@ actions.downvotePost.preEmit = function (userId, postId) {
 /* Comment Actions
 ===============================*/
 
-actions.updateCommentCount.preEmit = function (postId, n) {
+actions.updateCommentCount.preEmit = function(postId, n) {
     // updates comment count on post
-    postsRef.child(postId).child('commentCount').transaction(function (curr) {
+    postsRef.child(postId).child('commentCount').transaction(function(curr) {
         return curr + n;
     });
 };
 
-actions.upvoteComment.preEmit = function (userId, commentId) {
-    commentsRef.child(commentId).child('upvotes').transaction(function (curr) {
+actions.upvoteComment.preEmit = function(userId, commentId) {
+    commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
         return (curr || 0) + 1;
-    }, function (error, success) {
+    }, function(error, success) {
         if (success) {
             // register upvote in user's profile
             usersRef.child(userId).child('upvoted').child(commentId).set(true);
@@ -178,10 +178,10 @@ actions.upvoteComment.preEmit = function (userId, commentId) {
     });
 };
 
-actions.downvoteComment.preEmit = function (userId, commentId) {
-    commentsRef.child(commentId).child('upvotes').transaction(function (curr) {
+actions.downvoteComment.preEmit = function(userId, commentId) {
+    commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
         return curr - 1;
-    }, function (error, success) {
+    }, function(error, success) {
         if (success) {
             // register upvote in user's profile
             usersRef.child(userId).child('upvoted').child(commentId).remove();
@@ -189,16 +189,16 @@ actions.downvoteComment.preEmit = function (userId, commentId) {
     });
 };
 
-actions.addComment.preEmit = function (comment) {
-    commentsRef.push(comment, function (error) {
+actions.addComment.preEmit = function(comment) {
+    commentsRef.push(comment, function(error) {
         if (error === null) {
             actions.updateCommentCount(comment.postId, 1);
         }
     });
 };
 
-actions.deleteComment.preEmit = function (commentId, postId) {
-    commentsRef.child(commentId).remove(function (error) {
+actions.deleteComment.preEmit = function(commentId, postId) {
+    commentsRef.child(commentId).remove(function(error) {
         if (error === null) {
             actions.updateCommentCount(postId, -1);
         }

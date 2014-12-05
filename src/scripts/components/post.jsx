@@ -16,7 +16,7 @@ var Post = React.createClass({
         require('../mixins/timeAgo')
     ],
 
-    render: function () {
+    render: function() {
         var user = this.props.user;
         var post = this.props.post;
 

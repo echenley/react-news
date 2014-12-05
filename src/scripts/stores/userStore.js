@@ -20,13 +20,13 @@ var userStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function () {
+    init: function() {
         this.user = defaultUser;
 
-        ref.onAuth(function (authData) {
+        ref.onAuth(function(authData) {
             if (authData) {
                 var userId = authData.uid;
-                usersRef.child(userId).on('value', function (profile) {
+                usersRef.child(userId).on('value', function(profile) {
                     this.updateProfile(userId, profile.val());
                 }.bind(this));
             } else {
@@ -36,7 +36,7 @@ var userStore = Reflux.createStore({
         }.bind(this));
     },
 
-    updateProfile: function (userId, profile) {
+    updateProfile: function(userId, profile) {
         this.user = {
             uid: userId,
             profile: profile,
@@ -45,22 +45,22 @@ var userStore = Reflux.createStore({
         this.trigger(this.user);
     },
 
-    logout: function () {
+    logout: function() {
         this.user = defaultUser;
         this.trigger(this.user);
     },
 
-    getUserId: function (username) {
+    getUserId: function(username) {
         // returns userId given username
         var defer = $.Deferred();
-        usersRef.orderByChild('username').equalTo(username).once('value', function (user) {
+        usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
             var userId = Object.keys(user.val())[0];
             defer.resolve(userId);
         });
         return defer.promise();
     },
 
-    getDefaultData: function () {
+    getDefaultData: function() {
         return this.user;
     }
 });
