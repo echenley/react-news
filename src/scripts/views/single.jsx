@@ -1,17 +1,11 @@
 'use strict';
 
-var Reflux = require('reflux');
-
-// stores
+var Reflux      = require('reflux');
 var singleStore = require('../stores/singleStore');
-
-// actions
-var actions = require('../actions/actions');
-
-// components
-var Spinner = require('../components/spinner');
-var Post = require('../components/post');
-var Comment = require('../components/comment');
+var actions     = require('../actions/actions');
+var Spinner     = require('../components/spinner');
+var Post        = require('../components/post');
+var Comment     = require('../components/comment');
 
 var SinglePost = React.createClass({
 
@@ -20,7 +14,7 @@ var SinglePost = React.createClass({
         Reflux.listenTo(singleStore, 'onUpdate')
     ],
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             post: false,
             comments: [],
@@ -30,18 +24,18 @@ var SinglePost = React.createClass({
 
     statics: {
 
-        willTransitionTo: function (transition, params) {
+        willTransitionTo: function(transition, params) {
             // watch current post and comments
             actions.listenToPost(params.postId);
         },
 
-        willTransitionFrom: function (transition, component) {
+        willTransitionFrom: function(transition, component) {
             actions.stopListeningToPost(component.state.post.id);
         }
         
     },
 
-    onUpdate: function (postData) {
+    onUpdate: function(postData) {
         this.setState({
             post: postData.post,
             comments: postData.comments,
@@ -49,7 +43,7 @@ var SinglePost = React.createClass({
         });
     },
 
-    addComment: function (e) {
+    addComment: function(e) {
         e.preventDefault();
 
         if (!this.props.user.isLoggedIn) {
@@ -70,7 +64,7 @@ var SinglePost = React.createClass({
         commentTextEl.value = '';
     },
 
-    render: function () {
+    render: function() {
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
@@ -79,19 +73,15 @@ var SinglePost = React.createClass({
         if (this.state.loading) {
             content = <Spinner />;
         } else {
-            comments = comments.map(function (comment) {
+            comments = comments.map(function(comment) {
                 return <Comment comment={ comment } user={ user } key={ comment.id } />;
             });
             content = (
                 <div>
-                    <hr />
                     <Post post={ post } user={ user } key={ post.id } />
-                    <hr />
                     <div className="comments">
                         <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
-                        <hr />
                         { comments }
-                        <hr />
                     </div>
                 </div>
             );
