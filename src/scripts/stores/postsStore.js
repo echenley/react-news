@@ -5,7 +5,7 @@ var Firebase = require('firebase');
 var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts');
 var actions = require('../actions/actions');
 
-var postsPerPage = 8;
+var postsPerPage = 5;
 
 var postsStore = Reflux.createStore({
 
@@ -43,22 +43,22 @@ var postsStore = Reflux.createStore({
         postsRef.off();
     },
 
-    updatePosts: function(posts) {
+    updatePosts: function(postsSnapshot) {
         // posts is all posts through current page + 1
         var endAt = this.currentPage * postsPerPage;
-        var startAt = endAt - postsPerPage;
 
-        var allPosts = [];
-        posts.forEach(function(postData) {
+        // accumulate posts in posts array
+        var posts = [];
+        postsSnapshot.forEach(function(postData) {
             var post = postData.val();
             post.id = postData.key();
-            allPosts.unshift(post);
+            posts.unshift(post);
         });
 
         // if extra post doesn't exist, indicate that there are no more posts
-        this.nextPage = (allPosts.length === endAt + 1);        
-        // slice off the last page worth
-        this.posts = allPosts.slice(startAt, endAt);
+        this.nextPage = (posts.length === endAt + 1);        
+        // slice off extra post
+        this.posts = posts.slice(0, endAt);
 
         this.trigger({
             posts: this.posts,
