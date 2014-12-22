@@ -68,8 +68,8 @@ var SinglePost = React.createClass({
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
-        
         var content;
+
         if (this.state.loading) {
             content = <Spinner />;
         } else {
