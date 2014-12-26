@@ -6,11 +6,14 @@ var actions     = require('../actions/actions');
 var Spinner     = require('../components/spinner');
 var Post        = require('../components/post');
 var Comment     = require('../components/comment');
+var Router      = require('react-router');
 
 var SinglePost = React.createClass({
 
     mixins: [
         require('../mixins/pluralize'),
+        Router.Navigation,
+        Router.State,
         Reflux.listenTo(singleStore, 'onUpdate')
     ],
 
@@ -68,17 +71,20 @@ var SinglePost = React.createClass({
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
+        var postId = this.getParams();
         var content;
 
         if (this.state.loading) {
             content = <Spinner />;
+        } else if (post.isDeleted) {
+            this.replaceWith('404');
         } else {
             comments = comments.map(function(comment) {
                 return <Comment comment={ comment } user={ user } key={ comment.id } />;
             });
             content = (
                 <div>
-                    <Post post={ post } user={ user } key={ post.id } />
+                    <Post post={ post } user={ user } key={ postId } />
                     <div className="comments">
                         <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
                         { comments }

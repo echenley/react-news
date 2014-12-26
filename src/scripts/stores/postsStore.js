@@ -46,7 +46,6 @@ var postsStore = Reflux.createStore({
     updatePosts: function(postsSnapshot) {
         // posts is all posts through current page + 1
         var endAt = this.currentPage * postsPerPage;
-
         // accumulate posts in posts array
         var posts = [];
         postsSnapshot.forEach(function(postData) {

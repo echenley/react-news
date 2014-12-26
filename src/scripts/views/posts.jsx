@@ -32,11 +32,8 @@ var Posts = React.createClass({
             actions.listenToPosts(+params.pageNum || 1);
         },
 
-        willTransitionFrom: function(transition, component) {
+        willTransitionFrom: function() {
             actions.stopListeningToPosts();
-            component.setState({
-                loading: true
-            });
         }
         
     },
@@ -82,7 +79,7 @@ var Posts = React.createClass({
         var user = this.props.user;
 
         posts = posts.map(function(post) {
-            return <Post post={ post } user={ user } key={ post.id } />;
+            return <Post post={ post } user={ user } key={ post.id } />; 
         });
 
         var options = sortValues.map(function(optionText, i) {
@@ -107,9 +104,14 @@ var Posts = React.createClass({
                     { this.state.loading ? <Spinner /> : posts }
                 </div>
                 <hr />
-                <nav className="pagination cf">
-                    { currentPage > 1 && <Link to="posts" params={{ pageNum: currentPage - 1 }} className="previous-page float-left">Previous</Link> }
-                    { this.state.nextPage && <Link to="posts" params={{ pageNum: currentPage + 1 }} className="next-page float-right">Next</Link> }
+                <nav className="pagination">
+                    {
+                        this.state.nextPage ?
+                            <Link to="posts" params={{ pageNum: currentPage + 1 }} className="next-page">
+                                Load More Posts
+                            </Link>
+                          : 'No More Posts'
+                    }
                 </nav>
             </div>
         );

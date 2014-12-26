@@ -2,7 +2,6 @@
 
 // actions
 var actions = require('../actions/actions');
-
 // components
 var Link = require('react-router').Link;
 var Upvote = require('./upvote');
@@ -19,10 +18,21 @@ var Post = React.createClass({
     render: function() {
         var user = this.props.user;
         var post = this.props.post;
-
         var commentCount = post.commentCount || 0;
-
         var deleteOption = '';
+
+        if (post.isDeleted) {
+            // post doesn't exist
+            return (
+                <div className="post cf">
+                    <div className="post-link">
+                        [deleted]
+                    </div>
+                </div>
+            );
+        }
+
+        // add delete option if creator is logged in
         if (user.uid === post.creatorUID) {   
             deleteOption = (
                 <span className="delete post-info-item">

@@ -40,7 +40,7 @@ var profileStore = Reflux.createStore({
             post.id = postData.key();
             this.posts.unshift(post);
         }.bind(this));
-        this.trigger(this);
+        this.triggerAll();
     },
 
     updateComments: function(comments) {
@@ -50,6 +50,10 @@ var profileStore = Reflux.createStore({
             comment.id = commentData.key();
             this.comments.unshift(comment);
         }.bind(this));
+        this.triggerAll();
+    },
+
+    triggerAll: function () {
         this.trigger({
             userId: this.userId,
             posts: this.posts,

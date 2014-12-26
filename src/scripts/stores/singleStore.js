@@ -28,8 +28,15 @@ var postStore = Reflux.createStore({
 
     updatePost: function(postData) {
         var post = postData.val();
-        post.id = postData.key();
-        this.postData.post = post;
+        if (post) {
+            post.id = postData.key();
+            this.postData.post = post;
+        } else {
+            // post doesn't exist or was deleted
+            this.postData.post = {
+                isDeleted: true
+            };
+        }
         this.trigger(this.postData);
     },
 
@@ -43,8 +50,10 @@ var postStore = Reflux.createStore({
         this.trigger(this.postData);
     },
 
-    stopListening: function(postId) {
-        postsRef.child(postId).off('value', postListener);
+    stopListeningToPost: function(postId) {
+        if (!this.postData.post.isDeleted) {
+            postsRef.child(postId).off('value', postListener);
+        }
         commentsRef.off('value', commentListener);
     },
 

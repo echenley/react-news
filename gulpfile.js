@@ -9,8 +9,10 @@ var watchify   = require('watchify');
 var source     = require('vinyl-source-stream');
 var $          = require('gulp-load-plugins')();
 
+var prod = $.util.env.prod;
+
 // gulp-plumber for error handling
-function onError () {
+function onError() {
     /* jshint ignore:start */
     var args = Array.prototype.slice.call(arguments);
     $.util.beep();
@@ -24,7 +26,7 @@ function onError () {
 
 
 // Styles
-gulp.task('styles', function () {
+gulp.task('styles', function() {
     return gulp.src('src/styles/**/*')
         .pipe($.plumber({
             errorHandler: onError
@@ -42,10 +44,11 @@ gulp.task('styles', function () {
 
 
 // Scripts
-gulp.task('scripts', function () {
+gulp.task('scripts', function() {
     var bundler;
     bundler = browserify({
         basedir: __dirname,
+        noparse: ['react/addons', 'reflux', 'fastclick', 'react-router'],
         entries: ['./src/scripts/app.jsx'],
         transform: [reactify],
         extensions: ['.jsx'],
@@ -57,14 +60,15 @@ gulp.task('scripts', function () {
 
     bundler = watchify(bundler);
 
-    function rebundle () {
+    function rebundle() {
         console.log('Bundling Scripts...');
         var start = Date.now();
         return bundler.bundle()
             .on('error', onError)
             .pipe(source('app.js'))
+            .pipe(prod ? $.streamify($.uglify()) : $.util.noop())
             .pipe(gulp.dest('dist/scripts'))
-            .pipe($.notify(function () {
+            .pipe($.notify(function() {
                 console.log('Bundling Complete - ' + (Date.now() - start) + 'ms');
             }));
     }
@@ -76,7 +80,7 @@ gulp.task('scripts', function () {
 
 
 // HTML
-gulp.task('html', function () {
+gulp.task('html', function() {
     return gulp.src('src/*.html')
         .pipe($.useref())
         .pipe(gulp.dest('dist'))
@@ -85,7 +89,7 @@ gulp.task('html', function () {
 
 
 // Images
-gulp.task('images', function () {
+gulp.task('images', function() {
     return gulp.src('src/images/**/*')
         .pipe($.cache($.imagemin({
             optimizationLevel: 3,
@@ -97,8 +101,19 @@ gulp.task('images', function () {
 });
 
 
+// Webserver
+gulp.task('serve', function() {
+    gulp.src('dist')
+        .pipe($.webserver({
+            livereload: true,
+            port: 9000,
+            fallback: 'index.html'
+        }));
+});
+
+
 // Testing
-gulp.task('jest', function () {
+gulp.task('jest', function() {
     var nodeModules = path.resolve('./node_modules');
     return gulp.src('src/scripts/**/__tests__')
         .pipe($.jest({
@@ -109,37 +124,17 @@ gulp.task('jest', function () {
 
 
 // Clean
-gulp.task('clean', function (cb) {
+gulp.task('clean', function(cb) {
     del(['dist/styles', 'dist/scripts', 'dist/images'], cb);
 });
 
 
-// Build
-gulp.task('build', ['html', 'styles', 'scripts', 'images'], function () {
-    return gulp.src('dist/scripts/app.js')
-        .pipe($.rename('app.min.js'))
-        .pipe($.streamify($.uglify()))
-        .pipe(gulp.dest('dist/scripts'));
-});
-
-
 // Default task
-gulp.task('default', ['clean', 'build', 'jest']);
-
-
-// Webserver
-gulp.task('serve', function () {
-    gulp.src('dist')
-        .pipe($.webserver({
-            livereload: true,
-            port: 9000,
-            fallback: 'index.html'
-        }));
-});
+gulp.task('default', ['clean', 'html', 'styles', 'scripts', 'jest']);
 
 
 // Watch
-gulp.task('watch', ['html', 'styles', 'scripts', 'serve'], function () {
+gulp.task('watch', ['html', 'styles', 'scripts', 'serve'], function() {
     gulp.watch('src/*.html', ['html']);
     gulp.watch('src/styles/**/*.scss', ['styles']);
     gulp.watch('src/images/**/*', ['images']);

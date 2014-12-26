@@ -15,7 +15,7 @@ var attachFastClick = require('fastclick');
 var Router        = require('react-router');
 var RouteHandler  = Router.RouteHandler;
 var Route         = Router.Route;
-var NotFoundRoute = Router.NotFoundRoute;
+// var NotFoundRoute = Router.NotFoundRoute;
 var DefaultRoute  = Router.DefaultRoute;
 var Link          = Router.Link;
 
@@ -24,6 +24,7 @@ var actions    = require('./actions/actions');
 var Posts      = require('./views/posts');
 var SinglePost = require('./views/single');
 var Profile    = require('./views/profile');
+var UhOh       = require('./views/404');
 var Login      = require('./components/login');
 var Register   = require('./components/register');
 
@@ -56,18 +57,18 @@ var ReactNews = React.createClass({
         });
     },
 
-    isChildNodeOf: function(target, excludedIds) {
+    isChildNodeOf: function(target, parentIds) {
         // returns boolean whether target is child of a list of ids
-        // excludedIds can be a string or an array
-        if (typeof excludedIds === 'string') {
-            excludedIds = [excludedIds];
+        // parentIds can be a string or an array of ids
+        if (typeof parentIds === 'string') {
+            parentIds = [parentIds];
         }
         // if this node is not the one we want, move up the dom tree
-        while (target !== null && excludedIds.indexOf(target.id) < 0) {
+        while (target !== null && parentIds.indexOf(target.id) < 0) {
             target = target.parentNode;
         }
         // at this point we have found our containing div or we are out of parent nodes
-        return (target !== null && excludedIds.indexOf(target.id) >= 0);
+        return (target !== null && parentIds.indexOf(target.id) >= 0);
     },
 
     componentDidMount: function() {
@@ -245,8 +246,9 @@ var ReactNews = React.createClass({
 var routes = (
     <Route handler={ ReactNews }>
         <Route name="post" path="/post/:postId" handler={ SinglePost } />
-        <Route name="profile" path="/:username" handler={ Profile } />
-        <Route name="posts" path="/posts/:pageNum" handler={ Posts } />
+        <Route name="profile" path="user/:username" handler={ Profile } />
+        <Route name="posts" path="/posts/:pageNum" handler={ Posts } ignoreScrollBehavior />
+        <Route name="404" path="/404" handler={ UhOh } />
         <DefaultRoute name="home" handler={ Posts } />
     </Route>
 );
