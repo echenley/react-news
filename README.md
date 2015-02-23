@@ -16,4 +16,4 @@ password: henleyedition1
 
 ## Development
 
-After cloning, just `cd` into the folder and run `gulp watch` and have at the `src/` folder.
+After cloning, just `cd` in there, run `gulp watch` and have at the `src/` folder.
