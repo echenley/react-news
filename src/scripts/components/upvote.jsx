@@ -1,6 +1,7 @@
 'use strict';
 
 var actions = require('../actions/actions');
+var throttle = require('lodash/function/throttle');
 
 var Upvote = React.createClass({
 
@@ -24,7 +25,7 @@ var Upvote = React.createClass({
         });
     },
 
-    upvote: function(userId, itemId) {
+    upvote: throttle(function(userId, itemId) {
         if (!this.props.user.isLoggedIn) {
             actions.showOverlay('login');
             return;
@@ -42,7 +43,7 @@ var Upvote = React.createClass({
         this.setState({
             upvoted: !upvoted
         });
-    },
+    }, 500),
 
     render: function() {
         var cx = React.addons.classSet;
