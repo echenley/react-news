@@ -509,11 +509,26 @@ textarea {
 /* Posts
 ====================================== */
 
+.posts {
+    counter-reset: post;
+}
+
 .post {
+    position: relative;
+    counter-increment: post;
     background: #fff;
     & + & {
         margin-top: $small;
     }
+}
+
+.post-link:before {
+    content: counter(post);
+    display: inline-block;
+    float: right;
+    padding-left: 6px;
+    line-height: 1.2;
+    color: #ddd;
 }
 
 .post-link,
