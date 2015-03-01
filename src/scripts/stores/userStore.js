@@ -22,18 +22,6 @@ var userStore = Reflux.createStore({
 
     init: function() {
         this.user = defaultUser;
-
-        ref.onAuth(function(authData) {
-            if (authData) {
-                var userId = authData.uid;
-                usersRef.child(userId).on('value', function(profile) {
-                    this.updateProfile(userId, profile.val());
-                }.bind(this));
-            } else {
-                usersRef.off('value');
-                this.logout();
-            }
-        }.bind(this));
     },
 
     updateProfile: function(userId, profile) {
@@ -45,7 +33,7 @@ var userStore = Reflux.createStore({
         this.trigger(this.user);
     },
 
-    logout: function() {
+    logoutCompleted: function() {
         this.user = defaultUser;
         this.trigger(this.user);
     },
