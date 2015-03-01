@@ -43,7 +43,7 @@ var Upvote = React.createClass({
         this.setState({
             upvoted: !upvoted
         });
-    }, 500, { trailing: false }),
+    }, 300, { trailing: false }),
 
     render: function() {
         var cx = React.addons.classSet;

@@ -76,8 +76,8 @@ var SinglePost = React.createClass({
 
         if (this.state.loading) {
             content = <Spinner />;
-        } else if (post.isDeleted) {
-            this.replaceWith('404');
+        // } else if (post.isDeleted) {
+        //     this.replaceWith('404');
         } else {
             comments = comments.map(function(comment) {
                 return <Comment comment={ comment } user={ user } key={ comment.id } />;

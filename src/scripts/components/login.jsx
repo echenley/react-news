@@ -27,12 +27,12 @@ var Login = React.createClass({
     },
 
     resetForm: function() {
-        this.setState({
-            submitted: false,
-        });
         this.refs.email.getDOMNode().value = '';
         this.refs.password.getDOMNode().value = '';
         this.refs.submit.getDOMNode().disabled = false;
+        this.setState({
+            submitted: false,
+        });
     },
 
     onErrorMessage: function(errorMessage) {
@@ -58,7 +58,7 @@ var Login = React.createClass({
     },
 
     render: function() {
-        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
+        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : null;
 
         return (
             <div className="login text-center md-modal" id="overlay-content">

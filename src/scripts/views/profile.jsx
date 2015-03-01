@@ -30,13 +30,12 @@ var Profile = React.createClass({
 
     statics: {
 
-        willTransitionTo: function(transition, params) {
-            transition.wait(
-                // set callback to watch current user's posts/comments
-                userStore.getUserId(params.username).then(function(userId) {
-                    actions.listenToProfile(userId);
-                })
-            );
+        willTransitionTo: function(transition, params, query, callback) {
+            // set callback to watch current user's posts/comments
+            userStore.getUserId(params.username).then(function(userId) {
+                actions.listenToProfile(userId);
+                return callback();
+            });
         },
 
         willTransitionFrom: function(transition, component) {

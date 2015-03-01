@@ -11,64 +11,83 @@ var commentsRef = ref.child('comments'),
 // used to create email hash for gravatar
 var hash = require('crypto').createHash('md5');
 
-var actions = Reflux.createActions([
+var actions = Reflux.createActions({
     // user actions
-    'login',
-    'logout',
-    'register',
-    'createProfile',
-    'updateProfile',
+    'login': {},
+    'logout': { asyncResult: true },
+    'register': {},
+    'createProfile': {},
+    'updateProfile': {},
     // post actions
-    'upvotePost',
-    'downvotePost',
-    'submitPost',
-    'deletePost',
-    'setSortBy',
+    'upvotePost': {},
+    'downvotePost': {},
+    'submitPost': {},
+    'deletePost': {},
+    'setSortBy': {},
     // comment actions
-    'upvoteComment',
-    'downvoteComment',
-    'updateCommentCount',
-    'addComment',
-    'deleteComment',
+    'upvoteComment': {},
+    'downvoteComment': {},
+    'updateCommentCount': {},
+    'addComment': {},
+    'deleteComment': {},
     // firebase actions
-    'listenToProfile',
-    'listenToPost',
-    'listenToPosts',
-    'stopListeningToProfile',
-    'stopListeningToPosts',
-    'stopListeningToPost',
+    'listenToProfile': {},
+    'listenToPost': {},
+    'listenToPosts': {},
+    'stopListeningToProfile': {},
+    'stopListeningToPosts': {},
+    'stopListeningToPost': {},
     // error actions
-    'loginError',
-    'postError',
+    'loginError': {},
+    'postError': {},
     // ui actions
-    'showOverlay',
-    'goToPost'
-]);
+    'showOverlay': {},
+    'goToPost': {}
+});
 
 
 /* User Actions
 ===============================*/
 
-actions.login.preEmit = function(user, username) {
+// triggered by auth changes
+ref.onAuth(function(authData) {
+    if (!authData) {
+        // logging out
+        usersRef.off();
+        actions.logout.completed();
+    }
+});
+
+actions.login.listen(function(user, username) {
     // username only provided when registering a new user
     // used to create a user profile
     ref.authWithPassword(user, function(error, authData) {
         if (error !== null) {
             actions.loginError(error.code);
-        } else if (username) {
-            // new user 
-            var uid = authData.uid;
-            var email = authData.password.email;
-            actions.createProfile(uid, username, email);
-        }
+        } else {
+            // sucessful login
+            var userId = authData.uid;
+            if (username) {
+                // new user logging in for first time
+                var email = authData.password.email;
+                actions.createProfile(userId, username, email);
+            } else {
+                // returning user
+                usersRef.child(userId).on('value', function(profile) {
+                    actions.updateProfile(userId, profile.val());
+                });
+            }
+        } 
     });
-};
+});
 
-actions.logout.preEmit = function() {
+actions.logout.listen(function() {
+    // because of firebase API, callback must
+    // be declared via ref.onAuth() (see above)
     ref.unauth();
-};
+});
 
-actions.register.preEmit = function(username, loginData) {
+actions.register.listen(function(username, loginData) {
 
     function checkForUsername(name) {
         // checks if username is taken
@@ -89,7 +108,7 @@ actions.register.preEmit = function(username, loginData) {
                 actions.loginError('USERNAME_TAKEN');
             } else {
                 ref.createUser(loginData, function(error) {
-                    if (error !== null) {
+                    if (error) {
                         // error during user creation
                         actions.loginError(error.code);
                     } else {
@@ -100,9 +119,9 @@ actions.register.preEmit = function(username, loginData) {
             }
         });
     }
-};
+});
 
-actions.createProfile.preEmit = function(uid, username, email) {
+actions.createProfile.listen(function(uid, username, email) {
     var md5hash = hash.update(email).digest('hex');
     var profile = {
         username: username,
@@ -115,7 +134,7 @@ actions.createProfile.preEmit = function(uid, username, email) {
             actions.updateProfile(uid, profile);
         }
     });
-};
+});
 
 
 /* Post Actions

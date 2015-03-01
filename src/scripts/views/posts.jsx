@@ -95,7 +95,8 @@ var Posts = React.createClass({
                         className="sortby-select"
                         onChange={ this.updateSortBy }
                         value={ sortOptions.currentValue }
-                        ref="sortBy">
+                        ref="sortBy"
+                    >
                         { options }
                     </select>
                 </div>
@@ -106,11 +107,11 @@ var Posts = React.createClass({
                 <hr />
                 <nav className="pagination">
                     {
-                        this.state.nextPage ?
+                        this.state.nextPage ? (
                             <Link to="posts" params={{ pageNum: currentPage + 1 }} className="next-page">
                                 Load More Posts
                             </Link>
-                          : 'No More Posts'
+                          ) : 'No More Posts'
                     }
                 </nav>
             </div>

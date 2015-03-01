@@ -112,17 +112,6 @@ gulp.task('serve', function() {
 });
 
 
-// Testing
-gulp.task('jest', function() {
-    var nodeModules = path.resolve('./node_modules');
-    return gulp.src('src/scripts/**/__tests__')
-        .pipe($.jest({
-            scriptPreprocessor: nodeModules + '/gulp-jest/preprocessor.js',
-            unmockedModulePathPatterns: [nodeModules + '/react']
-        }));
-});
-
-
 // Clean
 gulp.task('clean', function(cb) {
     del(['dist/styles', 'dist/scripts', 'dist/images'], cb);
@@ -130,7 +119,7 @@ gulp.task('clean', function(cb) {
 
 
 // Default task
-gulp.task('default', ['clean', 'html', 'styles', 'scripts', 'jest']);
+gulp.task('default', ['clean', 'html', 'styles', 'scripts']);
 
 
 // Watch

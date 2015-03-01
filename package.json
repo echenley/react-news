@@ -42,7 +42,7 @@
     "react-router": "^0.12.0",
     "react-tools": "^0.12.2",
     "reactify": "^0.15.2",
-    "reflux": "^0.1.15",
+    "reflux": "^0.2.5",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^2.1.1"
   },
