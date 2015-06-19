@@ -1,0 +1,32 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "ecmaFeatures": {
+        "jsx": true
+    },
+    "globals": {
+        "jest": true,
+        "React": true,
+        "jQuery": true,
+        "$": true
+    },
+    "rules": {
+        "camelcase": true,
+        "comma-spacing": [2, {
+            "before": false,
+            "after": true
+        }],
+        "curly": true,
+        "eqeqeq": true,
+        "immed": true,
+        "indent": 4,
+        "latedef": true,
+        "newcap": true,
+        "noarg": true,
+        "no-use-before-define": "nofunc",
+        "quotes": [2, "single"]
+    }
+}

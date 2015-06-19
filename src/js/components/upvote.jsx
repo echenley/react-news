@@ -1,7 +1,7 @@
 'use strict';
 
 var actions = require('../actions/actions');
-var throttle = require('lodash/function/throttle');
+var throttle = require('lodash.throttle');
 
 var Upvote = React.createClass({
 

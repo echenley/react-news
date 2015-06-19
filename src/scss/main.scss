@@ -4,6 +4,8 @@ Author:     Evan Henley
 Author URI: http://henleyedition.com/
 ====================================== */
 
+@import 'normalize';
+
 
 /* Colors and Other Variables
 ====================================== */
@@ -48,8 +50,6 @@ $breakpoint: 800px;
 
 /* Reset
 ====================================== */
-
-@import 'normalize';
 
 * {
     hyphens: auto;

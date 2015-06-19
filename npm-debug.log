@@ -1,0 +1,85 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/echenley/.nvm/versions/node/v0.12.0/bin/node',
+1 verbose cli   '/Users/echenley/.nvm/versions/node/v0.12.0/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'node-browserify' ]
+2 info using npm@2.5.1
+3 info using node@v0.12.0
+4 silly cache add args [ 'node-browserify', null ]
+5 verbose cache add spec node-browserify
+6 silly cache add parsed spec { raw: 'node-browserify',
+6 silly cache add   scope: null,
+6 silly cache add   name: 'node-browserify',
+6 silly cache add   rawSpec: '',
+6 silly cache add   spec: '*',
+6 silly cache add   type: 'range' }
+7 verbose addNamed node-browserify@*
+8 silly addNamed semver.valid null
+9 silly addNamed semver.validRange *
+10 silly addNameRange { name: 'node-browserify', range: '*', hasData: false }
+11 silly mapToRegistry name node-browserify
+12 silly mapToRegistry using default registry
+13 silly mapToRegistry registry https://registry.npmjs.org/
+14 silly mapToRegistry uri https://registry.npmjs.org/node-browserify
+15 verbose addNameRange registry:https://registry.npmjs.org/node-browserify not in flight; fetching
+16 verbose request uri https://registry.npmjs.org/node-browserify
+17 verbose request no auth needed
+18 info attempt registry request try #1 at 8:35:27 PM
+19 verbose request id 5a4e04a2ddc30d10
+20 http request GET https://registry.npmjs.org/node-browserify
+21 http 404 https://registry.npmjs.org/node-browserify
+22 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+22 verbose headers   'content-type': 'application/json',
+22 verbose headers   'cache-control': 'max-age=0',
+22 verbose headers   'content-length': '51',
+22 verbose headers   'accept-ranges': 'bytes',
+22 verbose headers   date: 'Fri, 19 Jun 2015 01:35:28 GMT',
+22 verbose headers   via: '1.1 varnish',
+22 verbose headers   age: '0',
+22 verbose headers   connection: 'keep-alive',
+22 verbose headers   'x-served-by': 'cache-ord1734-ORD',
+22 verbose headers   'x-cache': 'MISS',
+22 verbose headers   'x-cache-hits': '0',
+22 verbose headers   'x-timer': 'S1434677728.077585,VS0,VE66' }
+23 silly get cb [ 404,
+23 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+23 silly get     'content-type': 'application/json',
+23 silly get     'cache-control': 'max-age=0',
+23 silly get     'content-length': '51',
+23 silly get     'accept-ranges': 'bytes',
+23 silly get     date: 'Fri, 19 Jun 2015 01:35:28 GMT',
+23 silly get     via: '1.1 varnish',
+23 silly get     age: '0',
+23 silly get     connection: 'keep-alive',
+23 silly get     'x-served-by': 'cache-ord1734-ORD',
+23 silly get     'x-cache': 'MISS',
+23 silly get     'x-cache-hits': '0',
+23 silly get     'x-timer': 'S1434677728.077585,VS0,VE66' } ]
+24 verbose stack Error: 404 Not Found: node-browserify
+24 verbose stack     at CachingRegistryClient.<anonymous> (/Users/echenley/.nvm/versions/node/v0.12.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:251:14)
+24 verbose stack     at Request._callback (/Users/echenley/.nvm/versions/node/v0.12.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:178:14)
+24 verbose stack     at Request.self.callback (/Users/echenley/.nvm/versions/node/v0.12.0/lib/node_modules/npm/node_modules/request/request.js:344:22)
+24 verbose stack     at Request.emit (events.js:110:17)
+24 verbose stack     at Request.<anonymous> (/Users/echenley/.nvm/versions/node/v0.12.0/lib/node_modules/npm/node_modules/request/request.js:1239:14)
+24 verbose stack     at Request.emit (events.js:129:20)
+24 verbose stack     at IncomingMessage.<anonymous> (/Users/echenley/.nvm/versions/node/v0.12.0/lib/node_modules/npm/node_modules/request/request.js:1187:12)
+24 verbose stack     at IncomingMessage.emit (events.js:129:20)
+24 verbose stack     at _stream_readable.js:908:16
+24 verbose stack     at process._tickCallback (node.js:355:11)
+25 verbose statusCode 404
+26 verbose pkgid node-browserify
+27 verbose cwd /Users/echenley/GitHub/react-news
+28 error Darwin 14.3.0
+29 error argv "/Users/echenley/.nvm/versions/node/v0.12.0/bin/node" "/Users/echenley/.nvm/versions/node/v0.12.0/bin/npm" "install" "-g" "node-browserify"
+30 error node v0.12.0
+31 error npm  v2.5.1
+32 error code E404
+33 error 404 Not Found: node-browserify
+33 error 404
+33 error 404 'node-browserify' is not in the npm registry.
+33 error 404 You should bug the author to publish it (or use the name yourself!)
+33 error 404
+33 error 404 Note that you can also install from a
+33 error 404 tarball, folder, http url, or git url.
+34 verbose exit [ 1, true ]

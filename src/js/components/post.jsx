@@ -10,8 +10,8 @@ var Post = React.createClass({
 
     mixins: [
         require('../mixins/pluralize'),
-    	require('../mixins/abbreviateNumber'),
-    	require('../mixins/hostnameFromUrl'),
+        require('../mixins/abbreviateNumber'),
+        require('../mixins/hostNameFromUrl'),
         require('../mixins/timeAgo')
     ],
 
@@ -33,7 +33,7 @@ var Post = React.createClass({
         }
 
         // add delete option if creator is logged in
-        if (user.uid === post.creatorUID) {   
+        if (user.uid === post.creatorUID) {
             deleteOption = (
                 <span className="delete post-info-item">
                     <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
@@ -78,7 +78,7 @@ var Post = React.createClass({
             </div>
         );
     }
-    
+
 });
 
 module.exports = Post;

@@ -6,7 +6,6 @@ Author URI: http://henleyedition.com/
 
 'use strict';
 
-var $ = jQuery;
 window.React = require('react/addons');
 var Reflux   = require('reflux');
 
