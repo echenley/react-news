@@ -119,7 +119,7 @@ gulp.task('clean', function(cb) {
     ], cb);
 });
 
-gulp.task('build', ['html', 'styles', 'lint'], function() {
+gulp.task('build', ['html', 'styles'], function() {
     return buildScript(jsEntry + '.jsx');
 });
 
