@@ -38,9 +38,9 @@ var userStore = Reflux.createStore({
         this.trigger(this.user);
     },
 
-    getUserId: function(username, cb) {
+    getUserId: function(username) {
         // returns userId given username
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve) {
             usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
                 var userId = Object.keys(user.val())[0];
                 resolve(userId);

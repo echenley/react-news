@@ -104,7 +104,7 @@ gulp.task('minify', function() {
         .pipe($.plumber())
         .pipe(assets)
         .pipe($.if('*.js', $.uglify()))
-        .pipe($.if('*.css', $.minifycss()))
+        .pipe($.if('*.css', $.minifyCss()))
         .pipe(assets.restore())
         .pipe($.useref())
         .pipe(gulp.dest(distDir))
