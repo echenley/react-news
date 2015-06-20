@@ -96,10 +96,6 @@ gulp.task('html', function() {
 gulp.task('minify', function() {
     var assets = $.useref.assets();
 
-    // move favicon to /dist
-    gulp.src(buildDir + 'favicon.ico')
-        .pipe(gulp.dest(distDir));
-
     // minify css/js and move index.html to /dist
     return gulp.src('build/*.html')
         .pipe($.plumber())
