@@ -50,7 +50,8 @@ function buildScript(file) {
         })
         .transform(babelify.configure({
             only: /(src\/js)/
-        }));
+        })
+    );
 
     function rebundle() {
         $.util.log('Rebundle...');
@@ -123,7 +124,7 @@ gulp.task('build', ['html', 'styles'], function() {
     return buildScript(jsEntry + '.jsx');
 });
 
-gulp.task('dist', ['build'], function() {
+gulp.task('dist', function() {
     runSequence(
         'clean',
         'build',
