@@ -16,7 +16,7 @@ password: henleyedition1
 
 ## Development
 
-After cloning, just `cd` in there, run `npm install` and `gulp` and have at the `src/` folder.
+After cloning, just `cd` in there, run `npm i && gulp` and have at the `src/` folder.
 
 ## Firebase Security Rules
 
