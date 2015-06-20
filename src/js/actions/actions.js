@@ -49,12 +49,22 @@ var actions = Reflux.createActions({
 /* User Actions
 ===============================*/
 
+function updateProfile(userId) {
+    usersRef.child(userId).on('value', function(profile) {
+        actions.updateProfile(userId, profile.val());
+    });
+}
+
 // triggered by auth changes
 ref.onAuth(function(authData) {
     if (!authData) {
         // logging out
         usersRef.off();
         actions.logout.completed();
+    } else {
+        // called when reloading the page
+        // while authentication still active
+        updateProfile(authData.uid);
     }
 });
 
@@ -73,9 +83,7 @@ actions.login.listen(function(user, username) {
                 actions.createProfile(userId, username, email);
             } else {
                 // returning user
-                usersRef.child(userId).on('value', function(profile) {
-                    actions.updateProfile(userId, profile.val());
-                });
+                updateProfile(userId);
             }
         }
     });
