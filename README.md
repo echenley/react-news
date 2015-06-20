@@ -8,7 +8,7 @@ This is a Hacker News clone written using [React](http://facebook.github.io/reac
 
 ## Demo
 
-Demo available [here](http://henleyedition.com/reactnews/).
+Demo available [here](http://henleyedition.com/react-news/).
 
 Test User Login:  
 email: reactnews@example.com  
