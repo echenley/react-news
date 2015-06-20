@@ -16,7 +16,7 @@ password: henleyedition1
 
 ## Development
 
-After cloning, just `cd` in there, run `npm i && gulp` and have at the `src/` folder.
+`cd` in there, run `npm i && gulp` and have at the `src/`.
 
 ## Firebase Security Rules
 
@@ -37,9 +37,9 @@ It was requested that I post my Firebase security rules. Hope this helps!
         ".write": "(auth != null && !data.exists()) || data.child('creatorUID').val() === auth.uid",
           
         // We want to make sure that all 5 fields are present before saving a new post
-        ".validate": "newData.hasChildren(['title','url','creator','creatorUID', 'time'])",
+        ".validate": "newData.hasChildren(['title', 'url', 'creator', 'creatorUID', 'time'])",
 
-        // title must be a string with length>0
+        // title must be a string with length > 0
         "title": {
           ".validate": "newData.isString() && newData.val().length > 0"
         },
@@ -76,7 +76,7 @@ It was requested that I post my Firebase security rules. Hope this helps!
       
       "$comment_id": {
         ".write": "auth != null && (!data.exists() || data.child('creatorUID').val() === auth.uid)",
-        ".validate": "newData.hasChildren(['postId','text','creator','creatorUID', 'time']) &&
+        ".validate": "newData.hasChildren(['postId', 'text', 'creator', 'creatorUID', 'time']) &&
                       (newData.child('text').isString() && newData.child('text').val() != '')",
         
         "upvotes": {
