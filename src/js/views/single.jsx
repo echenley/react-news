@@ -1,23 +1,40 @@
 'use strict';
 
-var Reflux      = require('reflux');
+var Reflux = require('reflux');
 var singleStore = require('../stores/singleStore');
-var actions     = require('../actions/actions');
-var Spinner     = require('../components/spinner');
-var Post        = require('../components/post');
-var Comment     = require('../components/comment');
-var Router      = require('react-router');
+var actions = require('../actions/actions');
+var Spinner = require('../components/spinner');
+var Post = require('../components/post');
+var Comment = require('../components/comment');
+var Router = require('react-router');
+
+var pluralize = require('../util/pluralize');
 
 var SinglePost = React.createClass({
 
+    propTypes: {
+        user: React.PropTypes.object,
+        params: React.PropTypes.object
+    },
+
     mixins: [
-        require('../mixins/pluralize'),
         Router.Navigation,
         Router.State,
         Reflux.listenTo(singleStore, 'onUpdate')
     ],
 
-    getInitialState: function() {
+    statics: {
+        willTransitionTo(transition, params) {
+            // watch current post and comments
+            actions.listenToPost(params.postId);
+        },
+
+        willTransitionFrom(transition, component) {
+            actions.stopListeningToPost(component.state.post.id);
+        }
+    },
+
+    getInitialState() {
         return {
             post: false,
             comments: [],
@@ -25,20 +42,7 @@ var SinglePost = React.createClass({
         };
     },
 
-    statics: {
-
-        willTransitionTo: function(transition, params) {
-            // watch current post and comments
-            actions.listenToPost(params.postId);
-        },
-
-        willTransitionFrom: function(transition, component) {
-            actions.stopListeningToPost(component.state.post.id);
-        }
-        
-    },
-
-    onUpdate: function(postData) {
+    onUpdate(postData) {
         this.setState({
             post: postData.post,
             comments: postData.comments,
@@ -46,7 +50,7 @@ var SinglePost = React.createClass({
         });
     },
 
-    addComment: function(e) {
+    addComment(e) {
         e.preventDefault();
 
         if (!this.props.user.isLoggedIn) {
@@ -67,7 +71,7 @@ var SinglePost = React.createClass({
         commentTextEl.value = '';
     },
 
-    render: function() {
+    render() {
         var user = this.props.user;
         var comments = this.state.comments;
         var post = this.state.post;
@@ -86,7 +90,7 @@ var SinglePost = React.createClass({
                 <div>
                     <Post post={ post } user={ user } key={ postId } />
                     <div className="comments">
-                        <h2>{ this.pluralize(comments.length, 'Comment') }</h2>
+                        <h2>{ pluralize(comments.length, 'Comment') }</h2>
                         { comments }
                     </div>
                 </div>

@@ -2,31 +2,48 @@
     "parser": "babel-eslint",
     "env": {
         "browser": true,
-        "node": true
+        "node": true,
+        "es6": true
     },
     "ecmaFeatures": {
-        "jsx": true
+        "jsx": true,
+        "arrowFunctions": true
     },
     "globals": {
         "jest": true,
-        "React": true,
-        "jQuery": true,
-        "$": true
+        "React": true
     },
+    "plugins": [
+        "react"
+    ],
     "rules": {
-        "camelcase": true,
+        "camelcase": [2, {
+            "properties": "always"
+        }],
         "comma-spacing": [2, {
             "before": false,
             "after": true
         }],
-        "curly": true,
-        "eqeqeq": true,
-        "immed": true,
-        "indent": 4,
-        "latedef": true,
-        "newcap": true,
-        "noarg": true,
-        "no-use-before-define": "nofunc",
-        "quotes": [2, "single"]
+        "eqeqeq": [2, "smart"],
+        "indent": [2, 4],
+        "no-use-before-define": [2, "nofunc"],
+        "quotes": [2, "single"],
+        "semi": [2, "always"],
+
+        // eslint-plugin-react specific
+        "react/jsx-boolean-value": 1,
+        "react/jsx-no-undef": 1,
+        "react/jsx-quotes": 1,
+        "react/jsx-uses-react": 1,
+        "react/jsx-uses-vars": 1,
+        "react/no-did-mount-set-state": 1,
+        "react/no-did-update-set-state": 1,
+        "react/no-multi-comp": 1,
+        "react/no-unknown-property": 1,
+        "react/prop-types": 1,
+        "react/react-in-jsx-scope": 1,
+        "react/self-closing-comp": 1,
+        "react/sort-comp": 1,
+        "react/wrap-multilines": 1
     }
 }

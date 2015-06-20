@@ -7,12 +7,13 @@ var loginStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function() {
+    init() {
         this.message = '';
     },
 
-    loginError: function(errorCode) {
+    loginError(errorCode) {
         var message;
+
         switch (errorCode) {
             case 'INVALID_EMAIL':
                 message = 'Invalid email address.'; break;
@@ -29,11 +30,10 @@ var loginStore = Reflux.createStore({
             default:
                 message = 'Something went wrong.';
         }
+
         this.trigger(message);
     }
 
 });
 
 module.exports = loginStore;
-
-

@@ -14,20 +14,27 @@ var postStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function() {
+    init() {
         this.postData = {
             post: {},
             comments: []
         };
     },
 
-    listenToPost: function(postId) {
-        postListener = postsRef.child(postId).on('value', this.updatePost.bind(this));
-        commentListener = commentsRef.orderByChild('postId').equalTo(postId).on('value', this.updateComments.bind(this));
+    listenToPost(postId) {
+        postListener = postsRef
+            .child(postId)
+            .on('value', this.updatePost.bind(this));
+
+        commentListener = commentsRef
+            .orderByChild('postId')
+            .equalTo(postId)
+            .on('value', this.updateComments.bind(this));
     },
 
-    updatePost: function(postData) {
+    updatePost(postData) {
         var post = postData.val();
+
         if (post) {
             post.id = postData.key();
             this.postData.post = post;
@@ -37,45 +44,35 @@ var postStore = Reflux.createStore({
                 isDeleted: true
             };
         }
+
         this.trigger(this.postData);
     },
 
-    updateComments: function(comments) {
+    updateComments(comments) {
         this.postData.comments = [];
-        comments.forEach(function(commentData) {
+
+        comments.forEach((commentData) => {
             var comment = commentData.val();
             comment.id = commentData.key();
             this.postData.comments.unshift(comment);
-        }.bind(this));
+        });
+
         this.trigger(this.postData);
     },
 
-    stopListeningToPost: function(postId) {
+    stopListeningToPost(postId) {
         if (!this.postData.post.isDeleted) {
-            postsRef.child(postId).off('value', postListener);
+            postsRef.child(postId)
+                .off('value', postListener);
         }
+
         commentsRef.off('value', commentListener);
     },
 
-    getDefaultData: function() {
+    getDefaultData() {
         return this.postData;
     }
 
 });
 
 module.exports = postStore;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

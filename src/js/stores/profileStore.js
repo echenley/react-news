@@ -14,46 +14,58 @@ var profileStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function() {
+    init() {
         this.userId = '';
         this.posts = [];
         this.comments = [];
     },
 
-    listenToProfile: function(userId) {
+    listenToProfile(userId) {
         this.userId = userId;
-        postListener = postsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
+
+        postListener = postsRef
+            .orderByChild('creatorUID')
+            .equalTo(userId)
+            .limitToLast(3)
             .on('value', this.updatePosts.bind(this));
-        commentListener = commentsRef.orderByChild('creatorUID').equalTo(userId).limitToLast(3)
+
+        commentListener = commentsRef
+            .orderByChild('creatorUID')
+            .equalTo(userId)
+            .limitToLast(3)
             .on('value', this.updateComments.bind(this));
     },
 
-    stopListeningToProfile: function() {
+    stopListeningToProfile() {
         postsRef.off('value', postListener);
         commentsRef.off('value', commentListener);
     },
 
-    updatePosts: function(posts) {
+    updatePosts(posts) {
         this.posts = [];
-        posts.forEach(function(postData) {
+
+        posts.forEach((postData) => {
             var post = postData.val();
             post.id = postData.key();
             this.posts.unshift(post);
-        }.bind(this));
+        });
+
         this.triggerAll();
     },
 
-    updateComments: function(comments) {
+    updateComments(comments) {
         this.comments = [];
-        comments.forEach(function(commentData) {
+
+        comments.forEach((commentData) => {
             var comment = commentData.val();
             comment.id = commentData.key();
             this.comments.unshift(comment);
-        }.bind(this));
+        });
+
         this.triggerAll();
     },
 
-    triggerAll: function () {
+    triggerAll () {
         this.trigger({
             userId: this.userId,
             posts: this.posts,
@@ -61,7 +73,7 @@ var profileStore = Reflux.createStore({
         });
     },
 
-    getDefaultData: function() {
+    getDefaultData() {
         return {
             userId: this.userId,
             posts: this.posts,

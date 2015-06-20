@@ -4,7 +4,7 @@
 var Link = require('react-router').Link;
 
 var uhOh = React.createClass({
-    render: function () {
+    render() {
         return (
             <div className="content full-width">
                 <h1>{ 'That Page Doesn\'t Exist' }</h1>

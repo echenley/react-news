@@ -3,22 +3,31 @@
 var actions = require('../actions/actions');
 var throttle = require('lodash.throttle');
 
+var cx = require('classnames');
+
 var Upvote = React.createClass({
 
-    getInitialState: function() {
+    propTypes: {
+        user: React.PropTypes.object,
+        itemId: React.PropTypes.string,
+        upvoteActions: React.PropTypes.object,
+        upvotes: React.PropTypes.number
+    },
+
+    getInitialState() {
         return {
             upvoted: false
         };
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
         var upvoted = this.props.user.profile.upvoted;
         this.setState({
             upvoted: upvoted[this.props.itemId]
         });
     },
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         var upvoted = nextProps.user.profile.upvoted;
         this.setState({
             upvoted: upvoted[nextProps.itemId]
@@ -45,16 +54,14 @@ var Upvote = React.createClass({
         });
     }, 300, { trailing: false }),
 
-    render: function() {
-        var cx = React.addons.classSet;
-
+    render() {
         var userId = this.props.user.uid;
         var itemId = this.props.itemId;
         var upvotes = this.props.upvotes;
 
         var upvoted = this.state.upvoted;
-        var upvoteCx = cx({
-            'upvote': true,
+        var upvoteCx = cx(
+            'upvote', {
             'upvoted': upvoted
         });
 

@@ -1,7 +1,7 @@
 'use strict';
 
 var Spinner = React.createClass({
-    render: function() {
+    render() {
         var bars = [];
         var barStyle;
 

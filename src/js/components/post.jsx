@@ -6,16 +6,19 @@ var actions = require('../actions/actions');
 var Link = require('react-router').Link;
 var Upvote = require('./upvote');
 
+var abbreviateNumber = require('../util/abbreviateNumber');
+var pluralize = require('../util/pluralize');
+var hostNameFromUrl = require('../util/hostNameFromUrl');
+var timeAgo = require('../util/timeAgo');
+
 var Post = React.createClass({
 
-    mixins: [
-        require('../mixins/pluralize'),
-        require('../mixins/abbreviateNumber'),
-        require('../mixins/hostNameFromUrl'),
-        require('../mixins/timeAgo')
-    ],
+    propTypes: {
+        user: React.PropTypes.object,
+        post: React.PropTypes.object
+    },
 
-    render: function() {
+    render() {
         var user = this.props.user;
         var post = this.props.post;
         var commentCount = post.commentCount || 0;
@@ -51,7 +54,7 @@ var Post = React.createClass({
                 <div className="post-link">
                     <a className="post-title" href={ post.url }>{ post.title }</a>
                     <span className="hostname">
-                        (<a href={ post.url }>{ this.hostnameFromUrl(post.url) }</a>)
+                        (<a href={ post.url }>{ hostNameFromUrl(post.url) }</a>)
                     </span>
                 </div>
                 <div className="post-info">
@@ -60,16 +63,16 @@ var Post = React.createClass({
                             upvoteActions= { upvoteActions }
                             user={ user }
                             itemId={ post.id }
-                            upvotes={ post.upvotes ? this.abbreviateNumber(post.upvotes) : 0 } />
+                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : 0 } />
                         <span className="post-info-item">
                             <Link to="profile" params={{ username: post.creator }}>{ post.creator }</Link>
                         </span>
                         <span className="post-info-item">
-                            { this.timeAgo(post.time) }
+                            { timeAgo(post.time) }
                         </span>
                         <span className="post-info-item">
                             <Link to="post" params={{ postId: post.id }}>
-                                { this.pluralize(commentCount, 'comment') }
+                                { pluralize(commentCount, 'comment') }
                             </Link>
                         </span>
                         { deleteOption }
@@ -78,7 +81,6 @@ var Post = React.createClass({
             </div>
         );
     }
-
 });
 
 module.exports = Post;

@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = jQuery;
+var Promise = require('bluebird');
 var Reflux = require('reflux');
 var actions = require('../actions/actions');
 var Firebase = require('firebase');
@@ -20,11 +20,11 @@ var userStore = Reflux.createStore({
 
     listenables: actions,
 
-    init: function() {
+    init() {
         this.user = defaultUser;
     },
 
-    updateProfile: function(userId, profile) {
+    updateProfile(userId, profile) {
         this.user = {
             uid: userId,
             profile: profile,
@@ -33,39 +33,24 @@ var userStore = Reflux.createStore({
         this.trigger(this.user);
     },
 
-    logoutCompleted: function() {
+    logoutCompleted() {
         this.user = defaultUser;
         this.trigger(this.user);
     },
 
-    getUserId: function(username) {
+    getUserId: function(username, cb) {
         // returns userId given username
-        var defer = $.Deferred();
-        usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
-            var userId = Object.keys(user.val())[0];
-            defer.resolve(userId);
+        return new Promise(function(resolve, reject) {
+            usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
+                var userId = Object.keys(user.val())[0];
+                resolve(userId);
+            });
         });
-        return defer.promise();
     },
 
-    getDefaultData: function() {
+    getDefaultData() {
         return this.user;
     }
 });
 
 module.exports = userStore;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

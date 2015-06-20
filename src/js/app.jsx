@@ -7,25 +7,27 @@ Author URI: http://henleyedition.com/
 'use strict';
 
 window.React = require('react/addons');
-var Reflux   = require('reflux');
+var Reflux = require('reflux');
 
 var attachFastClick = require('fastclick');
 
-var Router        = require('react-router');
-var RouteHandler  = Router.RouteHandler;
-var Route         = Router.Route;
-// var NotFoundRoute = Router.NotFoundRoute;
-var DefaultRoute  = Router.DefaultRoute;
-var Link          = Router.Link;
+var Router = require('react-router');
+var RouteHandler = Router.RouteHandler;
+var Route = Router.Route;
+// var  = Router.NotFoundRoute;
+var DefaultRoute = Router.DefaultRoute;
+var Link = Router.Link;
 
-var userStore  = require('./stores/userStore');
-var actions    = require('./actions/actions');
-var Posts      = require('./views/posts');
+var userStore = require('./stores/userStore');
+var actions = require('./actions/actions');
+var Posts = require('./views/posts');
 var SinglePost = require('./views/single');
-var Profile    = require('./views/profile');
-var UhOh       = require('./views/404');
-var Login      = require('./components/login');
-var Register   = require('./components/register');
+var Profile = require('./views/profile');
+var UhOh = require('./views/404');
+var Login = require('./components/login');
+var Register = require('./components/register');
+
+var cx = require('classnames');
 
 var ReactNews = React.createClass({
 
@@ -36,7 +38,7 @@ var ReactNews = React.createClass({
         Reflux.listenTo(actions.goToPost, 'goToPost')
     ],
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             user: userStore.getDefaultData(),
             showPanel: false,
@@ -45,75 +47,46 @@ var ReactNews = React.createClass({
         };
     },
 
-    goToPost: function(postId) {
+    componentDidMount() {
+        document.addEventListener('keyup', e => {
+            if (e.keyCode === 27) { // esc
+                e.preventDefault();
+                this.hideOverlay();
+            }
+        });
+    },
+
+    goToPost(postId) {
         this.transitionTo('post', { postId: postId });
     },
 
-    onStoreUpdate: function(user) {
+    onStoreUpdate(user) {
         this.setState({
             user: user,
             showOverlay: false
         });
     },
 
-    isChildNodeOf: function(target, parentIds) {
-        // returns boolean whether target is child of a list of ids
-        // parentIds can be a string or an array of ids
-        if (typeof parentIds === 'string') {
-            parentIds = [parentIds];
-        }
-        // if this node is not the one we want, move up the dom tree
-        while (target !== null && parentIds.indexOf(target.id) < 0) {
-            target = target.parentNode;
-        }
-        // at this point we have found our containing div or we are out of parent nodes
-        return (target !== null && parentIds.indexOf(target.id) >= 0);
-    },
-
-    componentDidMount: function() {
-        // hide the menu when clicked away
-        $(document).on('click', function(e) {
-            if (this.state.showPanel && !this.isChildNodeOf(e.target, ['header-panel', 'panel-toggle'])) {
-                this.togglePanel();
-            }
-        }.bind(this));
-
-        $(document).keyup(function(e) {
-            if (e.keyCode === 27) { // esc
-                e.preventDefault();
-                this.hideOverlay();
-            }
-        }.bind(this));
-    },
-
-    togglePanel: function() {
+    togglePanel() {
         this.setState({
             showPanel: !this.state.showPanel
         });
     },
 
-    hideOverlayListener: function(e) {
-        if (!this.isChildNodeOf(e.target, ['overlay-content'])) {
-            this.hideOverlay();
-        }
-    },
-
-    hideOverlay: function() {
+    hideOverlay() {
         this.setState({
             showOverlay: false
         });
     },
 
-    showOverlay: function(type) {
-        var overlay = this.refs.overlay.getDOMNode();
-        overlay.addEventListener('click', this.hideOverlayListener);
+    showOverlay(type) {
         this.setState({
             overlayType: type,
             showOverlay: true
         });
     },
 
-    submitPost: function(e) {
+    submitPost(e) {
         e.preventDefault();
 
         var titleEl = this.refs.title.getDOMNode();
@@ -156,8 +129,7 @@ var ReactNews = React.createClass({
         this.togglePanel();
     },
 
-    render: function() {
-        var cx = React.addons.classSet;
+    render() {
         var user = this.state.user;
         var postError = this.state.postError;
 
@@ -165,54 +137,49 @@ var ReactNews = React.createClass({
         var md5hash = user ? user.profile.md5hash : '';
         var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
 
-        var headerCx = cx({
-            'header': true,
+        var headerCx = cx(
+            'header', {
             'panel-open': this.state.showPanel
         });
 
-        var titleInputCx = cx({
-            'panel-input': true,
+        var titleInputCx = cx(
+            'panel-input', {
             'input-error': postError === 'title_error'
         });
 
-        var linkInputCx = cx({
-            'panel-input': true,
+        var linkInputCx = cx(
+            'panel-input', {
             'input-error': postError === 'link_error'
         });
 
-        var overlayCx = cx({
-            'md-overlay': true,
-            'md-show': this.state.showOverlay
+        var wrapperCx = cx(
+            'wrapper',
+            'full-height', {
+            'modal-open': this.state.showOverlay
         });
 
-        var overlayContent = <Login />;
-        if (this.state.overlayType === 'register') {
-            overlayContent = <Register />;
-        }
+        var overlayContent = this.state.overlayType === 'register'
+            ? <Register />
+            : <Login />;
 
-        var userArea;
-        if (user.isLoggedIn) {
+        var userArea = user.isLoggedIn ? (
             // show profile info
-            userArea = (
-                <span className="user-info">
-                    <Link to="profile" params={{ username: username }} className="profile-link">
-                        <span className="username">{ username }</span>
-                        <img src={ gravatarURI } className="nav-pic" />
-                    </Link>
-                </span>
-            );
-        } else {
+            <span className="user-info">
+                <Link to="profile" params={{ username: username }} className="profile-link">
+                    <span className="username">{ username }</span>
+                    <img src={ gravatarURI } className="nav-pic" />
+                </Link>
+            </span>
+        ) : (
             // show login/register
-            userArea = (
-                <span>
-                    <a onClick={ actions.showOverlay.bind(this, 'login') }>Sign In</a>
-                    <a onClick={ actions.showOverlay.bind(this, 'register') } className="register-link">Register</a>
-                </span>
-            );
-        }
+            <span>
+                <a onClick={ actions.showOverlay.bind(this, 'login') }>Sign In</a>
+                <a onClick={ actions.showOverlay.bind(this, 'register') } className="register-link">Register</a>
+            </span>
+        );
 
         return (
-            <div className="wrapper full-height">
+            <div className={ wrapperCx }>
                 <header className={ headerCx }>
                     <div className="header-main">
                         <div className="float-left">
@@ -233,10 +200,13 @@ var ReactNews = React.createClass({
                         </form>
                     </div>
                 </header>
+
                 <main id="content" className="full-height inner">
                     <RouteHandler { ...this.props } user={ this.state.user } />
                 </main>
-                <div className={ overlayCx } ref="overlay">{ overlayContent }</div>
+
+                { overlayContent }
+                <a href="#" className='md-overlay' onClick={ this.hideOverlay }></a>
             </div>
         );
     }

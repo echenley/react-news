@@ -1,21 +1,35 @@
 'use strict';
 
-var Reflux     = require('reflux');
-var actions    = require('../actions/actions');
+var Reflux = require('reflux');
+var actions = require('../actions/actions');
 var postsStore = require('../stores/postsStore');
-var Spinner    = require('../components/spinner');
-var Post       = require('../components/post');
-var Router     = require('react-router');
-var Link       = Router.Link;
+var Spinner = require('../components/spinner');
+var Post = require('../components/post');
+var Router = require('react-router');
+var Link = Router.Link;
 
 var Posts = React.createClass({
+
+    propTypes: {
+        user: React.PropTypes.object
+    },
 
     mixins: [
         Router.Navigation,
         Reflux.listenTo(postsStore, 'onStoreUpdate')
     ],
 
-    getInitialState: function() {
+    statics: {
+        willTransitionTo(transition, params) {
+            actions.listenToPosts(+params.pageNum || 1);
+        },
+
+        willTransitionFrom() {
+            actions.stopListeningToPosts();
+        }
+    },
+
+    getInitialState() {
         var postsData = postsStore.getDefaultData();
         return {
             loading: true,
@@ -26,19 +40,7 @@ var Posts = React.createClass({
         };
     },
 
-    statics: {
-
-        willTransitionTo: function(transition, params) {
-            actions.listenToPosts(+params.pageNum || 1);
-        },
-
-        willTransitionFrom: function() {
-            actions.stopListeningToPosts();
-        }
-        
-    },
-
-    onStoreUpdate: function(postsData) {
+    onStoreUpdate(postsData) {
         if (!postsData.posts.length) {
             // if no posts are returned
             this.transitionTo('home');
@@ -52,10 +54,10 @@ var Posts = React.createClass({
         });
     },
 
-    updateSortBy: function(e) {
+    updateSortBy(e) {
         e.preventDefault();
         var currentPage = this.state.currentPage || 1;
-        
+
         actions.setSortBy(this.refs.sortBy.getDOMNode().value);
 
         this.setState({
@@ -70,7 +72,7 @@ var Posts = React.createClass({
         }
     },
 
-    render: function() {
+    render() {
         var posts = this.state.posts;
         var currentPage = this.state.currentPage || 1;
         var sortOptions = this.state.sortOptions;
@@ -79,7 +81,7 @@ var Posts = React.createClass({
         var user = this.props.user;
 
         posts = posts.map(function(post) {
-            return <Post post={ post } user={ user } key={ post.id } />; 
+            return <Post post={ post } user={ user } key={ post.id } />;
         });
 
         var options = sortValues.map(function(optionText, i) {

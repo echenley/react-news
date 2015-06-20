@@ -6,6 +6,8 @@
     "url": "https://github.com/echenley/react-news.git"
   },
   "dependencies": {
+    "bluebird": "^2.9.30",
+    "classnames": "^2.1.2",
     "crypto": "0.0.3",
     "fastclick": "^1.0.3",
     "firebase": "^2.2.7",
@@ -17,12 +19,16 @@
     "reflux": "^0.2.8"
   },
   "devDependencies": {
+    "babel-eslint": "^3.1.17",
     "babelify": "^6.1.1",
     "browser-sync": "^2.7.10",
     "browserify": "^9.0.3",
     "del": "^1.2.0",
+    "eslint": "^0.23.0",
+    "eslint-plugin-react": "^2.5.2",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.1.0",
+    "gulp-eslint": "^0.14.0",
     "gulp-exit": "0.0.2",
     "gulp-if": "^1.2.5",
     "gulp-load-plugins": "^1.0.0-rc.1",

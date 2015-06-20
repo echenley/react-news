@@ -6,36 +6,33 @@ var actions = require('../actions/actions');
 // components
 var Link = require('react-router').Link;
 var Upvote = require('./upvote');
+var abbreviateNumber = require('../util/abbreviateNumber');
+var timeAgo = require('../util/timeAgo');
 
 var Comment = React.createClass({
 
-    mixins: [
-        require('../mixins/abbreviateNumber'),
-        require('../mixins/timeAgo')
-    ],
+    propTypes: {
+        user: React.PropTypes.object,
+        comment: React.PropTypes.object,
+        showPostTitle: React.PropTypes.bool
+    },
 
-    render: function() {
+    render() {
         var user = this.props.user;
         var comment = this.props.comment;
         var showPostTitle = this.props.showPostTitle;
 
-        var postLink = '';
-        if (showPostTitle) {
-            postLink = (
-                <span className="post-info-item">
-                    <Link to="post" params={{ postId: comment.postId }}>{ comment.postTitle }</Link>
-                </span>
-            );
-        }
+        var postLink = showPostTitle && (
+            <span className="post-info-item">
+                <Link to="post" params={{ postId: comment.postId }}>{ comment.postTitle }</Link>
+            </span>
+        );
 
-        var deleteOption = '';
-        if (user.uid === comment.creatorUID) {   
-            deleteOption = (
-                <span className="delete post-info-item">
-                    <a onClick={ actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
-                </span>
-            );
-        }
+        var deleteOption = user.uid === comment.creatorUID && (
+            <span className="delete post-info-item">
+                <a onClick={ actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
+            </span>
+        );
 
         var upvoteActions = {
             upvote: actions.upvoteComment,
@@ -47,23 +44,33 @@ var Comment = React.createClass({
                 <div className="comment-text">
                     { comment.text }
                 </div>
+
                 <div className="comment-info">
-		            <div className="posted-by float-left">
+                    <div className="posted-by float-left">
+
                         <Upvote
                             upvoteActions={ upvoteActions }
                             user={ user }
                             itemId={ comment.id }
-                            upvotes={ comment.upvotes ? this.abbreviateNumber(comment.upvotes) : 0 } />
+                            upvotes={ comment.upvotes ? abbreviateNumber(comment.upvotes) : 0 }
+                        />
+
                         <span className="post-info-item">
-                            <Link to="profile" params={{ username: comment.creator }}>{ comment.creator }</Link>
+                            <Link to="profile" params={{ username: comment.creator }}>
+                                { comment.creator }
+                            </Link>
                         </span>
+
                         <span className="post-info-item">
-                            { this.timeAgo(comment.time) }
+                            { timeAgo(comment.time) }
                         </span>
+
                         { postLink }
+
                         { deleteOption }
-		            </div>
-	            </div>
+
+                    </div>
+                </div>
             </div>
         );
     }

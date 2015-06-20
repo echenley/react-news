@@ -19,16 +19,16 @@ var Register = React.createClass({
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             error: '',
             submitted: false
         };
     },
 
-    resetForm: function() {
+    resetForm() {
         this.setState({
-            submitted: false,
+            submitted: false
         });
         this.refs.username.getDOMNode().value = '';
         this.refs.email.getDOMNode().value = '';
@@ -36,7 +36,7 @@ var Register = React.createClass({
         this.refs.submit.getDOMNode().disabled = false;
     },
 
-    onErrorMessage: function(errorMessage) {
+    onErrorMessage(errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
@@ -44,7 +44,7 @@ var Register = React.createClass({
         });
     },
 
-    registerUser: function(e) {
+    registerUser(e) {
         e.preventDefault();
 
         this.refs.submit.getDOMNode().disabled = true;
@@ -56,12 +56,16 @@ var Register = React.createClass({
             email: this.refs.email.getDOMNode().value.trim(),
             password: this.refs.password.getDOMNode().value.trim()
         };
+
         var username = this.refs.username.getDOMNode().value.trim();
+
         actions.register(username, loginData);
     },
 
-    render: function() {
-        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : '';
+    render() {
+        var error = this.state.error && (
+            <div className="error login-error">{ this.state.error }</div>
+        );
 
         return (
             <div className="login md-modal text-center" id="overlay-content">

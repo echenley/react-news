@@ -19,23 +19,23 @@ var Login = React.createClass({
         Reflux.listenTo(loginStore, 'onErrorMessage')
     ],
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             error: '',
             submitted: false
         };
     },
 
-    resetForm: function() {
+    resetForm() {
         this.refs.email.getDOMNode().value = '';
         this.refs.password.getDOMNode().value = '';
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
-            submitted: false,
+            submitted: false
         });
     },
 
-    onErrorMessage: function(errorMessage) {
+    onErrorMessage(errorMessage) {
         this.refs.submit.getDOMNode().disabled = false;
         this.setState({
             error: errorMessage,
@@ -43,7 +43,7 @@ var Login = React.createClass({
         });
     },
 
-    login: function(e) {
+    login(e) {
         e.preventDefault();
 
         this.refs.submit.getDOMNode().disabled = true;
@@ -57,8 +57,10 @@ var Login = React.createClass({
         });
     },
 
-    render: function() {
-        var error = this.state.error ? <div className="error login-error">{ this.state.error }</div> : null;
+    render() {
+        var error = this.state.error && (
+            <div className="error login-error">{ this.state.error }</div>
+        );
 
         return (
             <div className="login text-center md-modal" id="overlay-content">

@@ -31,6 +31,14 @@ function handleError() {
     this.emit('end');
 }
 
+gulp.task('lint', function() {
+    return gulp.src(srcDir + 'js/**/*')
+        .pipe($.eslint({
+            useEsLintrc: true
+        }))
+        .pipe($.eslint.format());
+});
+
 function buildScript(file) {
     var props = watchify.args;
     props.entries = [srcDir + 'js/' + file];
@@ -85,7 +93,7 @@ gulp.task('html', function() {
 });
 
 gulp.task('minify', function() {
-    var assets = useref.assets();
+    var assets = $.useref.assets();
 
     // move favicon to /dist
     gulp.src(buildDir + 'favicon.ico')
@@ -95,13 +103,13 @@ gulp.task('minify', function() {
     return gulp.src('build/*.html')
         .pipe($.plumber())
         .pipe(assets)
-        .pipe($.if('*.js', uglify()))
-        .pipe($.if('*.css', minifycss()))
+        .pipe($.if('*.js', $.uglify()))
+        .pipe($.if('*.css', $.minifycss()))
         .pipe(assets.restore())
         .pipe($.useref())
         .pipe(gulp.dest(distDir))
         .pipe($.size())
-        .pipe(exit());
+        .pipe($.exit());
 });
 
 gulp.task('clean', function(cb) {
@@ -111,7 +119,7 @@ gulp.task('clean', function(cb) {
     ], cb);
 });
 
-gulp.task('build', ['html', 'styles'], function() {
+gulp.task('build', ['html', 'styles', 'lint'], function() {
     return buildScript(jsEntry + '.jsx');
 });
 
@@ -131,6 +139,7 @@ gulp.task('serve', ['build'], function() {
     });
 
     gulp.watch(srcDir + '*.html', ['html']);
+    gulp.watch(srcDir + 'js/**/*.js', ['lint']);
     gulp.watch(srcDir + 'scss/**/*.scss', ['styles']);
 
     $.watch([
