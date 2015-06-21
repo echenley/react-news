@@ -2,7 +2,8 @@
 
 var Promise = require('bluebird');
 var Reflux = require('reflux');
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
+
 var Firebase = require('firebase');
 var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
 var usersRef = ref.child('users');
@@ -16,9 +17,9 @@ var defaultUser = {
     isLoggedIn: false
 };
 
-var userStore = Reflux.createStore({
+var UserStore = Reflux.createStore({
 
-    listenables: actions,
+    listenables: Actions,
 
     init() {
         this.user = defaultUser;
@@ -53,4 +54,4 @@ var userStore = Reflux.createStore({
     }
 });
 
-module.exports = userStore;
+module.exports = UserStore;

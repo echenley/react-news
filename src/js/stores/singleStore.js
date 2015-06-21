@@ -1,18 +1,19 @@
 'use strict';
 
 var Reflux = require('reflux');
+var Actions = require('../actions/Actions');
+
 var Firebase = require('firebase');
 var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
 var postsRef = ref.child('posts');
 var commentsRef = ref.child('comments');
-var actions = require('../actions/actions');
 
 // store listener references
 var postListener, commentListener;
 
-var postStore = Reflux.createStore({
+var SingleStore = Reflux.createStore({
 
-    listenables: actions,
+    listenables: Actions,
 
     init() {
         this.postData = {
@@ -75,4 +76,4 @@ var postStore = Reflux.createStore({
 
 });
 
-module.exports = postStore;
+module.exports = SingleStore;

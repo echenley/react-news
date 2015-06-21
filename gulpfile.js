@@ -9,6 +9,7 @@ var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var del = require('del');
+var extend = require('lodash.assign');
 
 var $ = require('gulp-load-plugins')();
 
@@ -17,7 +18,7 @@ var buildDir = './build/';
 var distDir = './dist/';
 var mapsDir = './maps/';
 
-var jsEntry = 'app';
+var jsEntry = 'App';
 var sassEntry = srcDir + 'scss/*.scss';
 
 function handleError() {
@@ -39,26 +40,29 @@ gulp.task('lint', function() {
         .pipe($.eslint.format());
 });
 
-function buildScript(file) {
-    var props = watchify.args;
-    props.entries = [srcDir + 'js/' + file];
-    props.debug = true;
-    props.extensions = ['.js', '.jsx'];
+function buildScript(file, watch) {
+    var props = extend({}, watchify.args, {
+        entries: [srcDir + 'js/' + file],
+        debug: true,
+        extensions: ['.js', '.jsx']
+    });
 
-    var bundler = watchify(browserify(props), {
-            ignoreWatch: true
-        })
-        .transform(babelify.configure({
-            only: /(src\/js)/
-        })
-    );
+    var bblfy = babelify.configure({
+        only: /(src\/js)/
+    });
+
+    var brwsfy = browserify(props).transform(bblfy);
+
+    var bundler = watch ? watchify(brwsfy, {
+        ignoreWatch: true
+    }) : brwsfy;
 
     function rebundle() {
         $.util.log('Rebundle...');
         var start = Date.now();
         return bundler.bundle()
             .on('error', handleError)
-            .pipe(source(jsEntry + '.js'))
+            .pipe(source(jsEntry.toLowerCase() + '.js'))
             .pipe(buffer())
             .pipe($.sourcemaps.init({loadMaps: true}))
             .pipe($.sourcemaps.write(mapsDir))
@@ -73,13 +77,14 @@ function buildScript(file) {
 }
 
 gulp.task('styles', function() {
-    return gulp.src(sassEntry)
+    gulp.src(sassEntry)
+        .pipe($.plumber())
         .pipe($.sourcemaps.init())
         .pipe($.sass({
-            errLogToConsole: true,
             // compression handled in dist task
-            style: 'expanded'
-        }))
+            outputStyle: 'expanded',
+            errLogToConsole: true
+        }).on('error', $.sass.logError))
         .pipe($.autoprefixer('last 2 versions'))
         .pipe($.sourcemaps.write(mapsDir))
         .pipe(gulp.dest(buildDir))
@@ -116,8 +121,12 @@ gulp.task('clean', function(cb) {
     ], cb);
 });
 
+gulp.task('build-watch', ['html', 'styles'], function() {
+    return buildScript(jsEntry + '.jsx', true);
+});
+
 gulp.task('build', ['html', 'styles'], function() {
-    return buildScript(jsEntry + '.jsx');
+    return buildScript(jsEntry + '.jsx', false);
 });
 
 gulp.task('dist', function() {
@@ -128,7 +137,7 @@ gulp.task('dist', function() {
     );
 });
 
-gulp.task('serve', ['build'], function() {
+gulp.task('watch', ['build-watch'], function() {
     browserSync.init({
         server: {
             baseDir: buildDir
@@ -136,13 +145,21 @@ gulp.task('serve', ['build'], function() {
     });
 
     gulp.watch(srcDir + '*.html', ['html']);
-    gulp.watch(srcDir + 'js/**/*.js', ['lint']);
+    gulp.watch(srcDir + 'js/**/*', ['lint']);
     gulp.watch(srcDir + 'scss/**/*.scss', ['styles']);
 
     $.watch([
         buildDir + '**/*.js',
         buildDir + '**/*.html'
     ], browserSync.reload);
+});
+
+gulp.task('serve', function(cb) {
+    runSequence(
+        'clean',
+        'watch',
+        cb
+    );
 });
 
 gulp.task('default', ['serve']);

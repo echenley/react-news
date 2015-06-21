@@ -1,11 +1,11 @@
 'use strict';
 
 var Reflux = require('reflux');
-var singleStore = require('../stores/singleStore');
-var actions = require('../actions/actions');
-var Spinner = require('../components/spinner');
-var Post = require('../components/post');
-var Comment = require('../components/comment');
+var SingleStore = require('../stores/SingleStore');
+var Actions = require('../actions/Actions');
+var Spinner = require('../components/Spinner');
+var Post = require('../components/Post');
+var Comment = require('../components/Comment');
 var Router = require('react-router');
 
 var pluralize = require('../util/pluralize');
@@ -20,17 +20,17 @@ var SinglePost = React.createClass({
     mixins: [
         Router.Navigation,
         Router.State,
-        Reflux.listenTo(singleStore, 'onUpdate')
+        Reflux.listenTo(SingleStore, 'onUpdate')
     ],
 
     statics: {
         willTransitionTo(transition, params) {
             // watch current post and comments
-            actions.listenToPost(params.postId);
+            Actions.listenToPost(params.postId);
         },
 
         willTransitionFrom(transition, component) {
-            actions.stopListeningToPost(component.state.post.id);
+            Actions.stopListeningToPost(component.state.post.id);
         }
     },
 
@@ -54,7 +54,7 @@ var SinglePost = React.createClass({
         e.preventDefault();
 
         if (!this.props.user.isLoggedIn) {
-            actions.showOverlay('login');
+            Actions.showModal('login');
             return;
         }
 
@@ -67,7 +67,7 @@ var SinglePost = React.createClass({
             creatorUID: this.props.user.uid,
             time: Date.now()
         };
-        actions.addComment(comment);
+        Actions.addComment(comment);
         commentTextEl.value = '';
     },
 

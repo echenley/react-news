@@ -16,7 +16,7 @@ password: henleyedition1
 
 ## Development
 
-`cd` in there, run `npm i && gulp` and have at the `src/`.
+`npm i && gulp` and have at the `src/`.
 
 ## Firebase Security Rules
 

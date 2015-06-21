@@ -1,10 +1,10 @@
 'use strict';
 
 // actions
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 // components
 var Link = require('react-router').Link;
-var Upvote = require('./upvote');
+var Upvote = require('./Upvote');
 
 var abbreviateNumber = require('../util/abbreviateNumber');
 var pluralize = require('../util/pluralize');
@@ -39,14 +39,14 @@ var Post = React.createClass({
         if (user.uid === post.creatorUID) {
             deleteOption = (
                 <span className="delete post-info-item">
-                    <a onClick={ actions.deletePost.bind(this, post.id) }>delete</a>
+                    <a onClick={ Actions.deletePost.bind(this, post.id) }>delete</a>
                 </span>
             );
         }
 
         var upvoteActions = {
-            upvote: actions.upvotePost,
-            downvote: actions.downvotePost
+            upvote: Actions.upvotePost,
+            downvote: Actions.downvotePost
         };
 
         return (

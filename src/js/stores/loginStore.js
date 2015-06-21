@@ -1,11 +1,11 @@
 'use strict';
 
 var Reflux = require('reflux');
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
-var loginStore = Reflux.createStore({
+var LoginStore = Reflux.createStore({
 
-    listenables: actions,
+    listenables: Actions,
 
     init() {
         this.message = '';
@@ -36,4 +36,4 @@ var loginStore = Reflux.createStore({
 
 });
 
-module.exports = loginStore;
+module.exports = LoginStore;

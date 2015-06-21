@@ -1,0 +1,57 @@
+/* Navbar
+====================================== */
+
+.header {
+    z-index: 6;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    line-height: $nav-height;
+    color: #fff;
+    overflow: visible;
+    background: $header;
+
+    a { color: #fff; }
+}
+
+.menu-title {
+    padding: $x-small $small;
+}
+
+.newpost-toggle {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 1rem;
+    padding: 0 1rem;
+    line-height: 1;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.header-title {
+    padding: $x-small $medium;
+}
+
+.register-link {
+    margin-left: $small;
+}
+
+.profile-link {
+    display: inline-block;
+}
+
+.nav-pic {
+    width: $medium;
+    height: $medium;
+    margin-right: 0.8rem;
+    margin-left: $medium;
+    vertical-align: middle;
+    border-radius: 50%;
+    // filter: grayscale(100%);
+    @media screen and (max-width: 600px) {
+        display: none;
+    }
+}
+
+// .username {}

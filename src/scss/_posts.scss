@@ -1,0 +1,131 @@
+/* Posts
+====================================== */
+
+.posts {
+    counter-reset: post;
+
+    .post-link:before {
+        content: counter(post);
+        display: inline-block;
+        float: right;
+        padding-left: 6px;
+        line-height: 1.2;
+        color: #ddd;
+    }
+}
+
+.post {
+    position: relative;
+    counter-increment: post;
+    background: #fff;
+    & + & {
+        margin-top: $small;
+    }
+}
+
+.post-link,
+.comment-text {
+    line-height: 1.2;
+}
+
+.post-title {
+    font-family: $heading-font;
+    margin-right: 0.6em;
+}
+
+.hostname {
+    font-size: $text-small;
+    color: $dark;
+    a { color: $dark; }
+}
+
+// .comments-link {}
+
+.upvote {
+    transition: color 150ms;
+    color: $dark-gray;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.upvoted {
+    color: $upvoted;
+}
+
+.post-info,
+.comment-info {
+    margin-top: 0.2rem;
+    font-size: $text-small;
+}
+
+// .posted-by {}
+
+.post-info-item:before {
+    content: '\00b7';
+    display: inline-block;
+    margin: 0 0.3rem;
+}
+
+.sortby {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 $x-small;
+    padding-right: 1.5rem;
+    background: lighten($light-gray, 3%);
+    transition: background 0.2s;
+    &:after {
+        content: '\f0dd';
+        font-family: FontAwesome;
+        z-index: 0;
+        position: absolute;
+        right: $x-small;
+        top: 20%;
+        font-size: 10px;
+    }
+    &:hover {
+        background: $light-gray;
+    }
+}
+
+.sortby-label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.sortby-select {
+    z-index: 2;
+    position: relative;
+    width: 140%;
+    padding-left: $x-small;
+    border: 0;
+    background: transparent;
+    color: $dark;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    &:-moz-focusring {
+        color: transparent;
+        text-shadow: 0 0 0 $dark;
+    }
+    &:focus {
+        outline: none;
+    }
+}
+
+.sortby-options {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 300ms;
+}
+
+.sortby-show {
+    opacity: 1;
+}
+
+.next-page {
+    display: block;
+    padding: 4px 0;
+    text-align: center;
+}

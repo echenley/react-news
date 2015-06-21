@@ -3,11 +3,11 @@
 var Reflux = require('reflux');
 
 // actions
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
 // stores
-var loginStore = require('../stores/loginStore');
-var userStore = require('../stores/userStore');
+var LoginStore = require('../stores/LoginStore');
+var UserStore = require('../stores/UserStore');
 
 // components
 var Spinner = require('../components/spinner');
@@ -15,8 +15,8 @@ var Spinner = require('../components/spinner');
 var Login = React.createClass({
 
     mixins: [
-        Reflux.listenTo(userStore, 'resetForm'),
-        Reflux.listenTo(loginStore, 'onErrorMessage')
+        Reflux.listenTo(UserStore, 'resetForm'),
+        Reflux.listenTo(LoginStore, 'onErrorMessage')
     ],
 
     getInitialState() {
@@ -26,17 +26,25 @@ var Login = React.createClass({
         };
     },
 
+    componentDidMount() {
+        React.findDOMNode(this.refs.email).focus();
+    },
+
+    componentWillUpdate() {
+        React.findDOMNode(this.refs.email).focus();
+    },
+
     resetForm() {
-        this.refs.email.getDOMNode().value = '';
-        this.refs.password.getDOMNode().value = '';
-        this.refs.submit.getDOMNode().disabled = false;
+        React.findDOMNode(this.refs.email).value = '';
+        React.findDOMNode(this.refs.password).value = '';
+        React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             submitted: false
         });
     },
 
     onErrorMessage(errorMessage) {
-        this.refs.submit.getDOMNode().disabled = false;
+        React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             error: errorMessage,
             submitted: false
@@ -46,30 +54,30 @@ var Login = React.createClass({
     login(e) {
         e.preventDefault();
 
-        this.refs.submit.getDOMNode().disabled = true;
+        React.findDOMNode(this.refs.submit).disabled = true;
         this.setState({
             submitted: true
         });
 
-        actions.login({
-            email: this.refs.email.getDOMNode().value.trim(),
-            password: this.refs.password.getDOMNode().value.trim()
+        Actions.login({
+            email: React.findDOMNode(this.refs.email).value.trim(),
+            password: React.findDOMNode(this.refs.password).value.trim()
         });
     },
 
     render() {
         var error = this.state.error && (
-            <div className="error login-error">{ this.state.error }</div>
+            <div className="error md-form-error">{ this.state.error }</div>
         );
 
         return (
-            <div className="login text-center md-modal" id="overlay-content">
-                <form onSubmit={ this.login } className="login-form text-left">
-                    <h1>Login</h1>
-                    <label htmlFor="email">Email</label><br />
-                    <input type="email" placeholder="Email" id="email" ref="email" /><br />
-                    <label htmlFor="password">Password</label><br />
-                    <input type="password" placeholder="Password" id="password" ref="password" /><br />
+            <div className="login">
+                <h1>Login</h1>
+                <form onSubmit={ this.login } className="md-form">
+                    <label htmlFor="email">Email</label>
+                    <input type="email" placeholder="Email" id="email" ref="email" />
+                    <label htmlFor="password">Password</label>
+                    <input type="password" placeholder="Password" id="password" ref="password" />
                     <button type="submit" className="button button-primary" ref="submit">
                         { this.state.submitted ? <Spinner /> : 'Sign In' }
                     </button>

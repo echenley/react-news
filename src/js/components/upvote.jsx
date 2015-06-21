@@ -1,6 +1,6 @@
 'use strict';
 
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 var throttle = require('lodash.throttle');
 
 var cx = require('classnames');
@@ -20,12 +20,12 @@ var Upvote = React.createClass({
         };
     },
 
-    componentDidMount() {
-        var upvoted = this.props.user.profile.upvoted;
-        this.setState({
-            upvoted: upvoted[this.props.itemId]
-        });
-    },
+    // componentDidMount() {
+    //     var upvoted = this.props.user.profile.upvoted;
+    //     this.setState({
+    //         upvoted: upvoted[this.props.itemId]
+    //     });
+    // },
 
     componentWillReceiveProps(nextProps) {
         var upvoted = nextProps.user.profile.upvoted;
@@ -36,7 +36,7 @@ var Upvote = React.createClass({
 
     upvote: throttle(function(userId, itemId) {
         if (!this.props.user.isLoggedIn) {
-            actions.showOverlay('login');
+            Actions.showModal('login');
             return;
         }
 

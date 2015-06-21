@@ -1,0 +1,124 @@
+
+/* Utilities/Helpers
+====================================== */
+
+.cf {
+    *zoom: 1;
+    &:before,
+    &:after {
+        content: '';
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+.vertical {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.shadow {
+    text-shadow: 0 0 100px $dark;
+}
+
+// responsive wrapper
+.inner {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hidden {
+    text-indent: -9999px;
+    visibility: hidden;
+    display: none;
+}
+
+.text-left { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.float-right { float: right !important; }
+.float-left { float: left !important; }
+
+.full-width {
+    width: 100% !important;
+}
+
+.full-height {
+    height: 100% !important;
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.no-underline {
+    text-decoration: none !important;
+}
+
+.faded {
+    opacity: 0.7;
+}
+
+.sr-only {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+// buttons
+
+.button {
+    position: relative;
+    padding: 0.3rem $small;
+    border-radius: 2px;
+    border: 0;
+    box-shadow: none;
+    color: $button-text;
+    background: $button-gray;
+    border-bottom: 2px solid darken($button-gray, 10%);
+    transition: background 0.2s;
+    &:active {
+        margin-top: 1px;
+        border-bottom-width: 1px;
+    }
+    &:hover {
+        text-decoration: none;
+        background: darken($button-gray, 3%);
+    }
+}
+
+.button-primary {
+    background: $button;
+    border-bottom: 2px solid darken($button, 10%);
+    &:hover {
+        background: darken($button, 3%);
+    }
+}
+
+.button-outline {
+    background: transparent;
+    border: 2px solid #fff;
+    border-bottom-width: 3px;
+    &:active {
+        border-bottom-width: 2px;
+    }
+}
+
+// .button-gray {
+//     background: $dark-gray;
+
+//     &:active {
+//         border-bottom-width: 1px;
+//     }
+//     &:hover {
+//         background: darken($button, 3%);
+//     }
+// }
+
+.error {
+    color: $error;
+}

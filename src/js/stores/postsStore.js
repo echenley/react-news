@@ -3,13 +3,13 @@
 var Reflux = require('reflux');
 var Firebase = require('firebase');
 var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts');
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
-var postsPerPage = 8;
+var postsPerPage = 10;
 
-var postsStore = Reflux.createStore({
+var PostsStore = Reflux.createStore({
 
-    listenables: actions,
+    listenables: Actions,
 
     init() {
         this.posts = [];
@@ -81,4 +81,4 @@ var postsStore = Reflux.createStore({
 
 });
 
-module.exports = postsStore;
+module.exports = PostsStore;

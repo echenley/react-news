@@ -5,33 +5,33 @@ var Firebase = require('firebase');
 var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
 var postsRef = ref.child('posts');
 var commentsRef = ref.child('comments');
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
 // store listener references
 var postListener, commentListener;
 
-var profileStore = Reflux.createStore({
+var data = {
+    userId: '',
+    posts: [],
+    comments: []
+};
 
-    listenables: actions,
+var ProfileStore = Reflux.createStore({
 
-    init() {
-        this.userId = '';
-        this.posts = [];
-        this.comments = [];
-    },
+    listenables: Actions,
 
-    listenToProfile(userId) {
-        this.userId = userId;
+    listenToProfile(id) {
+        data.userId = id;
 
         postListener = postsRef
             .orderByChild('creatorUID')
-            .equalTo(userId)
+            .equalTo(data.userId)
             .limitToLast(3)
             .on('value', this.updatePosts.bind(this));
 
         commentListener = commentsRef
             .orderByChild('creatorUID')
-            .equalTo(userId)
+            .equalTo(data.userId)
             .limitToLast(3)
             .on('value', this.updateComments.bind(this));
     },
@@ -41,45 +41,39 @@ var profileStore = Reflux.createStore({
         commentsRef.off('value', commentListener);
     },
 
-    updatePosts(posts) {
-        this.posts = [];
+    updatePosts(postDataObj) {
+        var newPosts = [];
 
-        posts.forEach((postData) => {
+        // postDataObj: firebase object with a forEach property
+        postDataObj.forEach(postData => {
             var post = postData.val();
             post.id = postData.key();
-            this.posts.unshift(post);
+            newPosts.unshift(post);
         });
 
-        this.triggerAll();
+        data.posts = newPosts;
+
+        this.trigger(data);
     },
 
-    updateComments(comments) {
-        this.comments = [];
+    updateComments(commentDataObj) {
+        var newComments = [];
 
-        comments.forEach((commentData) => {
+        // commentDataObj: firebase object with a forEach property
+        commentDataObj.forEach(commentData => {
             var comment = commentData.val();
             comment.id = commentData.key();
-            this.comments.unshift(comment);
+            newComments.unshift(comment);
         });
 
-        this.triggerAll();
-    },
+        data.comments = newComments;
 
-    triggerAll () {
-        this.trigger({
-            userId: this.userId,
-            posts: this.posts,
-            comments: this.comments
-        });
+        this.trigger(data);
     },
 
     getDefaultData() {
-        return {
-            userId: this.userId,
-            posts: this.posts,
-            comments: this.comments
-        };
+        return data;
     }
 });
 
-module.exports = profileStore;
+module.exports = ProfileStore;

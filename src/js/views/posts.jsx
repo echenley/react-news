@@ -1,10 +1,12 @@
 'use strict';
 
 var Reflux = require('reflux');
-var actions = require('../actions/actions');
-var postsStore = require('../stores/postsStore');
-var Spinner = require('../components/spinner');
-var Post = require('../components/post');
+var Actions = require('../actions/Actions');
+
+var PostsStore = require('../stores/PostsStore');
+
+var Spinner = require('../components/Spinner');
+var Post = require('../components/Post');
 var Router = require('react-router');
 var Link = Router.Link;
 
@@ -16,21 +18,21 @@ var Posts = React.createClass({
 
     mixins: [
         Router.Navigation,
-        Reflux.listenTo(postsStore, 'onStoreUpdate')
+        Reflux.listenTo(PostsStore, 'onStoreUpdate')
     ],
 
     statics: {
         willTransitionTo(transition, params) {
-            actions.listenToPosts(+params.pageNum || 1);
+            Actions.listenToPosts(+params.pageNum || 1);
         },
 
         willTransitionFrom() {
-            actions.stopListeningToPosts();
+            Actions.stopListeningToPosts();
         }
     },
 
     getInitialState() {
-        var postsData = postsStore.getDefaultData();
+        var postsData = PostsStore.getDefaultData();
         return {
             loading: true,
             posts: postsData.posts,
@@ -58,15 +60,15 @@ var Posts = React.createClass({
         e.preventDefault();
         var currentPage = this.state.currentPage || 1;
 
-        actions.setSortBy(this.refs.sortBy.getDOMNode().value);
+        Actions.setSortBy(this.refs.sortBy.getDOMNode().value);
 
         this.setState({
             loading: true
         });
 
         if (currentPage === 1) {
-            actions.stopListeningToPosts();
-            actions.listenToPosts(currentPage);
+            Actions.stopListeningToPosts();
+            Actions.listenToPosts(currentPage);
         } else {
             this.transitionTo('posts', { pageNum: 1 });
         }
@@ -76,7 +78,7 @@ var Posts = React.createClass({
         var posts = this.state.posts;
         var currentPage = this.state.currentPage || 1;
         var sortOptions = this.state.sortOptions;
-        // possible sort values (defined in postsStore)
+        // possible sort values (defined in PostsStore)
         var sortValues = Object.keys(sortOptions.values);
         var user = this.props.user;
 

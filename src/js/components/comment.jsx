@@ -1,7 +1,7 @@
 'use strict';
 
 // actions
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
 // components
 var Link = require('react-router').Link;
@@ -30,13 +30,13 @@ var Comment = React.createClass({
 
         var deleteOption = user.uid === comment.creatorUID && (
             <span className="delete post-info-item">
-                <a onClick={ actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
+                <a onClick={ Actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
             </span>
         );
 
         var upvoteActions = {
-            upvote: actions.upvoteComment,
-            downvote: actions.downvoteComment
+            upvote: Actions.upvoteComment,
+            downvote: Actions.downvoteComment
         };
 
         return (

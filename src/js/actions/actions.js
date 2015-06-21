@@ -11,7 +11,7 @@ var usersRef = ref.child('users');
 // used to create email hash for gravatar
 var hash = require('crypto').createHash('md5');
 
-var actions = Reflux.createActions({
+var Actions = Reflux.createActions({
     // user actions
     'login': {},
     'logout': { asyncResult: true },
@@ -21,7 +21,7 @@ var actions = Reflux.createActions({
     // post actions
     'upvotePost': {},
     'downvotePost': {},
-    'submitPost': {},
+    'submitPost': { asyncResult: true },
     'deletePost': {},
     'setSortBy': {},
     // comment actions
@@ -39,19 +39,18 @@ var actions = Reflux.createActions({
     'stopListeningToPost': {},
     // error actions
     'loginError': {},
-    'postError': {},
     // ui actions
-    'showOverlay': {},
+    'showModal': {},
+    'hideModal': {},
     'goToPost': {}
 });
-
 
 /* User Actions
 ===============================*/
 
 function updateProfile(userId) {
     usersRef.child(userId).on('value', function(profile) {
-        actions.updateProfile(userId, profile.val());
+        Actions.updateProfile(userId, profile.val());
     });
 }
 
@@ -60,7 +59,7 @@ ref.onAuth(function(authData) {
     if (!authData) {
         // logging out
         usersRef.off();
-        actions.logout.completed();
+        Actions.logout.completed();
     } else {
         // called when reloading the page
         // while authentication still active
@@ -68,19 +67,19 @@ ref.onAuth(function(authData) {
     }
 });
 
-actions.login.listen(function(user, username) {
+Actions.login.listen(function(user, username) {
     // username only provided when registering a new user
     // used to create a user profile
     ref.authWithPassword(user, function(error, authData) {
         if (error !== null) {
-            actions.loginError(error.code);
+            Actions.loginError(error.code);
         } else {
             // sucessful login
             var userId = authData.uid;
             if (username) {
                 // new user logging in for first time
                 var email = authData.password.email;
-                actions.createProfile(userId, username, email);
+                Actions.createProfile(userId, username, email);
             } else {
                 // returning user
                 updateProfile(userId);
@@ -89,13 +88,13 @@ actions.login.listen(function(user, username) {
     });
 });
 
-actions.logout.listen(function() {
+Actions.logout.listen(function() {
     // because of firebase API, callback must
     // be declared via ref.onAuth() (see above)
     ref.unauth();
 });
 
-actions.register.listen(function(username, loginData) {
+Actions.register.listen(function(username, loginData) {
 
     var checkForUsername = Promise.promisify(function(name, cb) {
         usersRef.orderByChild('username').equalTo(name).once('value', function(user) {
@@ -105,29 +104,30 @@ actions.register.listen(function(username, loginData) {
 
     if (!username) {
         // no username provided
-        actions.loginError('NO_USERNAME');
-    } else {
-        // check if username is already taken
-        checkForUsername(username)
-            .then(function(usernameTaken) {
-                if (usernameTaken) {
-                    actions.loginError('USERNAME_TAKEN');
-                } else {
-                    ref.createUser(loginData, function(error) {
-                        if (error) {
-                            // error during user creation
-                            actions.loginError(error.code);
-                        } else {
-                            // user successfully created
-                            actions.login(loginData, username);
-                        }
-                    });
-                }
-            });
+        Actions.loginError('NO_USERNAME');
+        return;
     }
+
+    // check if username is already taken
+    checkForUsername(username)
+        .then(function(usernameTaken) {
+            if (usernameTaken) {
+                Actions.loginError('USERNAME_TAKEN');
+            } else {
+                ref.createUser(loginData, function(error) {
+                    if (error) {
+                        // error during user creation
+                        Actions.loginError(error.code);
+                    } else {
+                        // user successfully created
+                        Actions.login(loginData, username);
+                    }
+                });
+            }
+        });
 });
 
-actions.createProfile.listen(function(uid, username, email) {
+Actions.createProfile.listen(function(uid, username, email) {
     var md5hash = hash.update(email).digest('hex');
     var profile = {
         username: username,
@@ -137,7 +137,7 @@ actions.createProfile.listen(function(uid, username, email) {
     usersRef.child(uid).set(profile, function(error) {
         if (error === null) {
             // user profile successfully created
-            actions.updateProfile(uid, profile);
+            Actions.updateProfile(uid, profile);
         }
     });
 });
@@ -146,21 +146,21 @@ actions.createProfile.listen(function(uid, username, email) {
 /* Post Actions
 ===============================*/
 
-actions.submitPost.preEmit = function(post) {
+Actions.submitPost.listen(function(post) {
     var newPostRef = postsRef.push(post, function(error) {
-        if (error !== null) {
-            actions.postError(error.code);
+        if (error) {
+            this.failed(error.code);
         } else {
-            actions.goToPost(newPostRef.key());
+            this.completed(newPostRef.key());
         }
     });
-};
+});
 
-actions.deletePost.preEmit = function(postId) {
+Actions.deletePost.preEmit = function(postId) {
     postsRef.child(postId).remove();
 };
 
-actions.upvotePost.preEmit = function(userId, postId) {
+Actions.upvotePost.preEmit = function(userId, postId) {
     postsRef.child(postId).child('upvotes').transaction(function(curr) {
         return (curr || 0) + 1;
     }, function(error, success) {
@@ -171,7 +171,7 @@ actions.upvotePost.preEmit = function(userId, postId) {
     });
 };
 
-actions.downvotePost.preEmit = function(userId, postId) {
+Actions.downvotePost.preEmit = function(userId, postId) {
     postsRef.child(postId).child('upvotes').transaction(function(curr) {
         return curr - 1;
     }, function(error, success) {
@@ -185,14 +185,14 @@ actions.downvotePost.preEmit = function(userId, postId) {
 /* Comment Actions
 ===============================*/
 
-actions.updateCommentCount.preEmit = function(postId, n) {
+Actions.updateCommentCount.preEmit = function(postId, n) {
     // updates comment count on post
     postsRef.child(postId).child('commentCount').transaction(function(curr) {
         return curr + n;
     });
 };
 
-actions.upvoteComment.preEmit = function(userId, commentId) {
+Actions.upvoteComment.preEmit = function(userId, commentId) {
     commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
         return (curr || 0) + 1;
     }, function(error, success) {
@@ -203,7 +203,7 @@ actions.upvoteComment.preEmit = function(userId, commentId) {
     });
 };
 
-actions.downvoteComment.preEmit = function(userId, commentId) {
+Actions.downvoteComment.preEmit = function(userId, commentId) {
     commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
         return curr - 1;
     }, function(error, success) {
@@ -214,20 +214,20 @@ actions.downvoteComment.preEmit = function(userId, commentId) {
     });
 };
 
-actions.addComment.preEmit = function(comment) {
+Actions.addComment.preEmit = function(comment) {
     commentsRef.push(comment, function(error) {
         if (error === null) {
-            actions.updateCommentCount(comment.postId, 1);
+            Actions.updateCommentCount(comment.postId, 1);
         }
     });
 };
 
-actions.deleteComment.preEmit = function(commentId, postId) {
+Actions.deleteComment.preEmit = function(commentId, postId) {
     commentsRef.child(commentId).remove(function(error) {
         if (error === null) {
-            actions.updateCommentCount(postId, -1);
+            Actions.updateCommentCount(postId, -1);
         }
     });
 };
 
-module.exports = actions;
+module.exports = Actions;

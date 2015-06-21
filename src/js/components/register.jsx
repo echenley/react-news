@@ -3,11 +3,11 @@
 var Reflux = require('reflux');
 
 // actions
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
 // stores
-var loginStore = require('../stores/loginStore');
-var userStore = require('../stores/userStore');
+var LoginStore = require('../stores/LoginStore');
+var UserStore = require('../stores/UserStore');
 
 // components
 var Spinner = require('../components/spinner');
@@ -15,8 +15,8 @@ var Spinner = require('../components/spinner');
 var Register = React.createClass({
 
     mixins: [
-        Reflux.listenTo(userStore, 'resetForm'),
-        Reflux.listenTo(loginStore, 'onErrorMessage')
+        Reflux.listenTo(UserStore, 'resetForm'),
+        Reflux.listenTo(LoginStore, 'onErrorMessage')
     ],
 
     getInitialState() {
@@ -26,18 +26,26 @@ var Register = React.createClass({
         };
     },
 
+    componentDidMount() {
+        React.findDOMNode(this.refs.username).focus();
+    },
+
+    componentWillUpdate() {
+        React.findDOMNode(this.refs.username).focus();
+    },
+
     resetForm() {
         this.setState({
             submitted: false
         });
-        this.refs.username.getDOMNode().value = '';
-        this.refs.email.getDOMNode().value = '';
-        this.refs.password.getDOMNode().value = '';
-        this.refs.submit.getDOMNode().disabled = false;
+        React.findDOMNode(this.refs.username).value = '';
+        React.findDOMNode(this.refs.email).value = '';
+        React.findDOMNode(this.refs.password).value = '';
+        React.findDOMNode(this.refs.submit).disabled = false;
     },
 
     onErrorMessage(errorMessage) {
-        this.refs.submit.getDOMNode().disabled = false;
+        React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             error: errorMessage,
             submitted: false
@@ -47,36 +55,36 @@ var Register = React.createClass({
     registerUser(e) {
         e.preventDefault();
 
-        this.refs.submit.getDOMNode().disabled = true;
+        React.findDOMNode(this.refs.submit).disabled = true;
         this.setState({
             submitted: true
         });
 
         var loginData = {
-            email: this.refs.email.getDOMNode().value.trim(),
-            password: this.refs.password.getDOMNode().value.trim()
+            email: React.findDOMNode(this.refs.email).value.trim(),
+            password: React.findDOMNode(this.refs.password).value.trim()
         };
 
-        var username = this.refs.username.getDOMNode().value.trim();
+        var username = React.findDOMNode(this.refs.username).value.trim();
 
-        actions.register(username, loginData);
+        Actions.register(username, loginData);
     },
 
     render() {
         var error = this.state.error && (
-            <div className="error login-error">{ this.state.error }</div>
+            <div className="error md-form-error">{ this.state.error }</div>
         );
 
         return (
-            <div className="login md-modal text-center" id="overlay-content">
-                <form onSubmit={ this.registerUser } className="login-form text-left">
-                    <h1>Register</h1>
-                    <label htmlFor="username">Username</label><br />
-                    <input type="text" placeholder="Username" id="username" ref="username" /><br />
-                    <label htmlFor="email">Email</label><br />
-                    <input type="email" placeholder="Email" id="email" ref="email" /><br />
-                    <label htmlFor="password">Password</label><br />
-                    <input type="password" placeholder="Password" id="password" ref="password" /><br />
+            <div className="register">
+                <h1>Register</h1>
+                <form onSubmit={ this.registerUser } className="md-form">
+                    <label htmlFor="username">Username</label>
+                    <input type="text" placeholder="Username" id="username" ref="username" />
+                    <label htmlFor="email">Email</label>
+                    <input type="email" placeholder="Email" id="email" ref="email" />
+                    <label htmlFor="password">Password</label>
+                    <input type="password" placeholder="Password" id="password" ref="password" />
                     <button type="submit" className="button button-primary" ref="submit">
                         { this.state.submitted ? <Spinner /> : 'Register' }
                     </button>

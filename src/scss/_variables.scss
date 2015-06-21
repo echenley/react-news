@@ -1,0 +1,50 @@
+/* Colors and Other Variables
+====================================== */
+
+// palette
+$dark: #040203;
+$color1: #449dd1;
+$color2: #78c3fb;
+$dark-gray: #7a8b99;
+$light-gray: #f1f1f1;
+$error: #d00;
+
+$text: $dark;
+$header: $color1;
+$panel: lighten($color1, 10%);
+$link: $color1;
+$button-text: #fff;
+$button: $color1;
+$button-gray: #cccfd0;
+$panel-button: $color1;
+$background: $light-gray;
+$upvoted: $color1;
+
+// borders/margins/padding
+$line: 2px;
+
+// dimensions
+$nav-height: 4rem;
+$footer-height: $nav-height;
+$content-width: 700px;
+
+$x-small: 0.5rem;
+$small: 1rem;
+$medium: 2rem;
+$large: 3rem;
+
+// media query breakpoints
+$breakpoint: 800px;
+
+
+/* Typography
+====================================== */
+
+$font-size: 110%;
+$line-height: 1.55;
+
+$heading-font: 'Source Sans Pro', Arial, sans-serif;
+$body-font: 'Source Sans Pro', Arial, sans-serif;
+$monospace: 'Ubuntu Mono', 'Andale Mono', AndaleMono, Consolas, monaco, monospace;
+
+$text-small: 0.76em;

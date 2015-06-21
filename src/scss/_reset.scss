@@ -1,0 +1,12 @@
+/* Reset
+====================================== */
+
+* {
+    hyphens: auto;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+*,*:before, *:after {
+    box-sizing: border-box;
+}

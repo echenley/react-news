@@ -1,0 +1,63 @@
+/* Modal
+====================================== */
+
+.md-form {
+    display: inline-block;
+
+    input {
+        width: 100%;
+    }
+
+    button {
+        margin-top: $x-small;
+    }
+
+    &-error {
+        margin-top: $small;
+    }
+}
+
+.md-modal,
+.md-mask {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 300ms, visibility 300ms 1ms;
+
+    .modal-open & {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 300ms;
+    }
+}
+
+.md-modal {
+    z-index: 6;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: auto;
+    padding: $small $medium $medium $medium;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 0 10px rgba(#000, 0.2);
+
+    h1 {
+        margin: 0 0 1rem;
+    }
+}
+
+.md-mask {
+    z-index: 5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(#000, 0.2);
+    cursor: default;
+}
+
+.input-error {
+    border-color: $error;
+}

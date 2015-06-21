@@ -3,16 +3,16 @@
 var Reflux = require('reflux');
 
 // actions
-var actions = require('../actions/actions');
+var Actions = require('../actions/Actions');
 
 // stores
-var profileStore = require('../stores/profileStore');
-var userStore = require('../stores/userStore');
+var ProfileStore = require('../stores/ProfileStore');
+var UserStore = require('../stores/UserStore');
 
 // components
-var Spinner = require('../components/spinner');
-var Post = require('../components/post');
-var Comment = require('../components/comment');
+var Spinner = require('../components/Spinner');
+var Post = require('../components/Post');
+var Comment = require('../components/Comment');
 
 var Profile = React.createClass({
 
@@ -23,21 +23,21 @@ var Profile = React.createClass({
 
     mixins: [
         require('react-router').Navigation,
-        Reflux.listenTo(profileStore, 'onLoaded')
+        Reflux.listenTo(ProfileStore, 'onLoaded')
     ],
 
     statics: {
         willTransitionTo(transition, params, query, cb) {
             // set callback to watch current user's posts/comments
-            userStore.getUserId(params.username)
+            UserStore.getUserId(params.username)
                 .then(function(userId) {
-                    actions.listenToProfile(userId);
+                    Actions.listenToProfile(userId);
                     return cb();
                 });
         },
 
         willTransitionFrom(transition, component) {
-            actions.stopListeningToProfile();
+            Actions.stopListeningToProfile();
             component.setState({
                 isLoading: true
             });
@@ -46,7 +46,7 @@ var Profile = React.createClass({
 
     getInitialState() {
         return {
-            profileData: profileStore.getDefaultData(),
+            profileData: ProfileStore.getDefaultData(),
             isLoading: true
         };
     },
@@ -60,7 +60,7 @@ var Profile = React.createClass({
 
     logout(e) {
         e.preventDefault();
-        actions.logout();
+        Actions.logout();
         this.transitionTo('home');
     },
 

@@ -1,0 +1,33 @@
+.react-spinner {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    top: 50%;
+    left: 50%;
+    // my changes
+    transform: translateY($small);
+    .button & {
+        width: 27px;
+        height: 27px;
+    }
+}
+
+.react-spinner_bar {
+    animation: react-spinner_spin 1.2s linear infinite;
+    border-radius: 5px;
+    position: absolute;
+    width: 20%;
+    height: 7.8%;
+    top: -3.9%;
+    left: -10%;
+    // my changes
+    background: $dark;
+    .button & {
+        background: #fff;
+    }
+}
+
+@keyframes react-spinner_spin {
+    0% { opacity: 1; }
+    100% { opacity: 0.15; }
+}
