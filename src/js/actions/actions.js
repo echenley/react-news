@@ -176,7 +176,7 @@ Actions.downvotePost.preEmit = function(userId, postId) {
         return curr - 1;
     }, function(error, success) {
         if (success) {
-            // register upvote in user's profile
+            // remove upvote in user's profile
             usersRef.child(userId).child('upvoted').child(postId).remove();
         }
     });
