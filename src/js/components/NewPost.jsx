@@ -116,7 +116,7 @@ var NewPost = React.createClass({
                         placeholder="Title"
                         ref="postTitle"
                     />
-                    <label htmlFor="newpost-url">Title</label>
+                    <label htmlFor="newpost-url">Link</label>
                     <input type="url"
                         id="newpost-url"
                         className={ linkInputCx }
