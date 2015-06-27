@@ -1,7 +1,7 @@
 'use strict';
 
-var moment = require('moment');
+import moment from 'moment';
 
-module.exports = function timeAgo(timePosted) {
+export default function timeAgo(timePosted) {
     return moment(timePosted, 'x').fromNow();
-};
+}

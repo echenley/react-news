@@ -1,33 +1,29 @@
+/* @flow */
+
 'use strict';
 
-module.exports = function abbreviateNumber(value) {
-    // Abbreviates numbers >= 1K
-    // 100050 => 100K
-    var newValue = value;
+let suffixes = ['k', 'm', 'b'];
 
-    if (value >= 1000) {
-        var suffixes = ['', 'K', 'M', 'B', 'T'];
-        var suffixNum = Math.floor(('' + value).length / 3);
-        var shortValue = '';
+export default function abbreviateNumber(num: string, precision: number): string {
+    // precision 2 => 100
+    precision = Math.pow(10, precision);
 
-        for (var precision = 2; precision >= 1; precision--) {
-            shortValue = parseFloat(suffixNum !== 0
-                ? value / Math.pow(1000, suffixNum)
-                : value).toPrecision(precision);
+    for (let i = suffixes.length - 1; i >= 0; i--) {
+        // 1e9, 1e6, 1e3
+        let magnitude = Math.pow(10, (i + 1) * 3);
 
-            var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
-
-            if (dotLessShortValue.length <= 2) {
-                break;
-            }
+        if (magnitude > num) {
+            continue;
         }
 
-        if (shortValue % 1 !== 0) {
-            shortValue = shortValue.toFixed(1);
-        }
+        // 1100 => 1.1
+        num = Math.round(num * precision / magnitude) / precision;
 
-        newValue = shortValue + suffixes[suffixNum];
+        // add suffix
+        num += suffixes[i];
+
+        break;
     }
 
-    return newValue;
-};
+    return '' + num;
+}
