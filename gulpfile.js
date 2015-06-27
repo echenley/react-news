@@ -3,13 +3,14 @@
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
+var modRewrite = require('connect-modrewrite');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var del = require('del');
-var extend = require('lodash.assign');
+var extend = require('lodash/object/extend');
 
 var $ = require('gulp-load-plugins')();
 
@@ -58,21 +59,18 @@ function buildScript(file, watch) {
     }) : brwsfy;
 
     function rebundle() {
-        $.util.log('Rebundle...');
-        var start = Date.now();
         return bundler.bundle()
             .on('error', handleError)
             .pipe(source(jsEntry.toLowerCase() + '.js'))
             .pipe(buffer())
-            .pipe($.sourcemaps.init({loadMaps: true}))
+            .pipe($.sourcemaps.init({ loadMaps: true }))
             .pipe($.sourcemaps.write(mapsDir))
-            .pipe(gulp.dest(buildDir))
-            .pipe($.notify(function() {
-                console.log('Rebundle Complete [' + (Date.now() - start) + 'ms]');
-            }));
+            .pipe(gulp.dest(buildDir));
     }
 
     bundler.on('update', rebundle);
+    bundler.on('log', $.util.log);
+    bundler.on('error', $.util.log);
     return rebundle();
 }
 
@@ -140,7 +138,12 @@ gulp.task('dist', function() {
 gulp.task('watch', ['build-watch'], function() {
     browserSync.init({
         server: {
-            baseDir: buildDir
+            baseDir: buildDir,
+            middleware: [
+                modRewrite([
+                    '!\\.\\w+$ /index.html [L]'
+                ])
+            ]
         }
     });
 
