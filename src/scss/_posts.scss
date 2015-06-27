@@ -42,16 +42,23 @@
 // .comments-link {}
 
 .upvote {
-    transition: color 150ms;
+    transition: all 150ms;
     color: $dark-gray;
+    user-select: none;
+    
     &:hover {
         text-decoration: none;
     }
+
+    &.upvoted {
+        color: $upvoted;
+    }
+
+    &.updating {
+        transform: scale(0.9);
+    }
 }
 
-.upvoted {
-    color: $upvoted;
-}
 
 .post-info,
 .comment-info {

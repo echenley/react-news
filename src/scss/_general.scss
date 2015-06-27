@@ -54,6 +54,7 @@ textarea {
     transition: border 0.2s;
     padding: $x-small;
     border: $line solid $light-gray;
+    
     &:focus {
         border: $line solid darken($light-gray, 10%);
     }
