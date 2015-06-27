@@ -1,26 +1,24 @@
 'use strict';
 
-var Promise = require('bluebird');
-var Reflux = require('reflux');
-var Firebase = require('firebase');
-var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
-var commentsRef = ref.child('comments');
-var postsRef = ref.child('posts');
-var usersRef = ref.child('users');
+import Promise from 'bluebird';
+import Reflux from 'reflux';
+import Firebase from 'firebase';
 
-// used to create email hash for gravatar
-var hash = require('crypto').createHash('md5');
+const baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
+const commentsRef = baseRef.child('comments');
+const postsRef = baseRef.child('posts');
+const usersRef = baseRef.child('users');
 
-var Actions = Reflux.createActions({
+const Actions = Reflux.createActions({
     // user actions
     'login': {},
-    'logout': { asyncResult: true },
+    'logout': {},
     'register': {},
     'createProfile': {},
     'updateProfile': {},
     // post actions
-    'upvotePost': {},
-    'downvotePost': {},
+    'upvotePost': { asyncResult: true },
+    'downvotePost': { asyncResult: true },
     'submitPost': { asyncResult: true },
     'deletePost': {},
     'setSortBy': {},
@@ -31,14 +29,15 @@ var Actions = Reflux.createActions({
     'addComment': {},
     'deleteComment': {},
     // firebase actions
-    'listenToProfile': {},
-    'listenToPost': {},
-    'listenToPosts': {},
-    'stopListeningToProfile': {},
-    'stopListeningToPosts': {},
-    'stopListeningToPost': {},
+    'watchProfile': {},
+    'watchPost': {},
+    'watchPosts': {},
+    'stopWatchingProfile': {},
+    'stopWatchingPost': {},
+    'stopWatchingPosts': {},
     // error actions
     'loginError': {},
+    'clearError': {},
     // ui actions
     'showModal': {},
     'hideModal': {},
@@ -48,186 +47,139 @@ var Actions = Reflux.createActions({
 /* User Actions
 ===============================*/
 
-function updateProfile(userId) {
-    usersRef.child(userId).on('value', function(profile) {
-        Actions.updateProfile(userId, profile.val());
+Actions.login.listen(function(loginData) {
+    baseRef.authWithPassword(loginData, error => (
+        error && Actions.loginError(error.code)
+    ));
+});
+
+function checkForUsername(newName) {
+    // checks whether username is entered/isn't already taken
+    return new Promise(function(resolve, reject) {
+        if (!newName) {
+            reject({ code: 'NO_USERNAME' });
+        }
+
+        // check if taken
+        usersRef.orderByChild('username').equalTo(newName).once('value', user => (
+            user.val() ? reject({ code: 'USERNAME_TAKEN' }) : resolve()
+        ));
     });
 }
 
-// triggered by auth changes
-ref.onAuth(function(authData) {
-    if (!authData) {
-        // logging out
-        usersRef.off();
-        Actions.logout.completed();
-    } else {
-        // called when reloading the page
-        // while authentication still active
-        updateProfile(authData.uid);
-    }
-});
-
-Actions.login.listen(function(user, username) {
-    // username only provided when registering a new user
-    // used to create a user profile
-    ref.authWithPassword(user, function(error, authData) {
-        if (error !== null) {
-            Actions.loginError(error.code);
-        } else {
-            // sucessful login
-            var userId = authData.uid;
-            if (username) {
-                // new user logging in for first time
-                var email = authData.password.email;
-                Actions.createProfile(userId, username, email);
-            } else {
-                // returning user
-                updateProfile(userId);
-            }
-        }
-    });
-});
-
-Actions.logout.listen(function() {
-    // because of firebase API, callback must
-    // be declared via ref.onAuth() (see above)
-    ref.unauth();
-});
-
 Actions.register.listen(function(username, loginData) {
-
-    var checkForUsername = Promise.promisify(function(name, cb) {
-        usersRef.orderByChild('username').equalTo(name).once('value', function(user) {
-            cb(!!user.val());
-        });
-    });
-
-    if (!username) {
-        // no username provided
-        Actions.loginError('NO_USERNAME');
-        return;
-    }
-
-    // check if username is already taken
     checkForUsername(username)
-        .then(function(usernameTaken) {
-            if (usernameTaken) {
-                Actions.loginError('USERNAME_TAKEN');
-            } else {
-                ref.createUser(loginData, function(error) {
-                    if (error) {
-                        // error during user creation
-                        Actions.loginError(error.code);
-                    } else {
-                        // user successfully created
-                        Actions.login(loginData, username);
-                    }
-                });
-            }
-        });
-});
+        .then(function() {
+            // username is available
+            baseRef.createUser(loginData, function(error, userData) {
+                if (error) { return error; }
 
-Actions.createProfile.listen(function(uid, username, email) {
-    var md5hash = hash.update(email).digest('hex');
-    var profile = {
-        username: username,
-        md5hash: md5hash,
-        upvoted: {}
-    };
-    usersRef.child(uid).set(profile, function(error) {
-        if (error === null) {
-            // user profile successfully created
-            Actions.updateProfile(uid, profile);
-        }
-    });
+                // user successfully created
+                let email = userData.password.email;
+
+                Actions.createProfile(userData.uid, username, email);
+                Actions.login(loginData);
+            });
+        })
+        // error during user creation
+        .catch(error => Actions.loginError(error.code));
 });
 
 
 /* Post Actions
 ===============================*/
 
+function updatePostUpvotes(postId, n) {
+    console.log('upvoting post', n);
+    postsRef.child(postId + '/upvotes').transaction(curr => (curr || 0) + n);
+}
+
 Actions.submitPost.listen(function(post) {
-    var newPostRef = postsRef.push(post, function(error) {
-        if (error) {
-            this.failed(error.code);
-        } else {
-            this.completed(newPostRef.key());
-        }
+    var newPostRef = postsRef.push(post, error => (
+        error ? this.failed(error) : this.completed(newPostRef.key())
+    ));
+});
+
+Actions.deletePost.listen(function(postId) {
+    postsRef.child(postId).remove();
+});
+
+/*
+    I debated for a while here about whether it's okay to trust that these
+    callbacks would work to keep things in sync. I looked at Firebase Util
+    (still very beta as of June 2015) and Firebase Multi Write but decided
+    that the extra dependencies were probably overkill for this project. If
+    you need more guarantees that the data will stay in sync, check them out:
+
+    https://github.com/firebase/firebase-util
+    https://github.com/katowulf/firebase-multi-write
+*/
+
+Actions.upvotePost.listen(function(userId, postId) {
+    // register postId in user's profile
+    usersRef.child(userId + '/upvoted/' + postId).set(true, function(error) {
+        if (error) { return; }
+        // increment post's upvotes
+        updatePostUpvotes(postId, 1);
     });
 });
 
-Actions.deletePost.preEmit = function(postId) {
-    postsRef.child(postId).remove();
-};
-
-Actions.upvotePost.preEmit = function(userId, postId) {
-    postsRef.child(postId).child('upvotes').transaction(function(curr) {
-        return (curr || 0) + 1;
-    }, function(error, success) {
-        if (success) {
-            // register upvote in user's profile
-            usersRef.child(userId).child('upvoted').child(postId).set(true);
-        }
+Actions.downvotePost.listen(function(userId, postId) {
+    // remove upvote in user's profile
+    usersRef.child(userId + '/upvoted/' + postId).remove(function(error) {
+        if (error) { return; }
+        // increment post's upvotes
+        updatePostUpvotes(postId, -1);
     });
-};
-
-Actions.downvotePost.preEmit = function(userId, postId) {
-    postsRef.child(postId).child('upvotes').transaction(function(curr) {
-        return curr - 1;
-    }, function(error, success) {
-        if (success) {
-            // remove upvote in user's profile
-            usersRef.child(userId).child('upvoted').child(postId).remove();
-        }
-    });
-};
+});
 
 /* Comment Actions
 ===============================*/
 
-Actions.updateCommentCount.preEmit = function(postId, n) {
+function updateCommentUpvotes(commentId, n) {
+    postsRef.child(commentId + '/upvotes').transaction(curr => (curr || 0) + n);
+}
+
+Actions.upvoteComment.listen(function(userId, commentId) {
+    // register upvote in user's profile
+    usersRef.child(userId + '/upvoted/' + commentId).set(true, function(error) {
+        if (error) { return; }
+        updateCommentUpvotes(commentId, 1);
+    });
+});
+
+Actions.downvoteComment.listen(function(userId, commentId) {
+    usersRef.child(userId + '/upvoted/' + commentId).remove(function(error) {
+        if (error) { return; }
+        updateCommentUpvotes(commentId, -1);
+    });
+});
+
+function updateCommentCount(postId, n) {
     // updates comment count on post
-    postsRef.child(postId).child('commentCount').transaction(function(curr) {
-        return curr + n;
-    });
-};
+    postsRef.child(postId + '/commentCount').transaction(curr => (curr || 0) + n);
+}
 
-Actions.upvoteComment.preEmit = function(userId, commentId) {
-    commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
-        return (curr || 0) + 1;
-    }, function(error, success) {
-        if (success) {
-            // register upvote in user's profile
-            usersRef.child(userId).child('upvoted').child(commentId).set(true);
-        }
-    });
-};
-
-Actions.downvoteComment.preEmit = function(userId, commentId) {
-    commentsRef.child(commentId).child('upvotes').transaction(function(curr) {
-        return curr - 1;
-    }, function(error, success) {
-        if (success) {
-            // remove upvote in user's profile
-            usersRef.child(userId).child('upvoted').child(commentId).remove();
-        }
-    });
-};
-
-Actions.addComment.preEmit = function(comment) {
+Actions.addComment.listen(function(comment) {
     commentsRef.push(comment, function(error) {
-        if (error === null) {
-            Actions.updateCommentCount(comment.postId, 1);
-        }
+        if (error) { return; }
+        updateCommentCount(comment.postId, 1);
     });
-};
+});
 
-Actions.deleteComment.preEmit = function(commentId, postId) {
+Actions.deleteComment.listen(function(commentId, postId) {
     commentsRef.child(commentId).remove(function(error) {
-        if (error === null) {
-            Actions.updateCommentCount(postId, -1);
-        }
+        if (error) { return; }
+        updateCommentCount(postId, -1);
     });
-};
+});
 
-module.exports = Actions;
+Actions.showModal.listen(function(modalType, errorType) {
+    if (errorType) {
+        Actions.loginError(errorType);
+    } else {
+        Actions.clearError();
+    }
+});
+
+export default Actions;

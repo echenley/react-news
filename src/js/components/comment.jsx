@@ -1,15 +1,14 @@
 'use strict';
 
-// actions
-var Actions = require('../actions/Actions');
+import React from 'react/addons';
+import Actions from '../actions/Actions';
 
-// components
-var Link = require('react-router').Link;
-var Upvote = require('./upvote');
-var abbreviateNumber = require('../util/abbreviateNumber');
-var timeAgo = require('../util/timeAgo');
+import { Link } from 'react-router';
+import Upvote from './Upvote';
+import abbreviateNumber from '../util/abbreviateNumber';
+import timeAgo from '../util/timeAgo';
 
-var Comment = React.createClass({
+const Comment = React.createClass({
 
     propTypes: {
         user: React.PropTypes.object,
@@ -77,4 +76,4 @@ var Comment = React.createClass({
 
 });
 
-module.exports = Comment;
+export default Comment;

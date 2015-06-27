@@ -1,18 +1,19 @@
 'use strict';
 
-var Reflux = require('reflux');
+import React from 'react/addons';
+import Reflux from 'reflux';
 
 // actions
-var Actions = require('../actions/Actions');
+import Actions from '../actions/Actions';
 
 // stores
-var LoginStore = require('../stores/LoginStore');
-var UserStore = require('../stores/UserStore');
+import LoginStore from '../stores/LoginStore';
+import UserStore from '../stores/UserStore';
 
 // components
-var Spinner = require('../components/spinner');
+import Spinner from '../components/spinner';
 
-var Register = React.createClass({
+const Register = React.createClass({
 
     mixins: [
         Reflux.listenTo(UserStore, 'resetForm'),
@@ -30,7 +31,7 @@ var Register = React.createClass({
         React.findDOMNode(this.refs.username).focus();
     },
 
-    componentWillUpdate() {
+    componentDidUpdate() {
         React.findDOMNode(this.refs.username).focus();
     },
 
@@ -96,4 +97,4 @@ var Register = React.createClass({
 
 });
 
-module.exports = Register;
+export default Register;

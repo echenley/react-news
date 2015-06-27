@@ -1,57 +1,64 @@
 'use strict';
 
-var Reflux = require('reflux');
+import React from 'react/addons';
+import Reflux from 'reflux';
 
 // actions
-var Actions = require('../actions/Actions');
+import Actions from '../actions/Actions';
 
 // stores
-var ProfileStore = require('../stores/ProfileStore');
-var UserStore = require('../stores/UserStore');
+import ProfileStore from '../stores/ProfileStore';
+import UserStore from '../stores/UserStore';
 
 // components
-var Spinner = require('../components/Spinner');
-var Post = require('../components/Post');
-var Comment = require('../components/Comment');
+import Spinner from '../components/Spinner';
+import Post from '../components/Post';
+import Comment from '../components/Comment';
 
-var Profile = React.createClass({
+const Profile = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object,
         params: React.PropTypes.object
     },
 
     mixins: [
         require('react-router').Navigation,
-        Reflux.listenTo(ProfileStore, 'onLoaded')
+        Reflux.listenTo(ProfileStore, 'updateProfileData'),
+        Reflux.listenTo(UserStore, 'updateUser')
     ],
-
-    statics: {
-        willTransitionTo(transition, params, query, cb) {
-            // set callback to watch current user's posts/comments
-            UserStore.getUserId(params.username)
-                .then(function(userId) {
-                    Actions.listenToProfile(userId);
-                    return cb();
-                });
-        },
-
-        willTransitionFrom(transition, component) {
-            Actions.stopListeningToProfile();
-            component.setState({
-                isLoading: true
-            });
-        }
-    },
 
     getInitialState() {
         return {
+            user: UserStore.getDefaultData(),
             profileData: ProfileStore.getDefaultData(),
             isLoading: true
         };
     },
 
-    onLoaded(profileData) {
+    componentDidMount() {
+        // watch current user's posts/comments
+        let username = this.props.params.username;
+
+        UserStore.getUserId(username)
+            .then(Actions.watchProfile);
+    },
+
+    routerWillLeave() {
+        Actions.stopWatchingProfile();
+    },
+
+    updateUser(updatedUser) {
+        if (updatedUser.isLoggedin) {
+            this.setState({
+                user: updatedUser
+            });
+        } else {
+            // user has logged out
+            this.transitionTo('home');
+        }
+    },
+
+    updateProfileData(profileData) {
         this.setState({
             profileData: profileData,
             isLoading: false
@@ -61,14 +68,15 @@ var Profile = React.createClass({
     logout(e) {
         e.preventDefault();
         Actions.logout();
-        this.transitionTo('home');
     },
 
     render() {
-        var user = this.props.user;
+        var user = this.state.user;
         var profileData = this.state.profileData;
         var posts = profileData.posts;
         var comments = profileData.comments;
+
+        console.log(user);
 
         var postList, commentList, postHeader, commentsHeader;
 
@@ -128,4 +136,4 @@ var Profile = React.createClass({
 
 });
 
-module.exports = Profile;
+export default Profile;

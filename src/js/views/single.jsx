@@ -1,16 +1,17 @@
 'use strict';
 
-var Reflux = require('reflux');
-var SingleStore = require('../stores/SingleStore');
-var Actions = require('../actions/Actions');
-var Spinner = require('../components/Spinner');
-var Post = require('../components/Post');
-var Comment = require('../components/Comment');
-var Router = require('react-router');
+import React from 'react/addons';
+import Reflux from 'reflux';
+import SingleStore from '../stores/SingleStore';
+import Actions from '../actions/Actions';
+import Spinner from '../components/Spinner';
+import Post from '../components/Post';
+import Comment from '../components/Comment';
+import Router from 'react-router';
 
-var pluralize = require('../util/pluralize');
+import pluralize from '../util/pluralize';
 
-var SinglePost = React.createClass({
+const SinglePost = React.createClass({
 
     propTypes: {
         user: React.PropTypes.object,
@@ -23,16 +24,17 @@ var SinglePost = React.createClass({
         Reflux.listenTo(SingleStore, 'onUpdate')
     ],
 
-    statics: {
-        willTransitionTo(transition, params) {
-            // watch current post and comments
-            Actions.listenToPost(params.postId);
-        },
+    // statics: {
+    //     willTransitionTo(transition, params) {
+    //         // watch current post and comments
+    //         console.log(params, transition);
+    //         Actions.listenToPost(params.postId);
+    //     },
 
-        willTransitionFrom(transition, component) {
-            Actions.stopListeningToPost(component.state.post.id);
-        }
-    },
+    //     willTransitionFrom(transition, component) {
+    //         Actions.stopListeningToPost(component.state.post.id);
+    //     }
+    // },
 
     getInitialState() {
         return {
@@ -40,6 +42,12 @@ var SinglePost = React.createClass({
             comments: [],
             loading: true
         };
+    },
+
+    componentDidMount() {
+        let postId = this.props.params.postId;
+        console.log('mounting', postId);
+        Actions.listenToPost(postId);
     },
 
     onUpdate(postData) {
@@ -54,7 +62,7 @@ var SinglePost = React.createClass({
         e.preventDefault();
 
         if (!this.props.user.isLoggedIn) {
-            Actions.showModal('login');
+            Actions.showModal('login', 'LOGIN_REQUIRED');
             return;
         }
 
@@ -110,4 +118,4 @@ var SinglePost = React.createClass({
 
 });
 
-module.exports = SinglePost;
+export default SinglePost;

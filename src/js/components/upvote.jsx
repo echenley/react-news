@@ -1,72 +1,93 @@
 'use strict';
 
-var Actions = require('../actions/Actions');
-var throttle = require('lodash.throttle');
+import React from 'react/addons';
+import Actions from '../actions/Actions';
 
-var cx = require('classnames');
+import cx from 'classnames';
 
-var Upvote = React.createClass({
+let lastUpvoteState;
+
+const Upvote = React.createClass({
 
     propTypes: {
+        isUpvoted: React.PropTypes.bool,
         user: React.PropTypes.object,
         itemId: React.PropTypes.string,
         upvoteActions: React.PropTypes.object,
-        upvotes: React.PropTypes.number
+        upvotes: React.PropTypes.string
     },
 
     getInitialState() {
         return {
-            upvoted: false
+            updating: false,
+            upvoted: this.props.isUpvoted
         };
     },
 
-    // componentDidMount() {
-    //     var upvoted = this.props.user.profile.upvoted;
-    //     this.setState({
-    //         upvoted: upvoted[this.props.itemId]
-    //     });
-    // },
-
     componentWillReceiveProps(nextProps) {
-        var upvoted = nextProps.user.profile.upvoted;
-        this.setState({
-            upvoted: upvoted[nextProps.itemId]
-        });
-    },
+        let oldUpvoted = this.props.user.profile.upvoted;
+        let newUpvoted = nextProps.user.profile.upvoted;
 
-    upvote: throttle(function(userId, itemId) {
-        if (!this.props.user.isLoggedIn) {
-            Actions.showModal('login');
+        // don't update unless upvoted changes
+        if (oldUpvoted === newUpvoted) {
+            console.log('return early');
             return;
         }
 
-        var upvoted = this.state.upvoted;
-        var upvoteActions = this.props.upvoteActions;
+        this.setState({
+            updating: false,
+            upvoted: nextProps.isUpvoted
+        });
+    },
 
-        if (upvoted) {
-            upvoteActions.downvote(userId, itemId);
-        } else {
-            upvoteActions.upvote(userId, itemId);
+    upvote() {
+        if (this.state.updating) {
+            console.log('disabled');
+            return;
+        }
+
+        if (!this.props.user.isLoggedIn) {
+            Actions.showModal('login', 'LOGIN_REQUIRED');
+            return;
         }
 
         this.setState({
-            upvoted: !upvoted
+            upvoted: !this.state.upvoted
         });
-    }, 300, { trailing: false }),
+
+        let userId = this.props.user.uid;
+        let itemId = this.props.itemId;
+        let upvoted = this.state.upvoted;
+
+        let upvoteActions = this.props.upvoteActions;
+        let upvoteAction = upvoted
+            ? upvoteActions.downvote
+            : upvoteActions.upvote;
+
+        // don't do anything if nothing changed
+        if (upvoted === lastUpvoteState) {
+            return;
+        }
+
+        // wait for action to complete before allowing upvote
+        this.setState({
+            updating: true
+        });
+
+        upvoteAction(userId, itemId);
+    },
 
     render() {
-        var userId = this.props.user.uid;
-        var itemId = this.props.itemId;
-        var upvotes = this.props.upvotes;
+        let upvotes = this.props.upvotes;
 
-        var upvoted = this.state.upvoted;
-        var upvoteCx = cx(
+        let upvoteCx = cx(
             'upvote', {
-            'upvoted': upvoted
+            'upvoted': this.state.upvoted,
+            'updating': this.state.updating
         });
 
         return (
-            <a className={ upvoteCx } onClick={ this.upvote.bind(this, userId, itemId) }>
+            <a className={ upvoteCx } onClick={ this.upvote }>
                 { upvotes } <i className="fa fa-arrow-up"></i>
             </a>
         );
@@ -74,4 +95,4 @@ var Upvote = React.createClass({
 
 });
 
-module.exports = Upvote;
+export default Upvote;

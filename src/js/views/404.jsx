@@ -1,9 +1,11 @@
 'use strict';
 
-// components
-var Link = require('react-router').Link;
+import React from 'react/addons';
 
-var uhOh = React.createClass({
+// components
+const Link = require('react-router').Link;
+
+const uhOh = React.createClass({
     render() {
         return (
             <div className="content full-width">
@@ -14,4 +16,4 @@ var uhOh = React.createClass({
     }
 });
 
-module.exports = uhOh;
+export default uhOh;

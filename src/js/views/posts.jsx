@@ -1,39 +1,35 @@
 'use strict';
 
-var Reflux = require('reflux');
-var Actions = require('../actions/Actions');
+import React from 'react/addons';
+import Reflux from 'reflux';
+import Actions from '../actions/Actions';
+import { Navigation, TransitionHook } from 'react-router';
 
-var PostsStore = require('../stores/PostsStore');
+import PostsStore from '../stores/PostsStore';
+import UserStore from '../stores/UserStore';
 
-var Spinner = require('../components/Spinner');
-var Post = require('../components/Post');
-var Router = require('react-router');
-var Link = Router.Link;
+import Spinner from '../components/Spinner';
+import Post from '../components/Post';
+import Link from 'react-router/lib/Link';
 
-var Posts = React.createClass({
+const Posts = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object
+        params: React.PropTypes.object
     },
 
     mixins: [
-        Router.Navigation,
-        Reflux.listenTo(PostsStore, 'onStoreUpdate')
+        TransitionHook,
+        Navigation,
+        Reflux.listenTo(PostsStore, 'onStoreUpdate'),
+        Reflux.connect(UserStore, 'user')
     ],
 
-    statics: {
-        willTransitionTo(transition, params) {
-            Actions.listenToPosts(+params.pageNum || 1);
-        },
-
-        willTransitionFrom() {
-            Actions.stopListeningToPosts();
-        }
-    },
-
     getInitialState() {
-        var postsData = PostsStore.getDefaultData();
+        let postsData = PostsStore.getDefaultData();
+
         return {
+            user: UserStore.getDefaultData(),
             loading: true,
             posts: postsData.posts,
             sortOptions: postsData.sortOptions,
@@ -42,11 +38,25 @@ var Posts = React.createClass({
         };
     },
 
+    componentDidMount() {
+        let pageNum = this.props.params ? +this.props.params.pageNum : 1;
+        Actions.watchPosts(pageNum);
+    },
+
+    componentWillReceiveProps() {
+        let pageNum = this.props.params ? +this.props.params.pageNum : 1;
+    },
+
+    routerWillLeave() {
+        Actions.stopWatchingPosts();
+    },
+
     onStoreUpdate(postsData) {
         if (!postsData.posts.length) {
             // if no posts are returned
             this.transitionTo('home');
         }
+
         this.setState({
             loading: false,
             posts: postsData.posts,
@@ -67,26 +77,25 @@ var Posts = React.createClass({
         });
 
         if (currentPage === 1) {
-            Actions.stopListeningToPosts();
-            Actions.listenToPosts(currentPage);
+            Actions.watchPosts(currentPage);
         } else {
             this.transitionTo('posts', { pageNum: 1 });
         }
     },
 
     render() {
-        var posts = this.state.posts;
-        var currentPage = this.state.currentPage || 1;
-        var sortOptions = this.state.sortOptions;
+        let user = this.state.user;
+        let posts = this.state.posts;
+        let currentPage = this.state.currentPage || 1;
+        let sortOptions = this.state.sortOptions;
         // possible sort values (defined in PostsStore)
-        var sortValues = Object.keys(sortOptions.values);
-        var user = this.props.user;
+        let sortValues = Object.keys(sortOptions.values);
 
         posts = posts.map(function(post) {
             return <Post post={ post } user={ user } key={ post.id } />;
         });
 
-        var options = sortValues.map(function(optionText, i) {
+        let options = sortValues.map(function(optionText, i) {
             return <option value={ sortOptions[i] } key={ i }>{ optionText }</option>;
         });
 
@@ -112,7 +121,7 @@ var Posts = React.createClass({
                 <nav className="pagination">
                     {
                         this.state.nextPage ? (
-                            <Link to="posts" params={{ pageNum: currentPage + 1 }} className="next-page">
+                            <Link to={ `posts/${currentPage + 1}` } className="next-page">
                                 Load More Posts
                             </Link>
                           ) : 'No More Posts'
@@ -124,4 +133,4 @@ var Posts = React.createClass({
 
 });
 
-module.exports = Posts;
+export default Posts;

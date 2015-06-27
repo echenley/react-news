@@ -8,70 +8,56 @@ var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
 var postsRef = ref.child('posts');
 var commentsRef = ref.child('comments');
 
-// store listener references
-var postListener, commentListener;
+var postData = {
+    post: {},
+    comments: []
+};
 
 var SingleStore = Reflux.createStore({
 
     listenables: Actions,
 
-    init() {
-        this.postData = {
-            post: {},
-            comments: []
-        };
-    },
-
     listenToPost(postId) {
-        postListener = postsRef
+        postsRef
             .child(postId)
-            .on('value', this.updatePost.bind(this));
+            .once('value', this.updatePost.bind(this));
 
-        commentListener = commentsRef
+        commentsRef
             .orderByChild('postId')
             .equalTo(postId)
-            .on('value', this.updateComments.bind(this));
+            .once('value', this.updateComments.bind(this));
     },
 
-    updatePost(postData) {
-        var post = postData.val();
+    updatePost(postDataObj) {
+        var post = postDataObj.val();
 
         if (post) {
-            post.id = postData.key();
-            this.postData.post = post;
+            post.id = postDataObj.key();
+            postData.post = post;
         } else {
             // post doesn't exist or was deleted
-            this.postData.post = {
+            postData.post = {
                 isDeleted: true
             };
         }
 
-        this.trigger(this.postData);
+        this.trigger(postData);
     },
 
     updateComments(comments) {
-        this.postData.comments = [];
+        postData.comments = [];
 
-        comments.forEach((commentData) => {
+        comments.forEach(commentData => {
             var comment = commentData.val();
             comment.id = commentData.key();
-            this.postData.comments.unshift(comment);
+            postData.comments.unshift(comment);
         });
 
-        this.trigger(this.postData);
-    },
-
-    stopListeningToPost(postId) {
-        if (!this.postData.post.isDeleted) {
-            postsRef.child(postId)
-                .off('value', postListener);
-        }
-
-        commentsRef.off('value', commentListener);
+        this.trigger(postData);
     },
 
     getDefaultData() {
-        return this.postData;
+        return postData;
     }
 
 });

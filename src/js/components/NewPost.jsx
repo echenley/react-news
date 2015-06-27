@@ -1,13 +1,14 @@
 'use strict';
 
-var Reflux = require('reflux');
-var Actions = require('../actions/Actions');
+import React from 'react/addons';
+import Reflux from 'reflux';
+import Actions from '../actions/Actions';
 
-var Spinner = require('../components/Spinner');
+import Spinner from '../components/Spinner';
 
-var cx = require('classnames');
+import cx from 'classnames';
 
-var NewPost = React.createClass({
+const NewPost = React.createClass({
 
     mixins: [
         Reflux.listenTo(Actions.submitPost.completed, 'onSuccess'),
@@ -25,10 +26,9 @@ var NewPost = React.createClass({
         React.findDOMNode(this.refs.postTitle).focus();
     },
 
-    componentWillUpdate() {
+    componentDidUpdate() {
         React.findDOMNode(this.refs.postTitle).focus();
     },
-
 
     resetForm() {
         this.setState({
@@ -116,7 +116,7 @@ var NewPost = React.createClass({
                         placeholder="Title"
                         ref="postTitle"
                     />
-                    <label htmlFor="newpost-url">Link</label>
+                    <label htmlFor="newpost-url">Title</label>
                     <input type="url"
                         id="newpost-url"
                         className={ linkInputCx }
@@ -134,7 +134,6 @@ var NewPost = React.createClass({
             </div>
         );
     }
-
 });
 
-module.exports = NewPost;
+export default NewPost;

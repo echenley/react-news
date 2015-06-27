@@ -6,39 +6,39 @@ Author URI: http://henleyedition.com/
 
 'use strict';
 
-window.React = require('react/addons');
-var Reflux = require('reflux');
+import React from 'react/addons';
+import Reflux from 'reflux';
 
-var attachFastClick = require('fastclick');
+import attachFastClick from 'fastclick';
 
-var Router = require('react-router');
-var RouteHandler = Router.RouteHandler;
-var Route = Router.Route;
-// var  = Router.NotFoundRoute;
-var DefaultRoute = Router.DefaultRoute;
-var Link = Router.Link;
+import { Router, Route } from 'react-router';
+import BrowserHistory from 'react-router/lib/BrowserHistory';
+import Link from 'react-router/lib/Link';
 
-var UserStore = require('./stores/UserStore');
-var Actions = require('./actions/Actions');
-var Posts = require('./views/Posts');
-var SinglePost = require('./views/Single');
-var Profile = require('./views/Profile');
-var UhOh = require('./views/404');
-var Login = require('./components/Login');
-var Register = require('./components/Register');
-var NewPost = require('./components/NewPost');
+import UserStore from './stores/UserStore';
+import Actions from './actions/Actions';
+import Posts from './views/Posts';
+// import SinglePost from './views/Single';
+import Profile from './views/Profile';
+// import UhOh from './views/404';
+import Login from './components/Login';
+import Register from './components/Register';
+import NewPost from './components/NewPost';
 
-var cx = require('classnames');
+import cx from 'classnames';
 
 function keyUpHandler(e) {
     // esc key closes modal
     if (e.keyCode === 27) {
-        e.preventDefault();
-        Actions.hideModal();
+        Actions.hideModal(e);
     }
 }
 
-var App = React.createClass({
+let App = React.createClass({
+
+    propTypes: {
+        children: React.PropTypes.object
+    },
 
     mixins: [
         require('react-router').Navigation,
@@ -78,7 +78,12 @@ var App = React.createClass({
     },
 
     newPost() {
-        Actions.showModal(this.state.user ? 'newpost' : 'login');
+        if (!this.state.user.isLoggedIn) {
+            Actions.showModal('login', 'LOGIN_REQUIRED');
+            return;
+        } else {
+            Actions.showModal('newpost');
+        }
     },
 
     showModal(type) {
@@ -92,30 +97,30 @@ var App = React.createClass({
     },
 
     render() {
-        var user = this.state.user;
+        let user = this.state.user;
 
-        var username = user ? user.profile.username : '';
-        var md5hash = user ? user.profile.md5hash : '';
-        var gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
+        let username = user ? user.profile.username : '';
+        let md5hash = user ? user.profile.md5hash : '';
+        let gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
 
-        var wrapperCx = cx(
+        let wrapperCx = cx(
             'wrapper',
             'full-height', {
             'modal-open': this.state.showModal
         });
 
-        var modalTypes = {
+        let modalTypes = {
             'register': <Register />,
             'login': <Login />,
             'newpost': <NewPost />
         };
 
-        var modalType = modalTypes[this.state.modalType];
+        let modalType = modalTypes[this.state.modalType];
 
-        var userArea = user.isLoggedIn ? (
+        let userArea = user.isLoggedIn ? (
             // show profile info
             <span className="user-info">
-                <Link to="profile" params={{ username: username }} className="profile-link">
+                <Link to={ `user/${username}` } className="profile-link">
                     <span className="username">{ username }</span>
                     <img src={ gravatarURI } className="nav-pic" />
                 </Link>
@@ -123,8 +128,8 @@ var App = React.createClass({
         ) : (
             // show login/register
             <span>
-                <a onClick={ Actions.showModal.bind(this, 'login') }>Sign In</a>
-                <a onClick={ Actions.showModal.bind(this, 'register') } className="register-link">Register</a>
+                <a onClick={ () => Actions.showModal('login') }>Sign In</a>
+                <a onClick={ () => Actions.showModal('register') } className="register-link">Register</a>
             </span>
         );
 
@@ -132,7 +137,7 @@ var App = React.createClass({
             <div className={ wrapperCx }>
                 <header className="header cf">
                     <div className="float-left">
-                        <Link to="home" className="menu-title">react-news</Link>
+                        <Link to="/" className="menu-title">react-news</Link>
                     </div>
                     <div className="float-right">
                         { userArea }
@@ -144,7 +149,7 @@ var App = React.createClass({
                 </header>
 
                 <main id="content" className="full-height inner">
-                    <RouteHandler { ...this.props } user={ this.state.user } />
+                    {this.props.children || <Posts /> }
                 </main>
 
                 <aside className="md-modal">
@@ -156,20 +161,23 @@ var App = React.createClass({
     }
 });
 
-var routes = (
-    <Route handler={ App }>
-        <Route name="post" path="/post/:postId" handler={ SinglePost } />
-        <Route name="profile" path="/user/:username" handler={ Profile } />
-        <Route name="posts" path="/posts/:pageNum" handler={ Posts } ignoreScrollBehavior />
-        <Route name="404" path="/404" handler={ UhOh } />
-        <DefaultRoute name="home" handler={ Posts } />
-    </Route>
-);
+React.render((
+    <Router history={ new BrowserHistory() }>
+        <Route path="/" component={ App }>
+            <Route name="profile" path="/user/:username" component={ Profile } />
+            <Route name="posts" path="/posts/:pageNum" component={ Posts } />
+            {/*
+            <Route name="post" path="/post/:postId" component={ SinglePost } />
+            <Route name="404" path="/404" component={ UhOh } />
+            */}
+        </Route>
+    </Router>
+), document.getElementById('app'));
 
 
-Router.run(routes, function(Handler, state) {
-    React.render(<Handler params={ state.params } />, document.getElementById('app'));
-});
+// Router.run(routes, function(Handler, state) {
+//     React.render(<Handler params={ state.params } />, );
+// });
 
 // fastclick eliminates 300ms click delay on mobile
 attachFastClick(document.body);

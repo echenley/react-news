@@ -1,84 +1,80 @@
 'use strict';
 
-var Reflux = require('reflux');
-var Firebase = require('firebase');
-var postsRef = new Firebase('https://resplendent-fire-4810.firebaseio.com/posts');
-var Actions = require('../actions/Actions');
+import Reflux from 'reflux';
+import Firebase from 'firebase';
+import Actions from '../actions/Actions';
 
-var postsPerPage = 10;
+// import '../vendor/firebase-util';
 
-var PostsStore = Reflux.createStore({
+let baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+let postsRef = baseRef.child('posts');
+
+let postsPerPage = 10;
+
+const sortValues = {
+    // values mapped to firebase locations
+    upvotes: 'upvotes',
+    newest: 'time',
+    comments: 'commentCount'
+};
+
+let data = {
+    posts: [],
+    currentPage: 1,
+    nextPage: true,
+    sortOptions: {
+        currentValue: 'upvotes',
+        values: sortValues
+    }
+};
+
+const PostsStore = Reflux.createStore({
 
     listenables: Actions,
 
-    init() {
-        this.posts = [];
-        this.currentPage = 1;
-        this.nextPage = true;
-        this.sortOptions = {
-            currentValue: 'upvotes',
-            values: {
-                // values mapped to firebase locations
-                'upvotes': 'upvotes',
-                'newest': 'time',
-                'comments': 'commentCount'
-            }
-        };
-    },
-
     setSortBy(value) {
-        this.sortOptions.currentValue = value;
+        data.sortOptions.currentValue = value;
     },
 
-    listenToPosts(pageNum) {
-        this.currentPage = pageNum;
+    watchPosts(pageNum) {
+        data.currentPage = pageNum;
         postsRef
-            .orderByChild(this.sortOptions.values[this.sortOptions.currentValue])
+            .orderByChild(data.sortOptions.values[data.sortOptions.currentValue])
             // +1 extra post to determine whether another page exists
-            .limitToLast((this.currentPage * postsPerPage) + 1)
-            .on('value', this.updatePosts.bind(this));
+            .limitToLast((data.currentPage * postsPerPage) + 1)
+            .on('value', postDataObj => this.updatePosts(postDataObj));
     },
 
-    stopListeningToPosts() {
+    stopWatchingPosts() {
         postsRef.off();
     },
 
-    updatePosts(postsSnapshot) {
-        // posts is all posts through current page + 1
-        var endAt = this.currentPage * postsPerPage;
+    updatePosts(postDataObj) {
+        // newPosts will be all posts through current page + 1
+        var endAt = data.currentPage * postsPerPage;
 
         // accumulate posts in posts array
-        var posts = [];
+        var newPosts = [];
 
-        postsSnapshot.forEach(function(postData) {
+        postDataObj.forEach(postData => {
             var post = postData.val();
             post.id = postData.key();
-            posts.unshift(post);
+            newPosts.unshift(post);
         });
 
         // if extra post doesn't exist, indicate that there are no more posts
-        this.nextPage = (posts.length === endAt + 1);
+        data.nextPage = (newPosts.length === endAt + 1);
 
         // slice off extra post
-        this.posts = posts.slice(0, endAt);
+        data.posts = newPosts.slice(0, endAt);
 
-        this.trigger({
-            posts: this.posts,
-            currentPage: this.currentPage,
-            nextPage: this.nextPage,
-            sortOptions: this.sortOptions
-        });
+        this.trigger(data);
     },
 
     getDefaultData() {
-        return {
-            posts: this.posts,
-            currentPage: this.currentPage,
-            nextPage: this.nextPage,
-            sortOptions: this.sortOptions
-        };
+        return data;
     }
 
 });
 
-module.exports = PostsStore;
+export default PostsStore;

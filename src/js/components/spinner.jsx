@@ -1,6 +1,8 @@
 'use strict';
 
-var Spinner = React.createClass({
+import React from 'react/addons';
+
+const Spinner = React.createClass({
     render() {
         var bars = [];
         var barStyle;
@@ -24,4 +26,4 @@ var Spinner = React.createClass({
     }
 });
 
-module.exports = Spinner;
+export default Spinner;

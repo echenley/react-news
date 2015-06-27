@@ -1,14 +1,22 @@
 'use strict';
 
-var Promise = require('bluebird');
-var Reflux = require('reflux');
-var Actions = require('../actions/Actions');
+import Promise from 'bluebird';
+import Reflux from 'reflux';
+import Actions from '../actions/Actions';
 
-var Firebase = require('firebase');
-var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
-var usersRef = ref.child('users');
+import Firebase from 'firebase';
 
-var defaultUser = {
+import extend from 'lodash/object/extend';
+
+let baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+
+// let postsRef = baseRef.child('posts');
+let usersRef = baseRef.child('users');
+
+// used to create email hash for gravatar
+let hash = require('crypto').createHash('md5');
+
+let defaultUser = {
     uid: '',
     profile: {
         username: '',
@@ -17,41 +25,82 @@ var defaultUser = {
     isLoggedIn: false
 };
 
-var UserStore = Reflux.createStore({
+// copy defaultUser to currentUser
+let currentUser = extend({}, defaultUser);
+
+const UserStore = Reflux.createStore({
 
     listenables: Actions,
 
     init() {
-        this.user = defaultUser;
+        // triggered by auth changes
+        baseRef.onAuth(function(authData) {
+            if (!authData) {
+                // logging out
+                usersRef.off();
+                this.logoutCompleted();
+            } else {
+                // user is logged in
+                let userId = authData.uid;
+
+                // watch their profile for updates
+                usersRef.child(userId).on('value', profile => (
+                    this.updateProfile(userId, profile.val())
+                ));
+            }
+        }.bind(this));
     },
 
-    updateProfile(userId, profile) {
-        this.user = {
-            uid: userId,
-            profile: profile,
-            isLoggedIn: true
-        };
-        this.trigger(this.user);
+    logout() {
+        baseRef.unAuth();
     },
 
     logoutCompleted() {
-        this.user = defaultUser;
-        this.trigger(this.user);
+        // reset currentUser to default
+        currentUser = extend({}, defaultUser);
+        this.trigger(currentUser);
     },
 
-    getUserId: function(username) {
+    updateProfile(userId, newProfile) {
+        currentUser = extend({}, {
+            uid: userId,
+            profile: newProfile,
+            isLoggedIn: true
+        });
+
+        this.trigger(currentUser);
+    },
+
+    createProfile(uid, username, email) {
+        let md5hash = hash.update(email).digest('hex');
+
+        let profile = {
+            username: username,
+            md5hash: md5hash,
+            upvoted: {}
+        };
+
+        usersRef.child(uid).set(profile, error => {
+            if (error === null) {
+                // user profile successfully created
+                this.updateProfile(uid, profile);
+            }
+        });
+    },
+
+    getUserId(username) {
         // returns userId given username
         return new Promise(function(resolve) {
             usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
-                var userId = Object.keys(user.val())[0];
+                let userId = Object.keys(user.val())[0];
                 resolve(userId);
             });
         });
     },
 
     getDefaultData() {
-        return this.user;
+        return currentUser;
     }
 });
 
-module.exports = UserStore;
+export default UserStore;

@@ -1,22 +1,20 @@
 'use strict';
 
-var Reflux = require('reflux');
+import React from 'react/addons';
+import Reflux from 'reflux';
 
-// actions
-var Actions = require('../actions/Actions');
+import Actions from '../actions/Actions';
 
-// stores
-var LoginStore = require('../stores/LoginStore');
-var UserStore = require('../stores/UserStore');
+import LoginStore from '../stores/LoginStore';
+import UserStore from '../stores/UserStore';
 
-// components
-var Spinner = require('../components/spinner');
+import Spinner from '../components/spinner';
 
-var Login = React.createClass({
+const Login = React.createClass({
 
     mixins: [
         Reflux.listenTo(UserStore, 'resetForm'),
-        Reflux.listenTo(LoginStore, 'onErrorMessage')
+        Reflux.listenTo(LoginStore, 'onMessage')
     ],
 
     getInitialState() {
@@ -30,7 +28,7 @@ var Login = React.createClass({
         React.findDOMNode(this.refs.email).focus();
     },
 
-    componentWillUpdate() {
+    componentDidUpdate() {
         React.findDOMNode(this.refs.email).focus();
     },
 
@@ -43,7 +41,7 @@ var Login = React.createClass({
         });
     },
 
-    onErrorMessage(errorMessage) {
+    onMessage(errorMessage) {
         React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             error: errorMessage,
@@ -88,4 +86,4 @@ var Login = React.createClass({
     }
 });
 
-module.exports = Login;
+export default Login;
