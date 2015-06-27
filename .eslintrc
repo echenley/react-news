@@ -30,7 +30,6 @@
         "no-use-before-define": [2, "nofunc"],
         "quotes": [2, "single"],
         "semi": [2, "always"],
-        "space-in-brackets": [2, "always"]
 
         // eslint-plugin-react specific
         "react/jsx-boolean-value": 1,

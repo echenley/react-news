@@ -3,7 +3,7 @@
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
-var modRewrite = require('connect-modrewrite');
+var historyApiFallback = require('connect-history-api-fallback');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var babelify = require('babelify');
@@ -139,11 +139,7 @@ gulp.task('watch', ['build-watch'], function() {
     browserSync.init({
         server: {
             baseDir: buildDir,
-            middleware: [
-                modRewrite([
-                    '!\\.\\w+$ /index.html [L]'
-                ])
-            ]
+            middleware: [historyApiFallback()]
         }
     });
 
