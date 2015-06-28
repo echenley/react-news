@@ -136,15 +136,6 @@ password: henleyedition1
       }
     },
 
-    "user_history": {
-      ".read": true,
-
-      "$uid": {
-        // only the user can write here
-        ".write": "auth.uid === $uid"
-      }
-    },
-
     // Don't let users post to other fields
     "$other": { ".validate": false }
 
