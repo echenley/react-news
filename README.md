@@ -23,30 +23,30 @@ password: henleyedition1
 `$` are Firebase-generated unique IDs.
 
 ```
-| comments
-| -- $commentId
-|    | -- creator
-|    | -- creatorUID
-|    | -- postId
-|    | -- postTitle
-|    | -- text
-|    | -- time
-|    | -- upvotes
-| posts
-| -- $postId
-|    | -- commentCount
-|    | -- creator
-|    | -- creatorUID
-|    | -- time
-|    | -- title
-|    | -- upvotes
-|    | -- url
-| users
-| -- $userId
-|    | -- md5hash
-|    | -- upvoted
-|    |    | -- $itemId
-|    | -- username
+├── comments
+│   └── $commentId
+│       ├── creator
+│       ├── creatorUID
+│       ├── postId
+│       ├── postTitle
+│       ├── text
+│       ├── time
+│       └── upvotes
+├── posts
+│   └── $postId
+│       ├── commentCount
+│       ├── creator
+│       ├── creatorUID
+│       ├── time
+│       ├── title
+│       ├── upvotes
+│       └── url
+└── users
+    └── $userId
+        ├── md5hash
+        ├── upvoted
+        │   └── $itemId
+        └── username
 ```
 
 ## Firebase Security Rules
