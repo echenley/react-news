@@ -1,57 +1,62 @@
 'use strict';
 
-var Reflux = require('reflux');
-var Actions = require('../actions/Actions');
+import Reflux from 'reflux';
+import Actions from '../actions/Actions';
 
-var Firebase = require('firebase');
-var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
-var postsRef = ref.child('posts');
-var commentsRef = ref.child('comments');
+import Firebase from 'firebase';
+const ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
+const postsRef = ref.child('posts');
+const commentsRef = ref.child('comments');
 
-var postData = {
+let postData = {
     post: {},
     comments: []
 };
 
-var SingleStore = Reflux.createStore({
+const SingleStore = Reflux.createStore({
 
     listenables: Actions,
 
-    listenToPost(postId) {
+    watchPost(postId) {
         postsRef
             .child(postId)
-            .once('value', this.updatePost.bind(this));
+            .on('value', this.updatePost.bind(this));
 
         commentsRef
             .orderByChild('postId')
             .equalTo(postId)
-            .once('value', this.updateComments.bind(this));
+            .on('value', this.updateComments.bind(this));
+    },
+
+    stopWatchingPost(postId) {
+        postsRef.child(postId).off();
+        commentsRef.orderByChild('postId').equalTo(postId).off();
     },
 
     updatePost(postDataObj) {
-        var post = postDataObj.val();
+        let post = postDataObj.val();
 
-        if (post) {
+        if (!post) {
+            // post doesn't exist
+            postData.post = null;
+        } else {
             post.id = postDataObj.key();
             postData.post = post;
-        } else {
-            // post doesn't exist or was deleted
-            postData.post = {
-                isDeleted: true
-            };
         }
 
         this.trigger(postData);
     },
 
-    updateComments(comments) {
-        postData.comments = [];
+    updateComments(commentDataObj) {
+        let newComments = [];
 
-        comments.forEach(commentData => {
-            var comment = commentData.val();
+        commentDataObj.forEach(commentData => {
+            let comment = commentData.val();
             comment.id = commentData.key();
-            postData.comments.unshift(comment);
+            newComments.unshift(comment);
         });
+
+        postData.comments = newComments;
 
         this.trigger(postData);
     },

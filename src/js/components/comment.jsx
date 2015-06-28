@@ -17,23 +17,24 @@ const Comment = React.createClass({
     },
 
     render() {
-        var user = this.props.user;
-        var comment = this.props.comment;
-        var showPostTitle = this.props.showPostTitle;
+        let user = this.props.user;
+        let userUpvoted = user.profile.upvoted || {};
+        let comment = this.props.comment;
+        let showPostTitle = this.props.showPostTitle;
 
-        var postLink = showPostTitle && (
+        let postLink = showPostTitle && (
             <span className="post-info-item">
-                <Link to="post" params={{ postId: comment.postId }}>{ comment.postTitle }</Link>
+                <Link to={ `/post/${comment.postId}` }>{ comment.postTitle }</Link>
             </span>
         );
 
-        var deleteOption = user.uid === comment.creatorUID && (
+        let deleteOption = user.uid === comment.creatorUID && (
             <span className="delete post-info-item">
                 <a onClick={ Actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
             </span>
         );
 
-        var upvoteActions = {
+        let upvoteActions = {
             upvote: Actions.upvoteComment,
             downvote: Actions.downvoteComment
         };
@@ -45,17 +46,17 @@ const Comment = React.createClass({
                 </div>
 
                 <div className="comment-info">
-                    <div className="posted-by float-left">
-
+                    <div className="posted-by">
                         <Upvote
                             upvoteActions={ upvoteActions }
                             user={ user }
                             itemId={ comment.id }
-                            upvotes={ comment.upvotes ? abbreviateNumber(comment.upvotes) : 0 }
+                            isUpvoted={ !!userUpvoted[comment.id] }
+                            upvotes={ comment.upvotes ? abbreviateNumber(comment.upvotes) : '0' }
                         />
 
                         <span className="post-info-item">
-                            <Link to="profile" params={{ username: comment.creator }}>
+                            <Link to={ `/user/${comment.creator}` }>
                                 { comment.creator }
                             </Link>
                         </span>

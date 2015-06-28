@@ -4,15 +4,14 @@ import Reflux from 'reflux';
 import Firebase from 'firebase';
 import Actions from '../actions/Actions';
 
-// import '../vendor/firebase-util';
-
 let baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
 let postsRef = baseRef.child('posts');
+// let scrollRef = new Firebase.util.Scroll(baseRef, 'number');
 
 let postsPerPage = 10;
 
 const sortValues = {
-    // values mapped to firebase locations
+    // values mapped to firebase locations at baseRef/posts
     upvotes: 'upvotes',
     newest: 'time',
     comments: 'commentCount'
@@ -32,6 +31,10 @@ const PostsStore = Reflux.createStore({
 
     listenables: Actions,
 
+    // init() {
+    //     scrollRef.on('child_added', this.appendPosts);
+    // },
+
     setSortBy(value) {
         data.sortOptions.currentValue = value;
     },
@@ -39,10 +42,10 @@ const PostsStore = Reflux.createStore({
     watchPosts(pageNum) {
         data.currentPage = pageNum;
         postsRef
-            .orderByChild(data.sortOptions.values[data.sortOptions.currentValue])
+            .orderByChild(sortValues[data.sortOptions.currentValue])
             // +1 extra post to determine whether another page exists
             .limitToLast((data.currentPage * postsPerPage) + 1)
-            .on('value', postDataObj => this.updatePosts(postDataObj));
+            .on('value', this.updatePosts);
     },
 
     stopWatchingPosts() {
@@ -51,13 +54,13 @@ const PostsStore = Reflux.createStore({
 
     updatePosts(postDataObj) {
         // newPosts will be all posts through current page + 1
-        var endAt = data.currentPage * postsPerPage;
+        let endAt = data.currentPage * postsPerPage;
 
-        // accumulate posts in posts array
-        var newPosts = [];
+        // add posts to new array
+        let newPosts = [];
 
         postDataObj.forEach(postData => {
-            var post = postData.val();
+            let post = postData.val();
             post.id = postData.key();
             newPosts.unshift(post);
         });

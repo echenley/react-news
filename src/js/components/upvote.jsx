@@ -25,12 +25,11 @@ const Upvote = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        let oldUpvoted = this.props.user.profile.upvoted;
-        let newUpvoted = nextProps.user.profile.upvoted;
+        let oldUpvoted = this.props.isUpvoted;
+        let newUpvoted = nextProps.isUpvoted;
 
         // don't update unless upvoted changes
         if (oldUpvoted === newUpvoted) {
-            console.log('return early');
             return;
         }
 
@@ -42,7 +41,6 @@ const Upvote = React.createClass({
 
     upvote() {
         if (this.state.updating) {
-            console.log('disabled');
             return;
         }
 
@@ -58,8 +56,8 @@ const Upvote = React.createClass({
         let userId = this.props.user.uid;
         let itemId = this.props.itemId;
         let upvoted = this.state.upvoted;
-
         let upvoteActions = this.props.upvoteActions;
+
         let upvoteAction = upvoted
             ? upvoteActions.downvote
             : upvoteActions.upvote;

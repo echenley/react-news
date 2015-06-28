@@ -1,26 +1,27 @@
 'use strict';
 
-var Reflux = require('reflux');
-var Firebase = require('firebase');
-var ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
-var postsRef = ref.child('posts');
-var commentsRef = ref.child('comments');
-var Actions = require('../actions/Actions');
+import Reflux from 'reflux';
+import Actions from '../actions/Actions';
+import Firebase from 'firebase';
+
+const ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
+const postsRef = ref.child('posts');
+const commentsRef = ref.child('comments');
 
 // store listener references
-var postListener, commentListener;
+let postListener, commentListener;
 
-var data = {
+let data = {
     userId: '',
     posts: [],
     comments: []
 };
 
-var ProfileStore = Reflux.createStore({
+const ProfileStore = Reflux.createStore({
 
     listenables: Actions,
 
-    listenToProfile(id) {
+    watchProfile(id) {
         data.userId = id;
 
         postListener = postsRef
@@ -36,17 +37,17 @@ var ProfileStore = Reflux.createStore({
             .on('value', this.updateComments.bind(this));
     },
 
-    stopListeningToProfile() {
+    stopWatchingProfile() {
         postsRef.off('value', postListener);
         commentsRef.off('value', commentListener);
     },
 
     updatePosts(postDataObj) {
-        var newPosts = [];
+        let newPosts = [];
 
         // postDataObj: firebase object with a forEach property
         postDataObj.forEach(postData => {
-            var post = postData.val();
+            let post = postData.val();
             post.id = postData.key();
             newPosts.unshift(post);
         });
@@ -57,11 +58,11 @@ var ProfileStore = Reflux.createStore({
     },
 
     updateComments(commentDataObj) {
-        var newComments = [];
+        let newComments = [];
 
         // commentDataObj: firebase object with a forEach property
         commentDataObj.forEach(commentData => {
-            var comment = commentData.val();
+            let comment = commentData.val();
             comment.id = commentData.key();
             newComments.unshift(comment);
         });
@@ -76,4 +77,4 @@ var ProfileStore = Reflux.createStore({
     }
 });
 
-module.exports = ProfileStore;
+export default ProfileStore;

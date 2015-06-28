@@ -39,12 +39,14 @@ const Posts = React.createClass({
     },
 
     componentDidMount() {
-        let pageNum = this.props.params ? +this.props.params.pageNum : 1;
+        let pageNum = this.props.params.pageNum || 1;
         Actions.watchPosts(pageNum);
     },
 
-    componentWillReceiveProps() {
-        let pageNum = this.props.params ? +this.props.params.pageNum : 1;
+    componentWillReceiveProps(nextProps) {
+        let pageNum = nextProps.params.pageNum || 1;
+        Actions.stopWatchingPosts();
+        Actions.watchPosts(pageNum);
     },
 
     routerWillLeave() {
@@ -52,6 +54,7 @@ const Posts = React.createClass({
     },
 
     onStoreUpdate(postsData) {
+        // this check could probably be removed since I'm not paginating
         if (!postsData.posts.length) {
             // if no posts are returned
             this.transitionTo('home');
@@ -62,24 +65,31 @@ const Posts = React.createClass({
             posts: postsData.posts,
             sortOptions: postsData.sortOptions,
             nextPage: postsData.nextPage,
-            currentPage: postsData.currentPage
+            currentPage: +postsData.currentPage
         });
     },
 
     updateSortBy(e) {
         e.preventDefault();
-        var currentPage = this.state.currentPage || 1;
+        let currentPage = this.state.currentPage || 1;
+        let sortByValue = React.findDOMNode(this.refs.sortBy).value;
 
-        Actions.setSortBy(this.refs.sortBy.getDOMNode().value);
+        // optimistically update selected option
+        let sortOptions = this.state.sortOptions;
+        sortOptions.currentValue = sortByValue;
 
         this.setState({
-            loading: true
+            loading: true,
+            sortOptions: sortOptions
         });
 
-        if (currentPage === 1) {
-            Actions.watchPosts(currentPage);
+        Actions.setSortBy(sortByValue);
+
+        if (currentPage !== 1) {
+            this.transitionTo(`/posts/1`);
         } else {
-            this.transitionTo('posts', { pageNum: 1 });
+            Actions.stopWatchingPosts();
+            Actions.watchPosts(currentPage);
         }
     },
 
@@ -94,6 +104,8 @@ const Posts = React.createClass({
         posts = posts.map(function(post) {
             return <Post post={ post } user={ user } key={ post.id } />;
         });
+
+        // posts.push(<Post type={ default } />)
 
         let options = sortValues.map(function(optionText, i) {
             return <option value={ sortOptions[i] } key={ i }>{ optionText }</option>;
@@ -121,7 +133,7 @@ const Posts = React.createClass({
                 <nav className="pagination">
                     {
                         this.state.nextPage ? (
-                            <Link to={ `posts/${currentPage + 1}` } className="next-page">
+                            <Link to={ `/posts/${currentPage + 1}` } className="next-page">
                                 Load More Posts
                             </Link>
                           ) : 'No More Posts'

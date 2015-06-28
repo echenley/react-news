@@ -9,18 +9,16 @@ Author URI: http://henleyedition.com/
 import React from 'react/addons';
 import Reflux from 'reflux';
 
-import attachFastClick from 'fastclick';
-
-import { Router, Route } from 'react-router';
+import { Router, Route, Redirect } from 'react-router';
 import BrowserHistory from 'react-router/lib/BrowserHistory';
 import Link from 'react-router/lib/Link';
 
 import UserStore from './stores/UserStore';
 import Actions from './actions/Actions';
 import Posts from './views/Posts';
-// import SinglePost from './views/Single';
+import SinglePost from './views/Single';
 import Profile from './views/Profile';
-// import UhOh from './views/404';
+import UhOh from './views/404';
 import Login from './components/Login';
 import Register from './components/Register';
 import NewPost from './components/NewPost';
@@ -68,7 +66,7 @@ let App = React.createClass({
     },
 
     hideModal(e) {
-        e.preventDefault();
+        if (e) { e.preventDefault(); }
 
         window.removeEventListener('keyup', keyUpHandler);
 
@@ -112,7 +110,7 @@ let App = React.createClass({
         let modalTypes = {
             'register': <Register />,
             'login': <Login />,
-            'newpost': <NewPost />
+            'newpost': <NewPost user={ user } />
         };
 
         let modalType = modalTypes[this.state.modalType];
@@ -120,7 +118,7 @@ let App = React.createClass({
         let userArea = user.isLoggedIn ? (
             // show profile info
             <span className="user-info">
-                <Link to={ `user/${username}` } className="profile-link">
+                <Link to={ `/user/${username}` } className="profile-link">
                     <span className="username">{ username }</span>
                     <img src={ gravatarURI } className="nav-pic" />
                 </Link>
@@ -141,7 +139,7 @@ let App = React.createClass({
                     </div>
                     <div className="float-right">
                         { userArea }
-                        <a className="newpost-toggle" onClick={ this.newPost }>
+                        <a className="newpost-link" onClick={ this.newPost }>
                             <i className="fa fa-plus-square-o"></i>
                             <span className="sr-only">New Post</span>
                         </a>
@@ -149,10 +147,14 @@ let App = React.createClass({
                 </header>
 
                 <main id="content" className="full-height inner">
-                    {this.props.children || <Posts /> }
+                    { this.props.children || <Posts /> }
                 </main>
 
                 <aside className="md-modal">
+                    <a href="#" onClick={ this.hideModal } className="md-close">
+                        <span className="fa fa-close"></span>
+                        <span className="sr-only">Hide Modal</span>
+                    </a>
                     { modalType }
                 </aside>
                 <a href="#" className="md-mask" onClick={ this.hideModal }></a>
@@ -163,21 +165,15 @@ let App = React.createClass({
 
 React.render((
     <Router history={ new BrowserHistory() }>
-        <Route path="/" component={ App }>
-            <Route name="profile" path="/user/:username" component={ Profile } />
+        <Route component={ App }>
+            <Route name="home" path="/" component={ Posts } />
             <Route name="posts" path="/posts/:pageNum" component={ Posts } />
-            {/*
             <Route name="post" path="/post/:postId" component={ SinglePost } />
+            <Route name="profile" path="/user/:username" component={ Profile } />
             <Route name="404" path="/404" component={ UhOh } />
-            */}
+            {/* Redirects */}
+            <Redirect from="/posts" to="/" />
+            <Redirect from="*" to="/404" />
         </Route>
     </Router>
 ), document.getElementById('app'));
-
-
-// Router.run(routes, function(Handler, state) {
-//     React.render(<Handler params={ state.params } />, );
-// });
-
-// fastclick eliminates 300ms click delay on mobile
-attachFastClick(document.body);

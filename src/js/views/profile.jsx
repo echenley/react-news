@@ -2,15 +2,13 @@
 
 import React from 'react/addons';
 import Reflux from 'reflux';
+import { Navigation } from 'react-router';
 
-// actions
 import Actions from '../actions/Actions';
 
-// stores
 import ProfileStore from '../stores/ProfileStore';
 import UserStore from '../stores/UserStore';
 
-// components
 import Spinner from '../components/Spinner';
 import Post from '../components/Post';
 import Comment from '../components/Comment';
@@ -22,7 +20,7 @@ const Profile = React.createClass({
     },
 
     mixins: [
-        require('react-router').Navigation,
+        Navigation,
         Reflux.listenTo(ProfileStore, 'updateProfileData'),
         Reflux.listenTo(UserStore, 'updateUser')
     ],
@@ -31,16 +29,31 @@ const Profile = React.createClass({
         return {
             user: UserStore.getDefaultData(),
             profileData: ProfileStore.getDefaultData(),
-            isLoading: true
+            loading: true
         };
     },
 
     componentDidMount() {
-        // watch current user's posts/comments
         let username = this.props.params.username;
 
+        // watch posts/comments for username in url
         UserStore.getUserId(username)
             .then(Actions.watchProfile);
+    },
+
+    componentWillReceiveProps(nextProps) {
+        let oldUsername = this.props.params.username;
+        let newUsername = nextProps.params.username;
+
+        if (oldUsername !== newUsername) {
+            this.setState({
+                loading: true
+            });
+
+            Actions.stopWatchingProfile();
+            UserStore.getUserId(newUsername)
+                .then(Actions.watchProfile);
+        }
     },
 
     routerWillLeave() {
@@ -48,20 +61,20 @@ const Profile = React.createClass({
     },
 
     updateUser(updatedUser) {
-        if (updatedUser.isLoggedin) {
+        if (updatedUser.isLoggedIn) {
             this.setState({
                 user: updatedUser
             });
         } else {
             // user has logged out
-            this.transitionTo('home');
+            this.transitionTo('/');
         }
     },
 
     updateProfileData(profileData) {
         this.setState({
             profileData: profileData,
-            isLoading: false
+            loading: false
         });
     },
 
@@ -71,16 +84,14 @@ const Profile = React.createClass({
     },
 
     render() {
-        var user = this.state.user;
-        var profileData = this.state.profileData;
-        var posts = profileData.posts;
-        var comments = profileData.comments;
+        let user = this.state.user;
+        let profileData = this.state.profileData;
+        let posts = profileData.posts;
+        let comments = profileData.comments;
 
-        console.log(user);
+        let postList, commentList, postHeader, commentsHeader;
 
-        var postList, commentList, postHeader, commentsHeader;
-
-        if (this.state.isLoading) {
+        if (this.state.loading) {
             postHeader = <h2>Loading Posts...</h2>;
             postList = <Spinner />;
             commentsHeader = <h2>Loading Comments...</h2>;
@@ -89,7 +100,7 @@ const Profile = React.createClass({
             postHeader = <h2>{ posts.length ? 'Latest' : 'No'} Posts</h2>;
             commentsHeader = <h2>{ comments.length ? 'Latest' : 'No'} Comments</h2>;
 
-            postList = posts.map((post) => (
+            postList = posts.map(post => (
                 <Post
                     post={ post }
                     user={ user }
@@ -97,7 +108,7 @@ const Profile = React.createClass({
                 />
             ));
 
-            commentList = comments.map((comment) => (
+            commentList = comments.map(comment => (
                 <Comment
                     showPostTitle={ true }
                     comment={ comment }
@@ -107,20 +118,21 @@ const Profile = React.createClass({
             ));
         }
 
+        let userOptions = user.uid === profileData.userId && (
+            <div className="user-options text-right">
+                <button
+                    onClick={ this.logout }
+                    className="button button-primary"
+                >
+                    Sign Out
+                </button>
+                <hr />
+            </div>
+        );
+
         return (
             <div className="content full-width">
-                {
-                    user.uid === profileData.userId && (
-                        <div className="user-options text-right">
-                            <button
-                                onClick={ this.logout }
-                                className="button button-primary"
-                            >
-                                Sign Out
-                            </button>
-                        </div>
-                    )
-                }
+                { userOptions }
                 <h1>{ this.props.params.username + '\'s' } Profile</h1>
                 <div className="user-posts">
                     { postHeader }
