@@ -68,7 +68,7 @@ password: henleyedition1
         // make sure all 5 fields are present before saving a new post
         // leave 'isDeleted' when deleting a post
         ".validate": "newData.hasChildren(['title', 'url', 'creator', 'creatorUID', 'time']) ||
-                      newData.hasChildren(['isDeleted']) && data.child('creatorUID').val() === auth.uid",
+                      newData.hasChildren(['isDeleted'])",
 
         // title must be a string with length>0
         "title": {
