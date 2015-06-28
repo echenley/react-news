@@ -9,7 +9,6 @@
     "bluebird": "^2.9.30",
     "classnames": "^2.1.2",
     "crypto": "0.0.3",
-    "fastclick": "^1.0.6",
     "firebase": "^2.2.7",
     "lodash": "^3.9.3",
     "moment": "^2.10.3",
@@ -18,14 +17,14 @@
     "reflux": "^0.2.8"
   },
   "devDependencies": {
-    "babel-eslint": "^3.1.17",
+    "babel-eslint": "^3.1.19",
     "babel-jest": "^5.3.0",
     "babelify": "^6.1.2",
     "browser-sync": "^2.7.12",
     "browserify": "^10.2.4",
     "connect-history-api-fallback": "^1.1.0",
     "del": "^1.2.0",
-    "eslint": "^0.23.0",
+    "eslint": "^0.24.0",
     "eslint-plugin-react": "^2.5.2",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
@@ -33,16 +32,16 @@
     "gulp-exit": "0.0.2",
     "gulp-if": "^1.2.5",
     "gulp-load-plugins": "^1.0.0-rc.1",
-    "gulp-minify-css": "^1.1.6",
+    "gulp-minify-css": "^1.2.0",
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.0.1",
-    "gulp-sass": "^2.0.1",
+    "gulp-sass": "^2.0.3",
     "gulp-size": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-streamify": "0.0.5",
     "gulp-uglify": "^1.2.0",
     "gulp-useref": "^1.2.0",
-    "gulp-util": "^3.0.5",
+    "gulp-util": "^3.0.6",
     "gulp-watch": "^4.2.4",
     "jest-cli": "^0.4.13",
     "react-tools": "^0.13.3",
@@ -50,7 +49,7 @@
     "vinyl": "^0.5.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.2.2"
+    "watchify": "^3.2.3"
   },
   "engines": {
     "node": ">=0.10.0"
