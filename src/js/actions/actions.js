@@ -9,6 +9,9 @@ const commentsRef = baseRef.child('comments');
 const postsRef = baseRef.child('posts');
 const usersRef = baseRef.child('users');
 
+// used to create email hash for gravatar
+const hash = require('crypto').createHash('md5');
+
 const Actions = Reflux.createActions({
     // user actions
     'login': {},
@@ -17,8 +20,8 @@ const Actions = Reflux.createActions({
     'createProfile': {},
     'updateProfile': {},
     // post actions
-    'upvotePost': { asyncResult: true },
-    'downvotePost': { asyncResult: true },
+    'upvotePost': {},
+    'downvotePost': {},
     'submitPost': { asyncResult: true },
     'deletePost': {},
     'setSortBy': {},
@@ -29,12 +32,12 @@ const Actions = Reflux.createActions({
     'addComment': {},
     'deleteComment': {},
     // firebase actions
-    'watchProfile': {},
     'watchPost': {},
     'watchPosts': {},
-    'stopWatchingProfile': {},
+    'watchProfile': {},
     'stopWatchingPost': {},
     'stopWatchingPosts': {},
+    'stopWatchingProfile': {},
     // error actions
     'loginError': {},
     'clearError': {},
@@ -45,7 +48,7 @@ const Actions = Reflux.createActions({
 });
 
 /* User Actions
-===============================*/
+=============================== */
 
 Actions.login.listen(function(loginData) {
     baseRef.authWithPassword(loginData, error => (
@@ -53,67 +56,84 @@ Actions.login.listen(function(loginData) {
     ));
 });
 
+// this registration code could probably be cleaned up some
+
 function checkForUsername(newName) {
-    // checks whether username is entered/isn't already taken
+    // checks if username is blank/is already taken
     return new Promise(function(resolve, reject) {
         if (!newName) {
-            reject({ code: 'NO_USERNAME' });
+            return reject({ code: 'NO_USERNAME' });
         }
 
         // check if taken
         usersRef.orderByChild('username').equalTo(newName).once('value', user => (
-            user.val() ? reject({ code: 'USERNAME_TAKEN' }) : resolve()
+            user.val()
+                ? reject({ code: 'USERNAME_TAKEN' })
+                : resolve()
         ));
+    });
+}
+
+function createUser(username, loginData) {
+
+    let profile = {
+        username: username,
+        md5hash: hash.update(loginData.email).digest('hex'),
+        upvoted: {}
+    };
+
+    baseRef.createUser(loginData, function(error, userData) {
+        if (error) {
+            // email taken, other login errors
+            return Actions.loginError(error.code);
+        }
+
+        // user successfully created
+        // now create user profile and log them in
+        usersRef.child(userData.uid).set(profile, err => err || Actions.login(loginData));
     });
 }
 
 Actions.register.listen(function(username, loginData) {
     checkForUsername(username)
-        .then(function() {
-            // username is available
-            baseRef.createUser(loginData, function(error, userData) {
-                if (error) { return error; }
-
-                // user successfully created
-                let email = userData.password.email;
-
-                Actions.createProfile(userData.uid, username, email);
-                Actions.login(loginData);
-            });
-        })
-        // error during user creation
+        // username is available
+        .then(() => createUser(username, loginData))
+        // username is taken
         .catch(error => Actions.loginError(error.code));
 });
 
 
 /* Post Actions
-===============================*/
-
-function updatePostUpvotes(postId, n) {
-    console.log('upvoting post', n);
-    postsRef.child(postId + '/upvotes').transaction(curr => (curr || 0) + n);
-}
+=============================== */
 
 Actions.submitPost.listen(function(post) {
-    var newPostRef = postsRef.push(post, error => (
+    let newPostRef = postsRef.push(post, error => (
         error ? this.failed(error) : this.completed(newPostRef.key())
     ));
 });
 
 Actions.deletePost.listen(function(postId) {
-    postsRef.child(postId).remove();
+    postsRef.child(postId).transaction(postObj => ({
+        isDeleted: true,
+        // keep comment count
+        commentCount: postObj.commentCount
+    }));
 });
 
 /*
-    I debated for a while here about whether it's okay to trust that these
-    callbacks would work to keep things in sync. I looked at Firebase Util
-    (still very beta as of June 2015) and Firebase Multi Write but decided
-    that the extra dependencies were probably overkill for this project. If
-    you need more guarantees that the data will stay in sync, check them out:
+    I debated for a while here about whether it's okay to trust these
+    callbacks to keep things in sync. I looked at Firebase Util (still very
+    beta as of June 2015) and Firebase Multi Write but decided that the extra
+    dependencies were probably overkill for this project. If you need more
+    guarantees that the data will stay in sync, check them out:
 
     https://github.com/firebase/firebase-util
     https://github.com/katowulf/firebase-multi-write
 */
+
+function updatePostUpvotes(postId, n) {
+    postsRef.child(postId + '/upvotes').transaction(curr => (curr || 0) + n);
+}
 
 Actions.upvotePost.listen(function(userId, postId) {
     // register postId in user's profile
@@ -134,10 +154,10 @@ Actions.downvotePost.listen(function(userId, postId) {
 });
 
 /* Comment Actions
-===============================*/
+=============================== */
 
 function updateCommentUpvotes(commentId, n) {
-    postsRef.child(commentId + '/upvotes').transaction(curr => (curr || 0) + n);
+    commentsRef.child(commentId + '/upvotes').transaction(curr => (curr || 0) + n);
 }
 
 Actions.upvoteComment.listen(function(userId, commentId) {
@@ -174,12 +194,12 @@ Actions.deleteComment.listen(function(commentId, postId) {
     });
 });
 
-Actions.showModal.listen(function(modalType, errorType) {
+Actions.showModal.preEmit = function(modalType, errorType) {
     if (errorType) {
         Actions.loginError(errorType);
     } else {
         Actions.clearError();
     }
-});
+};
 
 export default Actions;
