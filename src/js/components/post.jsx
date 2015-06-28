@@ -43,7 +43,7 @@ const Post = React.createClass({
         // add delete option if creator is logged in
         let deleteOption = user.uid !== post.creatorUID ? '' : (
             <span className="delete post-info-item">
-                <a onClick={ Actions.deletePost.bind(this, post.id) }>delete</a>
+                <a onClick={ () => Actions.deletePost(post.id) }>delete</a>
             </span>
         );
 
@@ -62,16 +62,16 @@ const Post = React.createClass({
                             user={ user }
                             itemId={ post.id }
                             isUpvoted={ !!userUpvoted[post.id] }
-                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : 0 }
+                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : '0' }
                         />
                         <span className="post-info-item">
-                            <Link to={ `user/${post.creator}` }>{ post.creator }</Link>
+                            <Link to={ `/user/${post.creator}` }>{ post.creator }</Link>
                         </span>
                         <span className="post-info-item">
                             { timeAgo(post.time) }
                         </span>
                         <span className="post-info-item">
-                            <Link to={ `post/${post.id}` }>
+                            <Link to={ `/post/${post.id}` }>
                                 { pluralize(commentCount, 'comment') }
                             </Link>
                         </span>
