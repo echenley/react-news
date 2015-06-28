@@ -41,7 +41,7 @@ const Post = React.createClass({
         }
 
         // add delete option if creator is logged in
-        let deleteOption = user.uid !== post.creatorUID ? '' : (
+        let deleteOption = !post.isDeleted && user.uid !== post.creatorUID ? '' : (
             <span className="delete post-info-item">
                 <a onClick={ () => Actions.deletePost(post.id) }>delete</a>
             </span>
