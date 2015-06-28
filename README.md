@@ -4,7 +4,7 @@
 
 ## About
 
-This is a Hacker News clone written using [React](http://facebook.github.io/react/), [RefluxJS](https://github.com/spoike/refluxjs), and a [Firebase](http://firebase.com) backend.
+This is a real-time Hacker News clone written using [React](http://facebook.github.io/react/), [RefluxJS](https://github.com/spoike/refluxjs), and a [Firebase](http://firebase.com) backend.
 
 ## Demo
 
@@ -36,10 +36,13 @@ It was requested that I post my Firebase security rules. Hope this helps!
         // if the post exists, auth.uid must match creatorUID
         ".write": "(auth != null && !data.exists()) || data.child('creatorUID').val() === auth.uid",
           
-        // We want to make sure that all 5 fields are present before saving a new post
-        ".validate": "newData.hasChildren(['title', 'url', 'creator', 'creatorUID', 'time'])",
+        // make sure all 5 fields are present before saving a new post
+        // leave 'isDeleted' and 'commentCount' when deleting a post
+        ".validate": "newData.hasChildren(['title', 'url', 'creator', 'creatorUID', 'time']) ||
+                      (newData.hasChildren(['isDeleted', 'commentCount']) &&
+                      newData.child('commentCount').val() == data.child('commentCount').val())",
 
-        // title must be a string with length > 0
+        // title must be a string with length>0
         "title": {
           ".validate": "newData.isString() && newData.val().length > 0"
         },
@@ -54,10 +57,10 @@ It was requested that I post my Firebase security rules. Hope this helps!
         },
         "commentCount": {
           // commentCount must be writable by anyone logged in
-          // only alterable by 1
+          // only alterably by 1 (or 0 when post is deleted)
           ".write": "auth != null",
           ".validate": "(!data.exists() && newData.val() === 1) ||
-                        (newData.val() - data.val() === 1 || newData.val() - data.val() === -1)"
+                        (newData.val() - data.val() === 0 || newData.val() - data.val() === 1 || newData.val() - data.val() === -1)"
         },
         "upvotes": {
           // upvotes must be writable by anyone logged in
@@ -72,7 +75,7 @@ It was requested that I post my Firebase security rules. Hope this helps!
 
     "comments": {
       ".read": true,
-      ".indexOn": ["postId", "creatorUID", "time"],
+      ".indexOn": ["postId","creatorUID","time"],
       
       "$comment_id": {
         ".write": "auth != null && (!data.exists() || data.child('creatorUID').val() === auth.uid)",
@@ -94,7 +97,8 @@ It was requested that I post my Firebase security rules. Hope this helps!
       ".indexOn": ["username"],
 
       "$uid": {
-        ".write": "!data.exists() && auth.uid === $uid",
+        // user not authenticated until after profile is created
+        ".write": "!data.exists()",
         "upvoted": {
           "$postId": {
             ".write": "auth.uid === $uid"
