@@ -8,15 +8,10 @@ import Firebase from 'firebase';
 
 import extend from 'lodash/object/extend';
 
-let baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+const baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+const usersRef = baseRef.child('users');
 
-// let postsRef = baseRef.child('posts');
-let usersRef = baseRef.child('users');
-
-// used to create email hash for gravatar
-let hash = require('crypto').createHash('md5');
-
-let defaultUser = {
+const defaultUser = {
     uid: '',
     profile: {
         username: '',
@@ -36,29 +31,31 @@ const UserStore = Reflux.createStore({
         // triggered by auth changes
         baseRef.onAuth(function(authData) {
             if (!authData) {
-                // logging out
+                // user is logged out
                 usersRef.off();
                 this.logoutCompleted();
             } else {
                 // user is logged in
-                let userId = authData.uid;
-
-                // watch their profile for updates
-                usersRef.child(userId).on('value', profile => (
-                    this.updateProfile(userId, profile.val())
-                ));
+                this.loginCompleted(authData.uid);
             }
         }.bind(this));
     },
 
     logout() {
-        baseRef.unAuth();
+        baseRef.unauth();
     },
 
     logoutCompleted() {
         // reset currentUser to default
         currentUser = extend({}, defaultUser);
         this.trigger(currentUser);
+    },
+
+    loginCompleted(userId) {
+        // watch their profile for updates
+        usersRef.child(userId).on('value', profile => (
+            this.updateProfile(userId, profile.val())
+        ));
     },
 
     updateProfile(userId, newProfile) {
@@ -69,23 +66,6 @@ const UserStore = Reflux.createStore({
         });
 
         this.trigger(currentUser);
-    },
-
-    createProfile(uid, username, email) {
-        let md5hash = hash.update(email).digest('hex');
-
-        let profile = {
-            username: username,
-            md5hash: md5hash,
-            upvoted: {}
-        };
-
-        usersRef.child(uid).set(profile, error => {
-            if (error === null) {
-                // user profile successfully created
-                this.updateProfile(uid, profile);
-            }
-        });
     },
 
     getUserId(username) {
