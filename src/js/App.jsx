@@ -10,7 +10,7 @@ import React from 'react/addons';
 import Reflux from 'reflux';
 
 import { Router, Route, Redirect } from 'react-router';
-import BrowserHistory from 'react-router/lib/BrowserHistory';
+import HashHistory from 'react-router/lib/HashHistory';
 import Link from 'react-router/lib/Link';
 
 import UserStore from './stores/UserStore';
@@ -164,7 +164,7 @@ let App = React.createClass({
 });
 
 React.render((
-    <Router history={ new BrowserHistory() }>
+    <Router history={ new HashHistory() }>
         <Route component={ App }>
             <Route name="home" path="/" component={ Posts } />
             <Route name="posts" path="/posts/:pageNum" component={ Posts } />
