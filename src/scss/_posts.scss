@@ -42,7 +42,6 @@
 // .comments-link {}
 
 .upvote {
-    transition: all 150ms;
     color: $dark-gray;
     user-select: none;
     
@@ -55,7 +54,7 @@
     }
 
     &.updating {
-        transform: scale(0.9);
+        transform: scale(0.8);
     }
 }
 

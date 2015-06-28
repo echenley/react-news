@@ -1,6 +1,11 @@
 /* Modal
 ====================================== */
 
+.modal-open {
+    height: 100%;
+    overflow: hidden;
+}
+
 .md-form {
     display: inline-block;
 
@@ -56,6 +61,24 @@
     height: 100%;
     background: rgba(#000, 0.2);
     cursor: default;
+}
+
+.md-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: $dark-gray;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 150ms;
+
+    &:hover {
+        background: rgba(#000, 0.05);
+    }
 }
 
 .input-error {

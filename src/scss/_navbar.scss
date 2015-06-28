@@ -19,7 +19,7 @@
     padding: $x-small $small;
 }
 
-.newpost-toggle {
+.newpost-link {
     display: inline-block;
     vertical-align: middle;
     margin-left: 1rem;
@@ -44,8 +44,7 @@
 .nav-pic {
     width: $medium;
     height: $medium;
-    margin-right: 0.8rem;
-    margin-left: $medium;
+    margin: 0 0.8rem;
     vertical-align: middle;
     border-radius: 50%;
     // filter: grayscale(100%);
