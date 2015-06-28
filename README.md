@@ -1,6 +1,6 @@
 # React-News
 
-![React-News](http://henleyedition.com/content/images/2015/02/Screen-Shot-2015-02-22-at-10-59-05-PM.png)
+[![React-News](http://henleyedition.com/content/images/2015/02/Screen-Shot-2015-02-22-at-10-59-05-PM.png)](http://henleyedition.com/react-news/)
 
 ## About
 
