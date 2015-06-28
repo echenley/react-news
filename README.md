@@ -66,10 +66,9 @@ password: henleyedition1
         ".write": "(auth != null && !data.exists()) || data.child('creatorUID').val() === auth.uid",
           
         // make sure all 5 fields are present before saving a new post
-        // leave 'isDeleted' and 'commentCount' when deleting a post
+        // leave 'isDeleted' when deleting a post
         ".validate": "newData.hasChildren(['title', 'url', 'creator', 'creatorUID', 'time']) ||
-                      (newData.hasChildren(['isDeleted', 'commentCount']) &&
-                      newData.child('commentCount').val() == data.child('commentCount').val())",
+                      newData.hasChildren(['isDeleted']) && data.child('creatorUID').val() === auth.uid",
 
         // title must be a string with length>0
         "title": {
@@ -86,10 +85,13 @@ password: henleyedition1
         },
         "commentCount": {
           // commentCount must be writable by anyone logged in
-          // only alterably by 1 (or 0 when post is deleted)
           ".write": "auth != null",
+                        // writing for the first time
           ".validate": "(!data.exists() && newData.val() === 1) ||
-                        (newData.val() - data.val() === 0 || newData.val() - data.val() === 1 || newData.val() - data.val() === -1)"
+                        // only alterable by 1
+                        (newData.val() - data.val() === 1 || newData.val() - data.val() === -1) ||
+                        // if deleted
+                        !newData.exists()"
         },
         "upvotes": {
           // upvotes must be writable by anyone logged in
