@@ -7,3 +7,9 @@
 - removed jQuery and added bluebird for promises
 - updated readme with Firebase rules
 - improved overall readability, hopefully
+
+6-28-2015
+- complete babel overhaul
+- added a very few tests
+- improved application flow
+- better readability, added some more comments just cuz
