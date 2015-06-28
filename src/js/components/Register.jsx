@@ -3,15 +3,12 @@
 import React from 'react/addons';
 import Reflux from 'reflux';
 
-// actions
 import Actions from '../actions/Actions';
 
-// stores
 import LoginStore from '../stores/LoginStore';
 import UserStore from '../stores/UserStore';
 
-// components
-import Spinner from '../components/spinner';
+import Spinner from '../components/Spinner';
 
 const Register = React.createClass({
 
