@@ -32,7 +32,7 @@ password: henleyedition1
 |    | -- text
 |    | -- time
 |    | -- upvotes
-| Posts
+| posts
 | -- $postId
 |    | -- commentCount
 |    | -- creator
@@ -41,7 +41,7 @@ password: henleyedition1
 |    | -- title
 |    | -- upvotes
 |    | -- url
-| Users
+| users
 | -- $userId
 |    | -- md5hash
 |    | -- upvoted
@@ -50,8 +50,6 @@ password: henleyedition1
 ```
 
 ## Firebase Security Rules
-
-It was requested that I post my Firebase security rules. Hope this helps!
 
 ```javascript
 {
