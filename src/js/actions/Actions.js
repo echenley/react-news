@@ -113,11 +113,9 @@ Actions.submitPost.listen(function(post) {
 });
 
 Actions.deletePost.listen(function(postId) {
-    postsRef.child(postId).transaction(postObj => ({
-        isDeleted: true,
-        // keep comment count
-        commentCount: postObj.commentCount
-    }));
+    postsRef.child(postId).set({
+        isDeleted: true
+    });
 });
 
 /*
