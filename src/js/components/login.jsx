@@ -24,14 +24,6 @@ const Login = React.createClass({
         };
     },
 
-    componentDidMount() {
-        React.findDOMNode(this.refs.email).focus();
-    },
-
-    componentDidUpdate() {
-        React.findDOMNode(this.refs.email).focus();
-    },
-
     resetForm() {
         React.findDOMNode(this.refs.email).value = '';
         React.findDOMNode(this.refs.password).value = '';
@@ -52,7 +44,9 @@ const Login = React.createClass({
     login(e) {
         e.preventDefault();
 
+        // disable submit button
         React.findDOMNode(this.refs.submit).disabled = true;
+
         this.setState({
             submitted: true
         });
@@ -64,7 +58,7 @@ const Login = React.createClass({
     },
 
     render() {
-        var error = this.state.error && (
+        let error = this.state.error && (
             <div className="error md-form-error">{ this.state.error }</div>
         );
 
@@ -73,7 +67,7 @@ const Login = React.createClass({
                 <h1>Login</h1>
                 <form onSubmit={ this.login } className="md-form">
                     <label htmlFor="email">Email</label>
-                    <input type="email" placeholder="Email" id="email" ref="email" />
+                    <input type="email" placeholder="Email" id="email" ref='email' />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder="Password" id="password" ref="password" />
                     <button type="submit" className="button button-primary" ref="submit">

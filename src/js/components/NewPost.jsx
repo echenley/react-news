@@ -2,15 +2,20 @@
 
 import React from 'react/addons';
 import Reflux from 'reflux';
-import Actions from '../actions/Actions';
-
-import Spinner from '../components/Spinner';
-
+import { Navigation } from 'react-router';
 import cx from 'classnames';
+
+import Actions from '../actions/Actions';
+import Spinner from '../components/Spinner';
 
 const NewPost = React.createClass({
 
+    propTypes: {
+        user: React.PropTypes.object
+    },
+
     mixins: [
+        Navigation,
         Reflux.listenTo(Actions.submitPost.completed, 'onSuccess'),
         Reflux.listenTo(Actions.submitPost.failed, 'onError')
     ],
@@ -20,14 +25,6 @@ const NewPost = React.createClass({
             errorMessage: '',
             submitted: false
         };
-    },
-
-    componentDidMount() {
-        React.findDOMNode(this.refs.postTitle).focus();
-    },
-
-    componentDidUpdate() {
-        React.findDOMNode(this.refs.postTitle).focus();
     },
 
     resetForm() {
@@ -42,6 +39,8 @@ const NewPost = React.createClass({
     onError(errorCode) {
         React.findDOMNode(this.refs.submit).disabled = false;
 
+        // TODO: figure out possible error codes
+        // and add meaningful error messages
         console.log(errorCode);
 
         this.setState({
@@ -50,18 +49,23 @@ const NewPost = React.createClass({
         });
     },
 
-    onSuccess() {
+    onSuccess(postId) {
+        // clear form
         React.findDOMNode(this.refs.postTitle).value = '';
         React.findDOMNode(this.refs.postLink).value = '';
+
+        // hide modal/redirect to the new post
+        Actions.hideModal();
+        this.transitionTo('/post/' + postId);
     },
 
     submitPost(e) {
         e.preventDefault();
 
-        var postTitle = React.findDOMNode(this.refs.postTitle);
-        var postLink = React.findDOMNode(this.refs.postLink);
+        let postTitle = React.findDOMNode(this.refs.postTitle);
+        let postLink = React.findDOMNode(this.refs.postLink);
 
-        var user = this.state.user;
+        let user = this.props.user;
 
         if (postTitle.value.trim() === '') {
             this.setState({
@@ -77,7 +81,7 @@ const NewPost = React.createClass({
             return;
         }
 
-        var post = {
+        let post = {
             title: postTitle.value.trim(),
             url: postLink.value.trim(),
             creator: user.profile.username,
@@ -89,19 +93,19 @@ const NewPost = React.createClass({
     },
 
     render() {
-        var highlight = this.state.highlight;
+        let highlight = this.state.highlight;
 
-        var titleInputCx = cx(
+        let titleInputCx = cx(
             'panel-input', {
             'input-error': highlight === 'title'
         });
 
-        var linkInputCx = cx(
+        let linkInputCx = cx(
             'panel-input', {
             'input-error': highlight === 'link'
         });
 
-        var error = this.state.error && (
+        let error = this.state.error && (
             <div className="error md-form-error">{ error }</div>
         );
 

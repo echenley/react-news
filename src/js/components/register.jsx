@@ -27,14 +27,6 @@ const Register = React.createClass({
         };
     },
 
-    componentDidMount() {
-        React.findDOMNode(this.refs.username).focus();
-    },
-
-    componentDidUpdate() {
-        React.findDOMNode(this.refs.username).focus();
-    },
-
     resetForm() {
         this.setState({
             submitted: false
@@ -61,18 +53,18 @@ const Register = React.createClass({
             submitted: true
         });
 
-        var loginData = {
+        let loginData = {
             email: React.findDOMNode(this.refs.email).value.trim(),
             password: React.findDOMNode(this.refs.password).value.trim()
         };
 
-        var username = React.findDOMNode(this.refs.username).value.trim();
+        let username = React.findDOMNode(this.refs.username).value.trim();
 
         Actions.register(username, loginData);
     },
 
     render() {
-        var error = this.state.error && (
+        let error = this.state.error && (
             <div className="error md-form-error">{ this.state.error }</div>
         );
 
