@@ -18,6 +18,37 @@ password: henleyedition1
 
 `npm i && gulp` and have at the `src/`.
 
+## Firebase Structure
+
+`$` are Firebase-generated unique IDs.
+
+```
+| comments
+| -- $commentId
+|    | -- creator
+|    | -- creatorUID
+|    | -- postId
+|    | -- postTitle
+|    | -- text
+|    | -- time
+|    | -- upvotes
+| Posts
+| -- $postId
+|    | -- commentCount
+|    | -- creator
+|    | -- creatorUID
+|    | -- time
+|    | -- title
+|    | -- upvotes
+|    | -- url
+| Users
+| -- $userId
+|    | -- md5hash
+|    | -- upvoted
+|    |    | -- $itemId
+|    | -- username
+```
+
 ## Firebase Security Rules
 
 It was requested that I post my Firebase security rules. Hope this helps!
