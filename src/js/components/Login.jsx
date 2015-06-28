@@ -8,7 +8,7 @@ import Actions from '../actions/Actions';
 import LoginStore from '../stores/LoginStore';
 import UserStore from '../stores/UserStore';
 
-import Spinner from '../components/spinner';
+import Spinner from '../components/Spinner';
 
 const Login = React.createClass({
 
