@@ -25,9 +25,9 @@ password: henleyedition1
 ```
 ├── comments
 │   └── $commentId
-│       ├── creator
-│       ├── creatorUID
-│       ├── postId
+│       ├── creator (username)
+│       ├── creatorUID ($userId)
+│       ├── postId ($postId)
 │       ├── postTitle
 │       ├── text
 │       ├── time
@@ -35,8 +35,8 @@ password: henleyedition1
 ├── posts
 │   └── $postId
 │       ├── commentCount
-│       ├── creator
-│       ├── creatorUID
+│       ├── creator (username)
+│       ├── creatorUID ($userId)
 │       ├── time
 │       ├── title
 │       ├── upvotes
@@ -45,7 +45,7 @@ password: henleyedition1
     └── $userId
         ├── md5hash
         ├── upvoted
-        │   └── $itemId
+        │   └── $itemId ($postId or $commentId)
         └── username
 ```
 
