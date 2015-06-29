@@ -132,8 +132,17 @@ function updatePostUpvotes(postId, n) {
     postsRef.child(postId + '/upvotes').transaction(curr => (curr || 0) + n);
 }
 
+/*
+    Previously, I had this callback backwards. It's important to update the
+    user's profile first since Firebase is listening for changes and each
+    action will cause the UI to refresh. Thus, there was a tiny period during
+    which the upvote was registered for the post, but not for the user,
+    meaning they could get multiple up/downvotes in before the UI updated for
+    the second time. The same is true for up/downvoteComment.
+*/
+
 Actions.upvotePost.listen(function(userId, postId) {
-    // register postId in user's profile
+    // set upvote in user's profile
     usersRef.child(userId + '/upvoted/' + postId).set(true, function(error) {
         if (error) { return; }
         // increment post's upvotes
@@ -142,10 +151,10 @@ Actions.upvotePost.listen(function(userId, postId) {
 });
 
 Actions.downvotePost.listen(function(userId, postId) {
-    // remove upvote in user's profile
+    // remove upvote from user's profile
     usersRef.child(userId + '/upvoted/' + postId).remove(function(error) {
         if (error) { return; }
-        // increment post's upvotes
+        // decrement post's upvotes
         updatePostUpvotes(postId, -1);
     });
 });
@@ -158,16 +167,19 @@ function updateCommentUpvotes(commentId, n) {
 }
 
 Actions.upvoteComment.listen(function(userId, commentId) {
-    // register upvote in user's profile
+    // set upvote in user's profile
     usersRef.child(userId + '/upvoted/' + commentId).set(true, function(error) {
         if (error) { return; }
+        // increment comment's upvotes
         updateCommentUpvotes(commentId, 1);
     });
 });
 
 Actions.downvoteComment.listen(function(userId, commentId) {
+    // remove upvote from user's profile
     usersRef.child(userId + '/upvoted/' + commentId).remove(function(error) {
         if (error) { return; }
+        // decrement comment's upvotes
         updateCommentUpvotes(commentId, -1);
     });
 });
