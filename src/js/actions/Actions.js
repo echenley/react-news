@@ -43,8 +43,7 @@ const Actions = Reflux.createActions({
     'clearError': {},
     // ui actions
     'showModal': {},
-    'hideModal': {},
-    'goToPost': {}
+    'hideModal': {}
 });
 
 /* User Actions
