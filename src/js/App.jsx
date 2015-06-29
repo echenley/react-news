@@ -39,11 +39,9 @@ let App = React.createClass({
     },
 
     mixins: [
-        require('react-router').Navigation,
         Reflux.listenTo(UserStore, 'onStoreUpdate'),
         Reflux.listenTo(Actions.showModal, 'showModal'),
-        Reflux.listenTo(Actions.hideModal, 'hideModal'),
-        Reflux.listenTo(Actions.goToPost, 'goToPost')
+        Reflux.listenTo(Actions.hideModal, 'hideModal')
     ],
 
     getInitialState() {
@@ -52,10 +50,6 @@ let App = React.createClass({
             showModal: false,
             modalType: 'login'
         };
-    },
-
-    goToPost(postId) {
-        this.transitionTo('post', { postId: postId });
     },
 
     onStoreUpdate(user) {
