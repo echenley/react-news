@@ -70,11 +70,10 @@ let App = React.createClass({
     },
 
     newPost() {
-        if (!this.state.user.isLoggedIn) {
-            Actions.showModal('login', 'LOGIN_REQUIRED');
-            return;
-        } else {
+        if (this.state.user.isLoggedIn) {
             Actions.showModal('newpost');
+        } else {
+            Actions.showModal('login', 'LOGIN_REQUIRED');
         }
     },
 
@@ -114,7 +113,7 @@ let App = React.createClass({
             <span className="user-info">
                 <Link to={ `/user/${username}` } className="profile-link">
                     <span className="username">{ username }</span>
-                    <img src={ gravatarURI } className="nav-pic" />
+                    <img src={ gravatarURI } className="profile-pic" />
                 </Link>
             </span>
         ) : (
