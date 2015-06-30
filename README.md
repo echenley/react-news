@@ -99,7 +99,7 @@ password: henleyedition1
           // cannot go below 0
           ".write": "auth != null",
           ".validate": "(!data.exists() && newData.val() === 1) ||
-                        (newData.val() > 0 && (newData.val() - data.val() === 1 || newData.val() - data.val() === -1))"
+                        (newData.val() >= 0 && (newData.val() - data.val() === 1 || newData.val() - data.val() === -1))"
         }
       }
     },
