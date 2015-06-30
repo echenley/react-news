@@ -1,6 +1,5 @@
 'use strict';
 
-import Promise from 'bluebird';
 import Reflux from 'reflux';
 import Firebase from 'firebase';
 
@@ -17,8 +16,6 @@ const Actions = Reflux.createActions({
     'login': {},
     'logout': {},
     'register': {},
-    'createProfile': {},
-    'updateProfile': {},
     // post actions
     'upvotePost': {},
     'downvotePost': {},
@@ -38,12 +35,10 @@ const Actions = Reflux.createActions({
     'stopWatchingPost': {},
     'stopWatchingPosts': {},
     'stopWatchingProfile': {},
-    // error actions
-    'loginError': {},
-    'clearError': {},
-    // ui actions
+    // modal actions
     'showModal': {},
-    'hideModal': {}
+    'hideModal': {},
+    'modalError': {}
 });
 
 /* User Actions
@@ -51,30 +46,11 @@ const Actions = Reflux.createActions({
 
 Actions.login.listen(function(loginData) {
     baseRef.authWithPassword(loginData, error => (
-        error && Actions.loginError(error.code)
+        error ? Actions.modalError(error.code) : Actions.hideModal()
     ));
 });
 
-// this registration code could probably be cleaned up some
-
-function checkForUsername(newName) {
-    // checks if username is blank/is already taken
-    return new Promise(function(resolve, reject) {
-        if (!newName) {
-            return reject({ code: 'NO_USERNAME' });
-        }
-
-        // check if taken
-        usersRef.orderByChild('username').equalTo(newName).once('value', user => (
-            user.val()
-                ? reject({ code: 'USERNAME_TAKEN' })
-                : resolve()
-        ));
-    });
-}
-
 function createUser(username, loginData) {
-
     let profile = {
         username: username,
         md5hash: hash.update(loginData.email).digest('hex'),
@@ -84,21 +60,26 @@ function createUser(username, loginData) {
     baseRef.createUser(loginData, function(error, userData) {
         if (error) {
             // email taken, other login errors
-            return Actions.loginError(error.code);
+            return Actions.modalError(error.code);
         }
 
         // user successfully created
-        // now create user profile and log them in
+        // add user profile then log them in
         usersRef.child(userData.uid).set(profile, err => err || Actions.login(loginData));
     });
 }
 
 Actions.register.listen(function(username, loginData) {
-    checkForUsername(username)
-        // username is available
-        .then(() => createUser(username, loginData))
-        // username is taken
-        .catch(error => Actions.loginError(error.code));
+    // check if username is already taken
+    usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
+        if (user.val()) {
+            // username is taken
+            Actions.modalError('USERNAME_TAKEN');
+        } else {
+            // username is available
+            createUser(username, loginData);
+        }
+    });
 });
 
 
@@ -107,7 +88,8 @@ Actions.register.listen(function(username, loginData) {
 
 Actions.submitPost.listen(function(post) {
     let newPostRef = postsRef.push(post, error => (
-        error ? this.failed(error) : this.completed(newPostRef.key())
+        // this.completed is only listened to by NewPost component
+        error ? Actions.modalError(error) : this.completed(newPostRef.key())
     ));
 });
 
@@ -133,12 +115,12 @@ function updatePostUpvotes(postId, n) {
 }
 
 /*
-    Previously, I had this callback backwards. It's important to update the
-    user's profile first since Firebase is listening for changes and each
-    action will cause the UI to refresh. Thus, there was a tiny period during
-    which the upvote was registered for the post, but not for the user,
-    meaning they could get multiple up/downvotes in before the UI updated for
-    the second time. The same is true for up/downvoteComment.
+    I had this callback backwards at first. It's important to update the
+    user's profile first since each time Firebase pushes changes the UI will
+    update. Thus, there was a tiny period during which the upvote was
+    registered for the post, but not for the user, meaning the user could get
+    multiple up/downvotes in before the UI updated for the second time. The
+    same is true for up/downvoteComment.
 */
 
 Actions.upvotePost.listen(function(userId, postId) {
@@ -202,13 +184,5 @@ Actions.deleteComment.listen(function(commentId, postId) {
         updateCommentCount(postId, -1);
     });
 });
-
-Actions.showModal.preEmit = function(modalType, errorType) {
-    if (errorType) {
-        Actions.loginError(errorType);
-    } else {
-        Actions.clearError();
-    }
-};
 
 export default Actions;

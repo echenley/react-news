@@ -11,48 +11,37 @@ import Spinner from '../components/Spinner';
 const NewPost = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object
+        user: React.PropTypes.object,
+        errorMessage: React.PropTypes.string
     },
 
     mixins: [
         Navigation,
-        Reflux.listenTo(Actions.submitPost.completed, 'onSuccess'),
-        Reflux.listenTo(Actions.submitPost.failed, 'onError')
+        Reflux.listenTo(Actions.submitPost.completed, 'submitPostCompleted')
     ],
 
     getInitialState() {
         return {
-            errorMessage: '',
             submitted: false
         };
     },
 
-    resetForm() {
-        this.setState({
-            submitted: false
-        });
-        React.findDOMNode(this.refs.title).value = '';
-        React.findDOMNode(this.refs.link).value = '';
+    componentWillReceiveProps(nextProps) {
+        if (nextProps === this.props) {
+            return;
+        }
+
         React.findDOMNode(this.refs.submit).disabled = false;
-    },
-
-    onError(errorCode) {
-        React.findDOMNode(this.refs.submit).disabled = false;
-
-        // TODO: figure out possible error codes
-        // and add meaningful error messages
-        console.log(errorCode);
-
         this.setState({
-            errorMessage: 'Something went wrong.',
             submitted: false
         });
     },
 
-    onSuccess(postId) {
+    submitPostCompleted(postId) {
         // clear form
         React.findDOMNode(this.refs.postTitle).value = '';
         React.findDOMNode(this.refs.postLink).value = '';
+        React.findDOMNode(this.refs.submit).disabled = false;
 
         // hide modal/redirect to the new post
         Actions.hideModal();
@@ -62,10 +51,10 @@ const NewPost = React.createClass({
     submitPost(e) {
         e.preventDefault();
 
+        let user = this.props.user;
+
         let postTitle = React.findDOMNode(this.refs.postTitle);
         let postLink = React.findDOMNode(this.refs.postLink);
-
-        let user = this.props.user;
 
         if (postTitle.value.trim() === '') {
             this.setState({
@@ -80,6 +69,11 @@ const NewPost = React.createClass({
             });
             return;
         }
+
+        React.findDOMNode(this.refs.submit).disabled = true;
+        this.setState({
+            submitted: true
+        });
 
         let post = {
             title: postTitle.value.trim(),
@@ -105,8 +99,9 @@ const NewPost = React.createClass({
             'input-error': highlight === 'link'
         });
 
-        let error = this.state.error && (
-            <div className="error md-form-error">{ error }</div>
+        let errorMessage = this.props.errorMessage;
+        let error = errorMessage && (
+            <div className="error md-form-error">{ errorMessage }</div>
         );
 
         return (

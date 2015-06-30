@@ -13,8 +13,11 @@ import { Router, Route, Redirect } from 'react-router';
 import HashHistory from 'react-router/lib/HashHistory';
 import Link from 'react-router/lib/Link';
 
-import UserStore from './stores/UserStore';
 import Actions from './actions/Actions';
+
+import UserStore from './stores/UserStore';
+import ModalStore from './stores/ModalStore';
+
 import Posts from './views/Posts';
 import SinglePost from './views/Single';
 import Profile from './views/Profile';
@@ -25,13 +28,6 @@ import NewPost from './components/NewPost';
 
 import cx from 'classnames';
 
-function keyUpHandler(e) {
-    // esc key closes modal
-    if (e.keyCode === 27) {
-        Actions.hideModal(e);
-    }
-}
-
 let App = React.createClass({
 
     propTypes: {
@@ -40,15 +36,13 @@ let App = React.createClass({
 
     mixins: [
         Reflux.listenTo(UserStore, 'onStoreUpdate'),
-        Reflux.listenTo(Actions.showModal, 'showModal'),
-        Reflux.listenTo(Actions.hideModal, 'hideModal')
+        Reflux.listenTo(ModalStore, 'onModalUpdate')
     ],
 
     getInitialState() {
         return {
             user: UserStore.getDefaultData(),
-            showModal: false,
-            modalType: 'login'
+            modal: ModalStore.getDefaultData()
         };
     },
 
@@ -59,14 +53,31 @@ let App = React.createClass({
         });
     },
 
-    hideModal(e) {
-        if (e) { e.preventDefault(); }
+    onModalUpdate(newModalState) {
+        let oldModalState = this.state.modal;
 
-        window.removeEventListener('keyup', keyUpHandler);
+        function onKeyUp(e) {
+            // esc key closes modal
+            if (e.keyCode === 27) {
+                Actions.hideModal();
+            }
+        }
+
+        // pressing esc closes modal
+        if (!oldModalState.show && newModalState.show) {
+            window.addEventListener('keyup', onKeyUp);
+        } else if (oldModalState.show && !newModalState.show) {
+            window.removeEventListener('keyup', onKeyUp);
+        }
 
         this.setState({
-            showModal: false
+            modal: newModalState
         });
+    },
+
+    hideModal(e) {
+        e.preventDefault();
+        Actions.hideModal();
     },
 
     newPost() {
@@ -77,18 +88,9 @@ let App = React.createClass({
         }
     },
 
-    showModal(type) {
-        // pressing esc closes modal
-        window.addEventListener('keyup', keyUpHandler);
-
-        this.setState({
-            modalType: type,
-            showModal: true
-        });
-    },
-
     render() {
         let user = this.state.user;
+        let modal = this.state.modal;
 
         let username = user ? user.profile.username : '';
         let md5hash = user ? user.profile.md5hash : '';
@@ -97,16 +99,14 @@ let App = React.createClass({
         let wrapperCx = cx(
             'wrapper',
             'full-height', {
-            'modal-open': this.state.showModal
+            'modal-open': modal.show
         });
 
         let modalTypes = {
-            'register': <Register />,
-            'login': <Login />,
-            'newpost': <NewPost user={ user } />
+            'register': <Register errorMessage={ modal.errorMessage } />,
+            'login': <Login errorMessage={ modal.errorMessage } />,
+            'newpost': <NewPost errorMessage={ modal.errorMessage } user={ user } />
         };
-
-        let modalType = modalTypes[this.state.modalType];
 
         let userArea = user.isLoggedIn ? (
             // show profile info
@@ -148,7 +148,7 @@ let App = React.createClass({
                         <span className="fa fa-close"></span>
                         <span className="sr-only">Hide Modal</span>
                     </a>
-                    { modalType }
+                    { modalTypes[modal.type] }
                 </aside>
                 <a href="#" className="md-mask" onClick={ this.hideModal }></a>
             </div>

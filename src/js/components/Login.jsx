@@ -4,39 +4,44 @@ import React from 'react/addons';
 import Reflux from 'reflux';
 
 import Actions from '../actions/Actions';
-
-import LoginStore from '../stores/LoginStore';
 import UserStore from '../stores/UserStore';
 
 import Spinner from '../components/Spinner';
 
 const Login = React.createClass({
 
+    propTypes: {
+        errorMessage: React.PropTypes.string
+    },
+
     mixins: [
-        Reflux.listenTo(UserStore, 'resetForm'),
-        Reflux.listenTo(LoginStore, 'onMessage')
+        Reflux.listenTo(UserStore, 'loginComplete')
     ],
 
     getInitialState() {
         return {
-            error: '',
             submitted: false
         };
     },
 
-    resetForm() {
-        React.findDOMNode(this.refs.email).value = '';
-        React.findDOMNode(this.refs.password).value = '';
+    componentWillReceiveProps(nextProps) {
+        if (nextProps === this.props) {
+            return;
+        }
+
         React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             submitted: false
         });
     },
 
-    onMessage(errorMessage) {
+    loginComplete() {
+        // reset form
+        React.findDOMNode(this.refs.email).value = '';
+        React.findDOMNode(this.refs.password).value = '';
         React.findDOMNode(this.refs.submit).disabled = false;
+
         this.setState({
-            error: errorMessage,
             submitted: false
         });
     },
@@ -58,8 +63,9 @@ const Login = React.createClass({
     },
 
     render() {
-        let error = this.state.error && (
-            <div className="error md-form-error">{ this.state.error }</div>
+        let errorMessage = this.props.errorMessage;
+        let error = errorMessage && (
+            <div className="error md-form-error">{ errorMessage }</div>
         );
 
         return (

@@ -4,17 +4,18 @@ import React from 'react/addons';
 import Reflux from 'reflux';
 
 import Actions from '../actions/Actions';
-
-import LoginStore from '../stores/LoginStore';
 import UserStore from '../stores/UserStore';
 
 import Spinner from '../components/Spinner';
 
 const Register = React.createClass({
 
+    propTypes: {
+        errorMessage: React.PropTypes.string
+    },
+
     mixins: [
-        Reflux.listenTo(UserStore, 'resetForm'),
-        Reflux.listenTo(LoginStore, 'onErrorMessage')
+        Reflux.listenTo(UserStore, 'registerComplete')
     ],
 
     getInitialState() {
@@ -24,26 +25,36 @@ const Register = React.createClass({
         };
     },
 
-    resetForm() {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps === this.props) {
+            return;
+        }
+
+        React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             submitted: false
         });
+    },
+
+    registerComplete() {
         React.findDOMNode(this.refs.username).value = '';
         React.findDOMNode(this.refs.email).value = '';
         React.findDOMNode(this.refs.password).value = '';
         React.findDOMNode(this.refs.submit).disabled = false;
-    },
 
-    onErrorMessage(errorMessage) {
-        React.findDOMNode(this.refs.submit).disabled = false;
         this.setState({
-            error: errorMessage,
             submitted: false
         });
     },
 
     registerUser(e) {
         e.preventDefault();
+
+        let username = React.findDOMNode(this.refs.username).value.trim();
+
+        if (!username) {
+            return Actions.modalError('NO_USERNAME');
+        }
 
         React.findDOMNode(this.refs.submit).disabled = true;
         this.setState({
@@ -55,14 +66,13 @@ const Register = React.createClass({
             password: React.findDOMNode(this.refs.password).value.trim()
         };
 
-        let username = React.findDOMNode(this.refs.username).value.trim();
-
         Actions.register(username, loginData);
     },
 
     render() {
-        let error = this.state.error && (
-            <div className="error md-form-error">{ this.state.error }</div>
+        let errorMessage = this.props.errorMessage;
+        let error = errorMessage && (
+            <div className="error md-form-error">{ errorMessage }</div>
         );
 
         return (
