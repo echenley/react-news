@@ -3,12 +3,13 @@
 import Promise from 'bluebird';
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
+import { firebaseUrl } from '../util/constants';
 
 import Firebase from 'firebase';
 
 import extend from 'lodash/object/extend';
 
-const baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+const baseRef = new Firebase(firebaseUrl);
 const usersRef = baseRef.child('users');
 
 const defaultUser = {

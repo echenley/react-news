@@ -2,7 +2,7 @@
 
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
-import errorMessages from '../util/errorMessages';
+import { errorMessages } from '../util/constants';
 
 function getErrorMessage(code) {
     return errorMessages[code] || errorMessages.default;

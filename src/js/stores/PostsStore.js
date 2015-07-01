@@ -3,8 +3,9 @@
 import Reflux from 'reflux';
 import Firebase from 'firebase';
 import Actions from '../actions/Actions';
+import { firebaseUrl } from '../util/constants';
 
-let baseRef = new Firebase('https://resplendent-fire-4810.firebaseio.com');
+let baseRef = new Firebase(firebaseUrl);
 let postsRef = baseRef.child('posts');
 // let scrollRef = new Firebase.util.Scroll(baseRef, 'number');
 

@@ -11,4 +11,9 @@ const errorMessages = {
     default: 'Something went wrong.'
 };
 
-export default errorMessages;
+const constants = {
+    errorMessages: errorMessages,
+    firebaseUrl: 'https://resplendent-fire-4810.firebaseio.com/'
+};
+
+export default constants;
