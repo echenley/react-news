@@ -88,18 +88,18 @@ password: henleyedition1
         "commentCount": {
           // commentCount must be writable by anyone logged in
           ".write": "auth != null",
-                        // writing for the first time
+          // 1st line: initial write
+          // 2nd line: only alterable by 1
+          // 3rd line: if deleted
           ".validate": "(!data.exists() && newData.val() === 1) ||
-                        // only alterable by 1
                         (newData.val() - data.val() === 1 || newData.val() - data.val() === -1) ||
-                        // if deleted
                         !newData.exists()"
         },
         "upvotes": {
           // upvotes must be writable by anyone logged in
-          // only alterable by 1
-          // cannot go below 0
           ".write": "auth != null",
+          // 1st line: initial write
+          // 2nd line: cannot go below 0 and only alterable by 1
           ".validate": "(!data.exists() && newData.val() === 1) ||
                         (newData.val() >= 0 && (newData.val() - data.val() === 1 || newData.val() - data.val() === -1))"
         }
@@ -117,8 +117,9 @@ password: henleyedition1
         
         "upvotes": {
           // upvotes must be writable by anyone logged in
-          // only alterable by 1
           ".write": "auth != null",
+          // 1st line: initial write
+          // 2nd line: cannot go below 0 and only alterable by 1
           ".validate": "(!data.exists() && newData.val() === 1) ||
                         (newData.val() - data.val() === 1 || newData.val() - data.val() === -1)"
         }
