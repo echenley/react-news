@@ -2,7 +2,7 @@
 
 ## About
 
-**Note: Due to the popularity of this project, I am bumping up against the limits on my Firebase account. If you fork the project, please sign up for a [free Firebase account](https://www.firebase.com/pricing.html) and update the URL in `util/constants.js`!**
+**Note: Due to the popularity of this project, I am bumping up against the limits of my Firebase account. If it's unresponsive, that's probably why. If you fork the project, please sign up for a [free Firebase account](https://www.firebase.com/pricing.html) and update the URL in `util/constants.js`!**
 
 This is a real-time Hacker News clone written using [React](http://facebook.github.io/react/), [RefluxJS](https://github.com/spoike/refluxjs), and a [Firebase](http://firebase.com) backend.
 

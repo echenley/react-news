@@ -102,11 +102,16 @@ let App = React.createClass({
             'modal-open': modal.show
         });
 
-        let modalTypes = {
-            'register': <Register errorMessage={ modal.errorMessage } />,
-            'login': <Login errorMessage={ modal.errorMessage } />,
-            'newpost': <NewPost errorMessage={ modal.errorMessage } user={ user } />
-        };
+        let modalComponent;
+
+        switch (modal.type) {
+            case 'register':
+                modalComponent = <Register errorMessage={ modal.errorMessage } />; break;
+            case 'login':
+                modalComponent = <Login errorMessage={ modal.errorMessage } />; break;
+            case 'newpost':
+                modalComponent = <NewPost errorMessage={ modal.errorMessage } user={ user } />;
+        }
 
         let userArea = user.isLoggedIn ? (
             // show profile info
@@ -148,7 +153,7 @@ let App = React.createClass({
                         <span className="fa fa-close"></span>
                         <span className="sr-only">Hide Modal</span>
                     </a>
-                    { modalTypes[modal.type] }
+                    { modalComponent }
                 </aside>
                 <a href="#" className="md-mask" onClick={ this.hideModal }></a>
             </div>
