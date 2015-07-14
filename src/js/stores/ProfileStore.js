@@ -2,9 +2,11 @@
 
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
+import { firebaseUrl } from '../util/constants';
+
 import Firebase from 'firebase';
 
-const ref = new Firebase('https://resplendent-fire-4810.firebaseio.com/');
+const ref = new Firebase(firebaseUrl);
 const postsRef = ref.child('posts');
 const commentsRef = ref.child('comments');
 
