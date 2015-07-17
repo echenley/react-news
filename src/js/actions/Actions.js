@@ -10,7 +10,7 @@ const postsRef = baseRef.child('posts');
 const usersRef = baseRef.child('users');
 
 // used to create email hash for gravatar
-const hash = require('crypto').createHash('md5');
+import md5 from 'md5';
 
 const Actions = Reflux.createActions({
     // user actions
@@ -54,7 +54,7 @@ Actions.login.listen(function(loginData) {
 function createUser(username, loginData) {
     let profile = {
         username: username,
-        md5hash: hash.update(loginData.email).digest('hex'),
+        md5hash: md5(loginData.email),
         upvoted: {}
     };
 
