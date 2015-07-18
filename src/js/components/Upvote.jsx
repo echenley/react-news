@@ -5,8 +5,6 @@ import Actions from '../actions/Actions';
 
 import cx from 'classnames';
 
-let lastUpvoteState;
-
 const Upvote = React.createClass({
 
     propTypes: {
@@ -49,26 +47,18 @@ const Upvote = React.createClass({
             return;
         }
 
-        this.setState({
-            upvoted: !this.state.upvoted
-        });
-
+        let upvoted = this.state.upvoted;
         let userId = this.props.user.uid;
         let itemId = this.props.itemId;
-        let upvoted = this.state.upvoted;
         let upvoteActions = this.props.upvoteActions;
 
         let upvoteAction = upvoted
             ? upvoteActions.downvote
             : upvoteActions.upvote;
 
-        // don't do anything if nothing changed
-        if (upvoted === lastUpvoteState) {
-            return;
-        }
-
-        // wait for action to complete before allowing upvote
         this.setState({
+            upvoted: !upvoted,
+            // wait for action to complete before allowing upvote
             updating: true
         });
 
