@@ -54,12 +54,6 @@ const Posts = React.createClass({
     },
 
     onStoreUpdate(postsData) {
-        // this check could probably be removed since I'm not paginating
-        if (!postsData.posts.length) {
-            // if no posts are returned
-            this.transitionTo('home');
-        }
-
         this.setState({
             loading: false,
             posts: postsData.posts,
@@ -86,7 +80,7 @@ const Posts = React.createClass({
         Actions.setSortBy(sortByValue);
 
         if (currentPage !== 1) {
-            this.transitionTo(`/posts/1`);
+            this.transitionTo('/posts/1');
         } else {
             Actions.stopWatchingPosts();
             Actions.watchPosts(currentPage);
@@ -101,9 +95,13 @@ const Posts = React.createClass({
         // possible sort values (defined in PostsStore)
         let sortValues = Object.keys(sortOptions.values);
 
-        posts = posts.map(function(post) {
-            return <Post post={ post } user={ user } key={ post.id } />;
-        });
+        if (posts.length) {
+            posts = posts.map(function(post) {
+                return <Post post={ post } user={ user } key={ post.id } />;
+            });
+        } else {
+            posts = 'There are no posts yet!';
+        }
 
         // posts.push(<Post type={ default } />)
 
