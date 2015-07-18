@@ -5,7 +5,7 @@ import Actions from '../actions/Actions';
 import { errorMessages } from '../util/constants';
 
 function getErrorMessage(code) {
-    return errorMessages[code] || errorMessages.default;
+    return errorMessages[code] || errorMessages.generic;
 }
 
 let modalState = {

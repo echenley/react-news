@@ -8,7 +8,7 @@ const errorMessages = {
     NO_USERNAME: 'You have to enter a username.',
     EMAIL_TAKEN: 'That email is taken.',
     USERNAME_TAKEN: 'That username is taken.',
-    default: 'Something went wrong.'
+    generic: 'Something went wrong.'
 };
 
 const constants = {
