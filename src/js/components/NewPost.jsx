@@ -89,13 +89,11 @@ const NewPost = React.createClass({
     render() {
         let highlight = this.state.highlight;
 
-        let titleInputCx = cx(
-            'panel-input', {
+        let titleInputCx = cx('panel-input', {
             'input-error': highlight === 'title'
         });
 
-        let linkInputCx = cx(
-            'panel-input', {
+        let linkInputCx = cx('panel-input', {
             'input-error': highlight === 'link'
         });
 

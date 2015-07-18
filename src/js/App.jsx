@@ -96,9 +96,7 @@ let App = React.createClass({
         let md5hash = user ? user.profile.md5hash : '';
         let gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
 
-        let wrapperCx = cx(
-            'wrapper',
-            'full-height', {
+        let wrapperCx = cx('wrapper', 'full-height', {
             'modal-open': modal.show
         });
 

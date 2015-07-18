@@ -78,8 +78,7 @@ const Upvote = React.createClass({
     render() {
         let upvotes = this.props.upvotes;
 
-        let upvoteCx = cx(
-            'upvote', {
+        let upvoteCx = cx('upvote', {
             'upvoted': this.state.upvoted,
             'updating': this.state.updating
         });
