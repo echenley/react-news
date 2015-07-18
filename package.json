@@ -8,9 +8,9 @@
   "dependencies": {
     "bluebird": "^2.9.30",
     "classnames": "^2.1.2",
-    "crypto": "0.0.3",
     "firebase": "^2.2.7",
     "lodash": "^3.9.3",
+    "md5": "^2.0.0",
     "moment": "^2.10.3",
     "react": "^0.13.3",
     "react-router": "^1.0.0-beta2",
