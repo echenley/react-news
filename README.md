@@ -16,9 +16,15 @@ Test User Login:
 email: reactnews@example.com  
 password: henleyedition1
 
-## Development
+## Development and Build Process
 
-`npm i && gulp` and have at the `src/`.
+To start the development server, run `npm i && npm start` and have at the `src/`. Files are served from `/build`.
+
+| Command | Description |
+| ------- | ----------- |
+| `npm start` | Starts development server |
+| `npm run build` | Runs build task without watching files |
+| `npm run dist` | Strips sourcemaps and minifies assets into `/dist` folder |
 
 ## Firebase Structure
 
