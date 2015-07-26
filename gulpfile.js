@@ -112,26 +112,37 @@ gulp.task('minify', function() {
         .pipe($.exit());
 });
 
-gulp.task('clean', function(cb) {
-    del([
-        buildDir,
-        distDir
-    ], cb);
+gulp.task('clean-build', function(cb) {
+    del(buildDir, cb);
+});
+
+gulp.task('clean-dist', function(cb) {
+    del(distDir, cb);
 });
 
 gulp.task('build-watch', ['html', 'styles'], function() {
     return buildScript(jsEntry + '.jsx', true);
 });
 
-gulp.task('build', ['html', 'styles'], function() {
+gulp.task('build-no-watch', ['html', 'styles'], function() {
     return buildScript(jsEntry + '.jsx', false);
 });
 
-gulp.task('dist', function() {
+gulp.task('build', function(cb) {
     runSequence(
-        'clean',
-        'build',
-        'minify'
+        'clean-build',
+        'build-no-watch',
+        cb
+    );
+});
+
+gulp.task('dist', function(cb) {
+    runSequence(
+        'clean-build',
+        'clean-dist',
+        'build-no-watch',
+        'minify',
+        cb
     );
 });
 
@@ -155,7 +166,7 @@ gulp.task('watch', ['build-watch'], function() {
 
 gulp.task('serve', function(cb) {
     runSequence(
-        'clean',
+        'clean-build',
         'watch',
         cb
     );
