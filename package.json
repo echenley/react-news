@@ -58,6 +58,7 @@
     "build": "gulp build",
     "dist": "gulp dist",
     "start": "gulp",
+    "lint": "gulp lint",
     "test": "jest"
   },
   "jest": {

@@ -25,6 +25,7 @@ To start the development server, run `npm i && npm start` and have at the `src/`
 | `npm start` | Starts development server |
 | `npm run build` | Runs build task without starting server |
 | `npm run dist` | Strips sourcemaps and minifies assets into `/dist` folder |
+| `npm run lint` | Lint the `/src` folder |
 
 ## Firebase Structure
 
