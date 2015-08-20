@@ -23,7 +23,7 @@ const Comment = React.createClass({
         let showPostTitle = this.props.showPostTitle;
 
         let postLink = showPostTitle && (
-            <span className="post-info-item">
+            <span className="post-info-item post-link">
                 <Link to={ `/post/${comment.postId}` }>{ comment.postTitle }</Link>
             </span>
         );
