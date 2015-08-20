@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
 import Reflux from 'reflux';
 
 import Actions from '../actions/Actions';
@@ -8,10 +8,12 @@ import UserStore from '../stores/UserStore';
 
 import Spinner from '../components/Spinner';
 
+const findDOMNode = React.findDOMNode;
+
 const Register = React.createClass({
 
     propTypes: {
-        errorMessage: React.PropTypes.string
+        errorMessage: PropTypes.string
     },
 
     mixins: [
@@ -30,17 +32,17 @@ const Register = React.createClass({
             return;
         }
 
-        React.findDOMNode(this.refs.submit).disabled = false;
+        findDOMNode(this.refs.submit).disabled = false;
         this.setState({
             submitted: false
         });
     },
 
     registerComplete() {
-        React.findDOMNode(this.refs.username).value = '';
-        React.findDOMNode(this.refs.email).value = '';
-        React.findDOMNode(this.refs.password).value = '';
-        React.findDOMNode(this.refs.submit).disabled = false;
+        findDOMNode(this.refs.username).value = '';
+        findDOMNode(this.refs.email).value = '';
+        findDOMNode(this.refs.password).value = '';
+        findDOMNode(this.refs.submit).disabled = false;
 
         this.setState({
             submitted: false
@@ -50,20 +52,20 @@ const Register = React.createClass({
     registerUser(e) {
         e.preventDefault();
 
-        let username = React.findDOMNode(this.refs.username).value.trim();
+        let username = findDOMNode(this.refs.username).value.trim();
 
         if (!username) {
             return Actions.modalError('NO_USERNAME');
         }
 
-        React.findDOMNode(this.refs.submit).disabled = true;
+        findDOMNode(this.refs.submit).disabled = true;
         this.setState({
             submitted: true
         });
 
         let loginData = {
-            email: React.findDOMNode(this.refs.email).value.trim(),
-            password: React.findDOMNode(this.refs.password).value.trim()
+            email: findDOMNode(this.refs.email).value.trim(),
+            password: findDOMNode(this.refs.password).value.trim()
         };
 
         Actions.register(username, loginData);

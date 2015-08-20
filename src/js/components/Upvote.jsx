@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
 import Actions from '../actions/Actions';
 
 import cx from 'classnames';
@@ -8,11 +8,11 @@ import cx from 'classnames';
 const Upvote = React.createClass({
 
     propTypes: {
-        isUpvoted: React.PropTypes.bool,
-        user: React.PropTypes.object,
-        itemId: React.PropTypes.string,
-        upvoteActions: React.PropTypes.object,
-        upvotes: React.PropTypes.string
+        isUpvoted: PropTypes.bool,
+        user: PropTypes.object,
+        itemId: PropTypes.string,
+        upvoteActions: PropTypes.object,
+        upvotes: PropTypes.string
     },
 
     getInitialState() {
