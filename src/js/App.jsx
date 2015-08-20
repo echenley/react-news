@@ -111,23 +111,27 @@ let App = React.createClass({
                 modalComponent = <NewPost errorMessage={ modal.errorMessage } user={ user } />;
         }
 
-        let userArea = user.isLoggedIn
+        let userArea;
+
+        if (user.isLoggedIn) {
             // show profile info
-            ? (
+            userArea = (
                 <span className="user-info">
                     <Link to={ `/user/${username}` } className="profile-link">
                         <span className="username">{ username }</span>
                         <img src={ gravatarURI } className="profile-pic" />
                     </Link>
                 </span>
-            )
+            );
+        } else {
             // show login/register
-            : (
+            userArea = (
                 <span>
                     <a onClick={ () => Actions.showModal('login') }>Sign In</a>
                     <a onClick={ () => Actions.showModal('register') } className="register-link">Register</a>
                 </span>
             );
+        }
 
         return (
             <div className={ wrapperCx }>
