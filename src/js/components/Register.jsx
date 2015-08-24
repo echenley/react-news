@@ -1,78 +1,69 @@
 'use strict';
 
 import React, { PropTypes } from 'react/addons';
-import Reflux from 'reflux';
-
 import Actions from '../actions/Actions';
-import UserStore from '../stores/UserStore';
-
 import Spinner from '../components/Spinner';
 
-const findDOMNode = React.findDOMNode;
+const { findDOMNode } = React;
 
 const Register = React.createClass({
 
     propTypes: {
+        user: PropTypes.object,
         errorMessage: PropTypes.string
     },
 
-    mixins: [
-        Reflux.listenTo(UserStore, 'registerComplete')
-    ],
-
     getInitialState() {
         return {
-            error: '',
             submitted: false
         };
     },
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps === this.props) {
-            return;
+        if (nextProps.user !== this.props.user) {
+            // clear form if user prop changes (i.e. logged in)
+            this.clearForm();
         }
 
-        findDOMNode(this.refs.submit).disabled = false;
+        // allow resubmission if error comes through
         this.setState({
             submitted: false
         });
     },
 
-    registerComplete() {
-        findDOMNode(this.refs.username).value = '';
-        findDOMNode(this.refs.email).value = '';
-        findDOMNode(this.refs.password).value = '';
-        findDOMNode(this.refs.submit).disabled = false;
-
-        this.setState({
-            submitted: false
-        });
+    clearForm() {
+        let { username, email, password } = this.refs;
+        findDOMNode(username).value = '';
+        findDOMNode(email).value = '';
+        findDOMNode(password).value = '';
     },
 
     registerUser(e) {
         e.preventDefault();
+        let { username, email, password } = this.refs;
 
-        let username = findDOMNode(this.refs.username).value.trim();
+        let un = findDOMNode(username).value.trim();
 
-        if (!username) {
+        if (!un) {
             return Actions.modalError('NO_USERNAME');
         }
 
-        findDOMNode(this.refs.submit).disabled = true;
         this.setState({
             submitted: true
         });
 
         let loginData = {
-            email: findDOMNode(this.refs.email).value.trim(),
-            password: findDOMNode(this.refs.password).value.trim()
+            email: findDOMNode(email).value.trim(),
+            password: findDOMNode(password).value.trim()
         };
 
         Actions.register(username, loginData);
     },
 
     render() {
-        let errorMessage = this.props.errorMessage;
+        let { submitted } = this.state;
+        let { errorMessage } = this.props;
+
         let error = errorMessage && (
             <div className="error md-form-error">{ errorMessage }</div>
         );
@@ -87,7 +78,7 @@ const Register = React.createClass({
                     <input type="email" placeholder="Email" id="email" ref="email" />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder="Password" id="password" ref="password" />
-                    <button type="submit" className="button button-primary" ref="submit">
+                    <button type="submit" className="button button-primary" ref="submit" disabled={ submitted }>
                         { this.state.submitted ? <Spinner /> : 'Register' }
                     </button>
                 </form>

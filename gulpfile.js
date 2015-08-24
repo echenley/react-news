@@ -49,7 +49,8 @@ function buildScript(file, watch) {
     });
 
     var bblfy = babelify.configure({
-        only: /(src\/js)/
+        only: /(src\/js)/,
+        optional: ['runtime']
     });
 
     var brwsfy = browserify(props).transform(bblfy);

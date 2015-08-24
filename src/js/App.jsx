@@ -89,9 +89,11 @@ let App = React.createClass({
     },
 
     render() {
-        let user = this.state.user;
-        let modal = this.state.modal;
-
+        let {
+            user,
+            modal
+        } = this.state;
+        
         let username = user ? user.profile.username : '';
         let md5hash = user ? user.profile.md5hash : '';
         let gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
@@ -101,14 +103,18 @@ let App = React.createClass({
         });
 
         let modalComponent;
+        let modalProps = {
+            user: user,
+            errorMessage: modal.errorMessage
+        };
 
         switch (modal.type) {
             case 'register':
-                modalComponent = <Register errorMessage={ modal.errorMessage } />; break;
+                modalComponent = <Register { ...modalProps } />; break;
             case 'login':
-                modalComponent = <Login errorMessage={ modal.errorMessage } />; break;
+                modalComponent = <Login { ...modalProps } />; break;
             case 'newpost':
-                modalComponent = <NewPost errorMessage={ modal.errorMessage } user={ user } />;
+                modalComponent = <NewPost { ...modalProps } />;
         }
 
         let userArea;
@@ -169,7 +175,7 @@ React.render((
     <Router history={ new HashHistory() }>
         <Route component={ App }>
             <Route name="home" path="/" component={ Posts } />
-            <Route name="posts" path="/posts/:pageNum" component={ Posts } />
+            <Route name="posts" path="/posts/:pageNum" component={ Posts } ignoreScrollBehavior />
             <Route name="post" path="/post/:postId" component={ SinglePost } />
             <Route name="profile" path="/user/:username" component={ Profile } />
             <Route name="404" path="/404" component={ UhOh } />
