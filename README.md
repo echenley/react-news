@@ -26,6 +26,13 @@ To start the development server, run `npm i && npm start` and have at the `src/`
 | `npm run build` | Runs build task without starting server |
 | `npm run dist` | Strips sourcemaps and minifies assets into `/dist` folder |
 | `npm run lint` | Lint the `/src` folder |
+| `npm test` | Run test suite (currently incomplete) |
+
+## Testing
+
+*Note: tests are a work in progress.*
+
+Tests live in the `/test` directory and can be run using `npm test`. Tests are written using [Mocha](https://github.com/mochajs/mocha) (test runner), [jsdom](https://github.com/tmpvar/jsdom), [Chai](https://github.com/chaijs/chai) (assertions), and [Sinon](https://github.com/cjohansen/Sinon.JS) (spies/mocks). Jest was ruled out for [reasons](issues/4).
 
 ## Firebase Structure
 
