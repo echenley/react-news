@@ -1,9 +1,7 @@
 'use strict';
 
-import React from 'react/addons';
-
+import React, { PropTypes } from 'react/addons';
 import Actions from '../actions/Actions';
-
 import Spinner from '../components/Spinner';
 
 const { findDOMNode } = React;
@@ -11,7 +9,8 @@ const { findDOMNode } = React;
 const Login = React.createClass({
 
     propTypes: {
-        errorMessage: React.PropTypes.string
+        user: PropTypes.object,
+        errorMessage: PropTypes.string
     },
 
     getInitialState() {
