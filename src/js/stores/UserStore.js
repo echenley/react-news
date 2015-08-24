@@ -7,8 +7,6 @@ import { firebaseUrl } from '../util/constants';
 
 import Firebase from 'firebase';
 
-import extend from 'lodash/object/extend';
-
 const baseRef = new Firebase(firebaseUrl);
 const usersRef = baseRef.child('users');
 
@@ -22,7 +20,7 @@ const defaultUser = {
 };
 
 // copy defaultUser to currentUser
-let currentUser = extend({}, defaultUser);
+let currentUser = Object.assign({}, defaultUser);
 
 const UserStore = Reflux.createStore({
 
@@ -48,7 +46,7 @@ const UserStore = Reflux.createStore({
 
     logoutCompleted() {
         // reset currentUser to default
-        currentUser = extend({}, defaultUser);
+        currentUser = Object.assign({}, defaultUser);
         this.trigger(currentUser);
     },
 
@@ -60,7 +58,7 @@ const UserStore = Reflux.createStore({
     },
 
     updateProfile(userId, newProfile) {
-        currentUser = extend({}, {
+        currentUser = Object.assign({}, {
             uid: userId,
             profile: newProfile,
             isLoggedIn: true
