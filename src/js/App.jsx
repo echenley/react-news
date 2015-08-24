@@ -106,7 +106,7 @@ let App = React.createClass({
             case 'register':
                 modalComponent = <Register errorMessage={ modal.errorMessage } />; break;
             case 'login':
-                modalComponent = <Login errorMessage={ modal.errorMessage } />; break;
+                modalComponent = <Login user={ user } errorMessage={ modal.errorMessage } />; break;
             case 'newpost':
                 modalComponent = <NewPost errorMessage={ modal.errorMessage } user={ user } />;
         }
