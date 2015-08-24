@@ -169,7 +169,7 @@ React.render((
     <Router history={ new HashHistory() }>
         <Route component={ App }>
             <Route name="home" path="/" component={ Posts } />
-            <Route name="posts" path="/posts/:pageNum" component={ Posts } />
+            <Route name="posts" path="/posts/:pageNum" component={ Posts } ignoreScrollBehavior />
             <Route name="post" path="/post/:postId" component={ SinglePost } />
             <Route name="profile" path="/user/:username" component={ Profile } />
             <Route name="404" path="/404" component={ UhOh } />
