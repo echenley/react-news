@@ -35,7 +35,7 @@ describe('Login Component', () => {
 
         beforeEach(() => {
             login = TestUtils.renderIntoDocument(<Login />);
-        })
+        });
 
         it('should render a div with className "login"', () => {
             expect(login.getDOMNode().className).to.equal('login');
