@@ -32,17 +32,19 @@ const Register = React.createClass({
     },
 
     clearForm() {
-        findDOMNode(this.refs.username).value = '';
-        findDOMNode(this.refs.email).value = '';
-        findDOMNode(this.refs.password).value = '';
+        let { username, email, password } = this.refs;
+        findDOMNode(username).value = '';
+        findDOMNode(email).value = '';
+        findDOMNode(password).value = '';
     },
 
     registerUser(e) {
         e.preventDefault();
+        let { username, email, password } = this.refs;
 
-        let username = findDOMNode(this.refs.username).value.trim();
+        let un = findDOMNode(username).value.trim();
 
-        if (!username) {
+        if (!un) {
             return Actions.modalError('NO_USERNAME');
         }
 
@@ -51,15 +53,17 @@ const Register = React.createClass({
         });
 
         let loginData = {
-            email: findDOMNode(this.refs.email).value.trim(),
-            password: findDOMNode(this.refs.password).value.trim()
+            email: findDOMNode(email).value.trim(),
+            password: findDOMNode(password).value.trim()
         };
 
         Actions.register(username, loginData);
     },
 
     render() {
-        let errorMessage = this.props.errorMessage;
+        let { submitted } = this.state;
+        let { errorMessage } = this.props;
+
         let error = errorMessage && (
             <div className="error md-form-error">{ errorMessage }</div>
         );
@@ -74,7 +78,7 @@ const Register = React.createClass({
                     <input type="email" placeholder="Email" id="email" ref="email" />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder="Password" id="password" ref="password" />
-                    <button type="submit" className="button button-primary" ref="submit" disabled={ this.state.submitted }>
+                    <button type="submit" className="button button-primary" ref="submit" disabled={ submitted }>
                         { this.state.submitted ? <Spinner /> : 'Register' }
                     </button>
                 </form>
