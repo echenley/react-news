@@ -27,7 +27,7 @@
         }],
         "eqeqeq": [2, "smart"],
         "indent": [2, 4, {
-            "indentSwitchCase": true
+            "SwitchCase": 1
         }],
         "no-use-before-define": [2, "nofunc"],
         "quotes": [2, "single"],
