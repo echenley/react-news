@@ -19,7 +19,8 @@ var buildDir = './build/';
 var distDir = './dist/';
 var mapsDir = './maps/';
 
-var jsEntry = 'App';
+var jsEntry = 'render.js';
+var jsTargetName = 'app.js';
 var sassEntry = srcDir + 'scss/*.scss';
 
 function handleError() {
@@ -62,7 +63,7 @@ function buildScript(file, watch) {
     function rebundle() {
         return bundler.bundle()
             .on('error', handleError)
-            .pipe(source(jsEntry.toLowerCase() + '.js'))
+            .pipe(source(jsTargetName))
             .pipe(buffer())
             .pipe($.sourcemaps.init({ loadMaps: true }))
             .pipe($.sourcemaps.write(mapsDir))
@@ -122,11 +123,11 @@ gulp.task('clean-dist', function(cb) {
 });
 
 gulp.task('build-watch', ['html', 'styles'], function() {
-    return buildScript(jsEntry + '.jsx', true);
+    return buildScript(jsEntry, true);
 });
 
 gulp.task('build-no-watch', ['html', 'styles'], function() {
-    return buildScript(jsEntry + '.jsx', false);
+    return buildScript(jsEntry, false);
 });
 
 gulp.task('build', function(cb) {

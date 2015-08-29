@@ -39,12 +39,24 @@ const Posts = React.createClass({
     },
 
     componentDidMount() {
-        let pageNum = this.props.params.pageNum || 1;
+        let { pageNum } = this.props.params;
+
+        if (isNaN(pageNum) || pageNum < 1) {
+            this.transitionTo('/404');
+            return;
+        }
+
         Actions.watchPosts(pageNum);
     },
 
     componentWillReceiveProps(nextProps) {
-        let pageNum = nextProps.params.pageNum || 1;
+        let { pageNum } = nextProps.params;
+
+        if (isNaN(pageNum) || pageNum < 1) {
+            this.transitionTo('/404');
+            return;
+        }
+
         Actions.stopWatchingPosts();
         Actions.watchPosts(pageNum);
     },

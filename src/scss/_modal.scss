@@ -6,7 +6,7 @@
     overflow: hidden;
 }
 
-.md-form {
+.modal-form {
     display: inline-block;
 
     input {
@@ -22,22 +22,8 @@
     }
 }
 
-.md-modal,
-.md-mask {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 300ms, visibility 300ms 1ms;
-
-    .modal-open & {
-        visibility: visible;
-        opacity: 1;
-        transition: opacity 300ms;
-    }
-}
-
-.md-modal {
-    z-index: 6;
-    position: fixed;
+.modal-inner {
+    position: absolute;
     top: 50%;
     left: 50%;
     width: 300px;
@@ -52,7 +38,7 @@
     }
 }
 
-.md-mask {
+.modal-overlay {
     z-index: 5;
     position: fixed;
     top: 0;
@@ -63,7 +49,7 @@
     cursor: default;
 }
 
-.md-close {
+.modal-close {
     position: absolute;
     top: 5px;
     right: 5px;
