@@ -64,6 +64,8 @@ const Login = React.createClass({
             <div className="error modal-form-error">{ errorMessage }</div>
         );
 
+        console.log(email, password);
+
         return (
             <div className="login">
                 <h1>Login</h1>
@@ -82,7 +84,7 @@ const Login = React.createClass({
                         placeholder="Password"
                         id="password"
                         value={ password }
-                        onChange={ (e) => this.setState({ password: e.target.value.trim() }) }
+                        onChange={ (e) => this.setState({ password: e.target.value }) }
                     />
                     <button type="submit" className="button button-primary" disabled={ submitted }>
                         { submitted ? <Spinner /> : 'Sign In' }

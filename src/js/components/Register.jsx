@@ -101,7 +101,7 @@ const Register = React.createClass({
                         placeholder="Password"
                         id="password"
                         value={ password }
-                        onChange={ (e) => this.setState({ password: e.target.value.trim() }) }
+                        onChange={ (e) => this.setState({ password: e.target.value }) }
                     />
                     <button type="submit" className="button button-primary" disabled={ submitted }>
                         { this.state.submitted ? <Spinner /> : 'Register' }
