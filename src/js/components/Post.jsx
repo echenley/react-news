@@ -1,10 +1,10 @@
 'use strict';
 
 import React from 'react/addons';
+import { Link } from 'react-router';
 
 import Actions from '../actions/Actions';
 
-import { Link } from 'react-router';
 import Upvote from './Upvote';
 
 import abbreviateNumber from '../util/abbreviateNumber';
