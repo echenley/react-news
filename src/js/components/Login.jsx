@@ -64,8 +64,6 @@ const Login = React.createClass({
             <div className="error modal-form-error">{ errorMessage }</div>
         );
 
-        console.log(email, password);
-
         return (
             <div className="login">
                 <h1>Login</h1>
