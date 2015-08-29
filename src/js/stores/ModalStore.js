@@ -9,9 +9,8 @@ function getErrorMessage(code) {
 }
 
 let modalState = {
-    type: 'login',
-    errorMessage: '',
-    show: false
+    type: false,
+    errorMessage: ''
 };
 
 const ModalStore = Reflux.createStore({
@@ -21,7 +20,6 @@ const ModalStore = Reflux.createStore({
     showModal(type, errorCode) {
         modalState = {
             type: type,
-            show: true,
             errorMessage: errorCode ? getErrorMessage(errorCode) : ''
         };
 
@@ -29,7 +27,7 @@ const ModalStore = Reflux.createStore({
     },
 
     hideModal() {
-        modalState.show = false;
+        modalState.type = false;
         this.trigger(modalState);
     },
 
