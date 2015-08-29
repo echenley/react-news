@@ -4,8 +4,6 @@ import React, { PropTypes } from 'react/addons';
 import Actions from '../actions/Actions';
 import Spinner from '../components/Spinner';
 
-const { findDOMNode } = React;
-
 const Register = React.createClass({
 
     propTypes: {
@@ -15,7 +13,10 @@ const Register = React.createClass({
 
     getInitialState() {
         return {
-            submitted: false
+            submitted: false,
+            username: '',
+            email: '',
+            password: ''
         };
     },
 
@@ -32,19 +33,20 @@ const Register = React.createClass({
     },
 
     clearForm() {
-        let { username, email, password } = this.refs;
-        findDOMNode(username).value = '';
-        findDOMNode(email).value = '';
-        findDOMNode(password).value = '';
+        let { username, email, password } = this.state;
+
+        this.setState({
+            username: '',
+            email: '',
+            password: ''
+        });
     },
 
     registerUser(e) {
         e.preventDefault();
-        let { username, email, password } = this.refs;
+        let { username, email, password } = this.state;
 
-        let un = findDOMNode(username).value.trim();
-
-        if (!un) {
+        if (!username) {
             return Actions.modalError('NO_USERNAME');
         }
 
@@ -53,32 +55,55 @@ const Register = React.createClass({
         });
 
         let loginData = {
-            email: findDOMNode(email).value.trim(),
-            password: findDOMNode(password).value.trim()
+            email: email,
+            password: password
         };
 
         Actions.register(username, loginData);
     },
 
     render() {
-        let { submitted } = this.state;
+        let {
+            submitted,
+            username,
+            email,
+            password
+        } = this.state;
         let { errorMessage } = this.props;
 
         let error = errorMessage && (
-            <div className="error md-form-error">{ errorMessage }</div>
+            <div className="error modal-form-error">{ errorMessage }</div>
         );
 
         return (
             <div className="register">
                 <h1>Register</h1>
-                <form onSubmit={ this.registerUser } className="md-form">
+                <form onSubmit={ this.registerUser } className="modal-form">
                     <label htmlFor="username">Username</label>
-                    <input type="text" placeholder="Username" id="username" ref="username" />
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        id="username"
+                        value={ username }
+                        onChange={ (e) => this.setState({ username: e.target.value.trim() }) }
+                    />
                     <label htmlFor="email">Email</label>
-                    <input type="email" placeholder="Email" id="email" ref="email" />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        id="email"
+                        value={ email }
+                        onChange={ (e) => this.setState({ email: e.target.value.trim() }) }
+                    />
                     <label htmlFor="password">Password</label>
-                    <input type="password" placeholder="Password" id="password" ref="password" />
-                    <button type="submit" className="button button-primary" ref="submit" disabled={ submitted }>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        id="password"
+                        value={ password }
+                        onChange={ (e) => this.setState({ password: e.target.value.trim() }) }
+                    />
+                    <button type="submit" className="button button-primary" disabled={ submitted }>
                         { this.state.submitted ? <Spinner /> : 'Register' }
                     </button>
                 </form>

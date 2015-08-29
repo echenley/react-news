@@ -4,8 +4,6 @@ import React, { PropTypes } from 'react/addons';
 import Actions from '../actions/Actions';
 import Spinner from '../components/Spinner';
 
-const { findDOMNode } = React;
-
 const Login = React.createClass({
 
     propTypes: {
@@ -15,7 +13,9 @@ const Login = React.createClass({
 
     getInitialState() {
         return {
-            submitted: false
+            submitted: false,
+            email: '',
+            password: ''
         };
     },
 
@@ -32,43 +32,60 @@ const Login = React.createClass({
     },
 
     clearForm() {
-        let { email, password } = this.refs;
-        findDOMNode(email).value = '';
-        findDOMNode(password).value = '';
+        this.setState({
+            email: '',
+            password: ''
+        });
     },
 
     login(e) {
         e.preventDefault();
-        let { email, password } = this.refs;
+        let { email, password } = this.state;
 
         this.setState({
             submitted: true
         });
 
         Actions.login({
-            email: findDOMNode(email).value.trim(),
-            password: findDOMNode(password).value.trim()
+            email: email,
+            password: password
         });
     },
 
     render() {
-        let { submitted } = this.state;
+        let {
+            submitted,
+            email,
+            password
+        } = this.state;
         let { errorMessage } = this.props;
 
         let error = errorMessage && (
-            <div className="error md-form-error">{ errorMessage }</div>
+            <div className="error modal-form-error">{ errorMessage }</div>
         );
 
         return (
             <div className="login">
                 <h1>Login</h1>
-                <form onSubmit={ this.login } className="md-form">
+                <form onSubmit={ this.login } className="modal-form">
                     <label htmlFor="email">Email</label>
-                    <input type="email" placeholder="Email" id="email" ref="email" />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        id="email"
+                        value={ email }
+                        onChange={ (e) => this.setState({ email: e.target.value.trim() }) }
+                    />
                     <label htmlFor="password">Password</label>
-                    <input type="password" placeholder="Password" id="password" ref="password" />
-                    <button type="submit" className="button button-primary" ref="submit" disabled={ submitted }>
-                        { this.state.submitted ? <Spinner /> : 'Sign In' }
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        id="password"
+                        value={ password }
+                        onChange={ (e) => this.setState({ password: e.target.value.trim() }) }
+                    />
+                    <button type="submit" className="button button-primary" disabled={ submitted }>
+                        { submitted ? <Spinner /> : 'Sign In' }
                     </button>
                 </form>
                 { error }
