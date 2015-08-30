@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
 import Actions from '../actions/Actions';
 
 import { Link } from 'react-router';
@@ -11,16 +11,18 @@ import timeAgo from '../util/timeAgo';
 const Comment = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object,
-        comment: React.PropTypes.object,
-        showPostTitle: React.PropTypes.bool
+        user: PropTypes.object,
+        comment: PropTypes.object,
+        showPostTitle: PropTypes.bool
     },
 
     render() {
-        let user = this.props.user;
+        let {
+            user,
+            comment,
+            showPostTitle
+        } = this.props;
         let userUpvoted = user.profile.upvoted || {};
-        let comment = this.props.comment;
-        let showPostTitle = this.props.showPostTitle;
 
         let postLink = showPostTitle && (
             <span className="post-info-item post-link">
