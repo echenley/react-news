@@ -76,7 +76,7 @@ const NewPost = React.createClass({
         });
 
         let post = {
-            title: title,
+            title: title.trim(),
             url: link,
             creator: user.profile.username,
             creatorUID: user.uid,
@@ -118,7 +118,7 @@ const NewPost = React.createClass({
                         placeholder="Title"
                         id="newpost-title"
                         value={ title }
-                        onChange={ (e) => this.setState({ title: e.target.value.trim() }) }
+                        onChange={ (e) => this.setState({ title: e.target.value }) }
                     />
                     <label htmlFor="newpost-url">Title</label>
                     <input
