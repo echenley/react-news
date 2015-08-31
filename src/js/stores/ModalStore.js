@@ -2,11 +2,7 @@
 
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
-import { errorMessages } from '../util/constants';
-
-function getErrorMessage(code) {
-    return errorMessages[code] || errorMessages.generic;
-}
+import getErrorMessage from '../util/getErrorMessage';
 
 let modalState = {
     type: false,
