@@ -9,10 +9,7 @@ const ProfileLink = React.createClass({
     },
 
     render() {
-        let { user } = this.props;
-
-        let username = user ? user.profile.username : '';
-        let md5hash = user ? user.profile.md5hash : '';
+        let { username, md5hash } = this.props.user;
         let gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
 
         return (
