@@ -1,25 +1,26 @@
 'use strict';
 
-import Promise from 'bluebird';
+import React from 'react/addons';
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
 import { firebaseUrl } from '../util/constants';
 
 import Firebase from 'firebase';
-
 const baseRef = new Firebase(firebaseUrl);
 const usersRef = baseRef.child('users');
 
+const update = React.addons.update;
+
 const defaultUser = {
     uid: '',
-    profile: {
-        username: '',
-        upvoted: {}
-    },
-    isLoggedIn: false
+    username: '',
+    upvoted: null,
+    submitted: null,
+    isLoggedIn: false,
+    md5hash: null,
+    latestPost: null
 };
 
-// copy defaultUser to currentUser
 let currentUser = Object.assign({}, defaultUser);
 
 const UserStore = Reflux.createStore({
@@ -28,7 +29,7 @@ const UserStore = Reflux.createStore({
 
     init() {
         // triggered by auth changes
-        baseRef.onAuth(function(authData) {
+        baseRef.onAuth((authData) => {
             if (!authData) {
                 // user is logged out
                 usersRef.off();
@@ -37,7 +38,7 @@ const UserStore = Reflux.createStore({
                 // user is logged in
                 this.loginCompleted(authData.uid);
             }
-        }.bind(this));
+        });
     },
 
     logout() {
@@ -51,17 +52,57 @@ const UserStore = Reflux.createStore({
     },
 
     loginCompleted(userId) {
-        // watch their profile for updates
-        usersRef.child(userId).on('value', profile => (
-            this.updateProfile(userId, profile.val())
-        ));
+        // get username
+        usersRef.child(userId).once('value', (profile) => {
+            let {
+                username,
+                upvoted,
+                submitted,
+                md5hash
+            } = profile.val();
+
+            currentUser = {
+                uid: userId,
+                username: username,
+                upvoted: upvoted,
+                submitted: submitted || null,
+                md5hash: md5hash,
+                isLoggedIn: true,
+                latestPost: null
+            };
+
+            // watch upvotes
+            usersRef.child(`${userId}/upvoted`).on('value', (upvoted) => {
+                this.updateUpvoted(upvoted.val());
+            });
+
+            // watch submissions
+            usersRef.child(`${userId}/submitted`).on('value', (submitted) => {
+                let submittedVal = submitted.val();
+                this.updateSubmitted(submittedVal ? Object.keys(submittedVal) : []);
+            });
+        });
     },
 
-    updateProfile(userId, newProfile) {
-        currentUser = Object.assign({}, {
-            uid: userId,
-            profile: newProfile,
-            isLoggedIn: true
+    updateLatestPost(postId) {
+        currentUser = update(currentUser, {
+            latestPost: { $set: postId }
+        });
+
+        this.trigger(currentUser);
+    },
+
+    updateUpvoted(newUpvoted) {
+        currentUser = update(currentUser, {
+            upvoted: { $set: newUpvoted }
+        });
+
+        this.trigger(currentUser);
+    },
+
+    updateSubmitted(newSubmitted) {
+        currentUser = update(currentUser, {
+            submitted: { $set: newSubmitted || null }
         });
 
         this.trigger(currentUser);
@@ -69,8 +110,8 @@ const UserStore = Reflux.createStore({
 
     getUserId(username) {
         // returns userId given username
-        return new Promise(function(resolve) {
-            usersRef.orderByChild('username').equalTo(username).once('value', function(user) {
+        return new Promise((resolve) => {
+            usersRef.orderByChild('username').equalTo(username).once('value', (user) => {
                 let userId = Object.keys(user.val())[0];
                 resolve(userId);
             });
