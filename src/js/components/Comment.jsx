@@ -22,7 +22,8 @@ const Comment = React.createClass({
             comment,
             showPostTitle
         } = this.props;
-        let userUpvoted = user.profile.upvoted || {};
+
+        let userUpvoted = user.upvoted || {};
 
         let postLink = showPostTitle && (
             <span className="post-info-item post-link">
@@ -32,7 +33,7 @@ const Comment = React.createClass({
 
         let deleteOption = user.uid === comment.creatorUID && (
             <span className="delete post-info-item">
-                <a onClick={ Actions.deleteComment.bind(this, comment.id, comment.postId) }>delete</a>
+                <a onClick={ () => Actions.deleteComment(comment) }>delete</a>
             </span>
         );
 

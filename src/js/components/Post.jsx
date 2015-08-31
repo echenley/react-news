@@ -21,7 +21,7 @@ const Post = React.createClass({
 
     render() {
         let user = this.props.user;
-        let userUpvoted = user.profile.upvoted || {};
+        let userUpvoted = user.upvoted || {};
         let post = this.props.post;
         let commentCount = post.commentCount || 0;
         let upvoteActions = {
@@ -43,7 +43,7 @@ const Post = React.createClass({
         // add delete option if creator is logged in
         let deleteOption = user.uid !== post.creatorUID ? '' : (
             <span className="delete post-info-item">
-                <a onClick={ () => Actions.deletePost(post.id) }>delete</a>
+                <a onClick={ () => Actions.deletePost(post) }>delete</a>
             </span>
         );
 
