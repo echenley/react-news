@@ -10,13 +10,13 @@ import Actions from '../actions/Actions';
 import Spinner from '../components/Spinner';
 import Post from '../components/Post';
 import Comment from '../components/Comment';
+import CommentForm from '../components/CommentForm';
 
 import pluralize from '../util/pluralize';
 
 const SinglePost = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object,
         params: React.PropTypes.object
     },
 
@@ -30,14 +30,14 @@ const SinglePost = React.createClass({
     getInitialState() {
         return {
             user: UserStore.getDefaultData(),
-            post: false,
+            post: null,
             comments: [],
             loading: true
         };
     },
 
     componentDidMount() {
-        let postId = this.props.params.postId;
+        let { postId } = this.props.params;
         Actions.watchPost(postId);
     },
 
@@ -56,57 +56,45 @@ const SinglePost = React.createClass({
     },
 
     routerWillLeave() {
-        let postId = this.props.params.postId;
+        let { postId } = this.props.params;
         Actions.stopWatchingPost(postId);
     },
 
     onUpdate(postData) {
-        if (!postData.post) {
+        let {
+            post,
+            comments
+        } = postData;
+
+        if (!post) {
             // post doesn't exist
             this.transitionTo('/404');
             return;
         }
 
         this.setState({
-            post: postData.post,
-            comments: postData.comments,
+            post: post,
+            comments: comments,
             loading: false
         });
     },
 
-    addComment(e) {
-        e.preventDefault();
-        let user = this.state.user;
-
-        if (!user.isLoggedIn) {
-            Actions.showModal('login', 'LOGIN_REQUIRED');
-            return;
-        }
-
-        let commentTextEl = React.findDOMNode(this.refs.commentText);
-        let comment = {
-            postId: this.props.params.postId,
-            postTitle: this.state.post.title,
-            text: commentTextEl.value.trim(),
-            creator: user.profile.username,
-            creatorUID: user.uid,
-            time: Date.now()
-        };
-
-        Actions.addComment(comment);
-        commentTextEl.value = '';
-    },
-
     render() {
-        let user = this.state.user;
-        let post = this.state.post;
-        let postId = this.props.params.postId;
+        let {
+            loading,
+            user,
+            post,
+            comments,
+            commentErrorMessage
+        } = this.state;
+
+        let { postId } = this.props.params;
         let content;
 
-        if (this.state.loading) {
+        if (loading) {
             content = <Spinner />;
         } else {
-            let comments = this.state.comments.map(comment => (
+            let commentComponents = comments.map(comment => (
                 <Comment comment={ comment } user={ user } key={ comment.id } />
             ));
 
@@ -115,7 +103,7 @@ const SinglePost = React.createClass({
                     <Post post={ post } user={ user } key={ postId } />
                     <div className="comments">
                         <h2>{ pluralize(comments.length, 'Comment') }</h2>
-                        { comments }
+                        { commentComponents }
                     </div>
                 </div>
             );
@@ -124,18 +112,13 @@ const SinglePost = React.createClass({
         return (
             <div className="content full-width">
                 { content }
-                <form className='comment-form' onSubmit={ this.addComment }>
-                    <textarea
-                        placeholder="Post a Comment"
-                        ref="commentText"
-                        className="comment-input full-width"
-                    ></textarea>
-                    <button type="submit" className="button button-primary">Submit</button>
-                </form>
+                <CommentForm
+                    user={ user }
+                    post={ post || {} }
+                />
             </div>
         );
     }
-
 });
 
 export default SinglePost;
