@@ -7,17 +7,20 @@
     // animation: slide-in 0.5s;
     margin: $small 0;
     background: #fff;
+    
     & + & {
         margin-top: $small;
     }
-}
 
-.comment-form {
-    margin-top: $medium;
-}
+    &-form {
+        margin-top: $medium;
+    }
 
-// .comment-text {}
+    &-input {
+        margin: $small 0;
+    }
 
-.comment-input {
-    margin: $small 0;
+    &-error {
+        margin-top: $small;
+    }
 }
