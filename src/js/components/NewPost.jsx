@@ -16,8 +16,7 @@ const NewPost = React.createClass({
     },
 
     mixins: [
-        Navigation,
-        Reflux.listenTo(Actions.submitPost.completed, 'submitPostCompleted')
+        Navigation
     ],
 
     getInitialState() {
@@ -29,8 +28,12 @@ const NewPost = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps === this.props) {
-            return;
+        let oldLatestPost = this.props.user.latestPost;
+        let newLatestPost = nextProps.user.latestPost;
+
+        if (oldLatestPost !== newLatestPost) {
+            // user just submitted a new post
+            return this.submitPostCompleted(newLatestPost);
         }
 
         this.setState({
@@ -48,7 +51,7 @@ const NewPost = React.createClass({
 
         // hide modal/redirect to the new post
         Actions.hideModal();
-        this.transitionTo('/post/' + postId);
+        this.transitionTo(`/post/${postId}`);
     },
 
     submitPost(e) {
@@ -78,7 +81,7 @@ const NewPost = React.createClass({
         let post = {
             title: title.trim(),
             url: link,
-            creator: user.profile.username,
+            creator: user.username,
             creatorUID: user.uid,
             time: Date.now()
         };
@@ -91,7 +94,7 @@ const NewPost = React.createClass({
             submitted,
             highlight,
             title,
-            url
+            link
         } = this.state;
 
         let titleInputCx = cx('panel-input', {
@@ -120,14 +123,14 @@ const NewPost = React.createClass({
                         value={ title }
                         onChange={ (e) => this.setState({ title: e.target.value }) }
                     />
-                    <label htmlFor="newpost-url">Title</label>
+                    <label htmlFor="newpost-url">Link</label>
                     <input
                         type="text"
                         className={ linkInputCx }
                         placeholder="Link"
                         id="newpost-url"
-                        value={ title }
-                        onChange={ (e) => this.setState({ title: e.target.value.trim() }) }
+                        value={ link }
+                        onChange={ (e) => this.setState({ link: e.target.value.trim() }) }
                     />
                     <button type="submit" className="button button-primary" disabled={ submitted }>
                         { submitted ? <Spinner /> : 'Submit' }
