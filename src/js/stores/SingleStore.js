@@ -68,4 +68,4 @@ const SingleStore = Reflux.createStore({
 
 });
 
-module.exports = SingleStore;
+export default SingleStore;
