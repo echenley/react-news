@@ -148,7 +148,12 @@ Tests live in the `/test` directory and can be run using `npm test`. Tests are w
         // user not authenticated until after profile is created
         ".write": "!data.exists()",
         "upvoted": {
-          "$postId": {
+          "$itemId": {
+            ".write": "auth.uid === $uid"
+          }
+        },
+        "submitted": {
+          "$itemId": {
             ".write": "auth.uid === $uid"
           }
         }
