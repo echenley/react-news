@@ -12,7 +12,7 @@
     "md5": "^2.0.0",
     "moment": "^2.10.3",
     "react": "^0.13.3",
-    "react-router": "^1.0.0-beta3",
+    "react-router": "1.0.0-beta3",
     "reflux": "^0.2.9"
   },
   "devDependencies": {
