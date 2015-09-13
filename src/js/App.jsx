@@ -117,7 +117,7 @@ let App = React.createClass({
             <div className="wrapper full-height">
                 <header className="header cf">
                     <div className="float-left">
-                        <Link to="/" className="menu-title">react-schmooze</Link>
+                        <Link to="/" className="menu-title">react-news</Link>
                     </div>
                     <div className="float-right">
                         { user.isLoggedIn ? <ProfileLink user={ user } /> : <LoginLinks /> }
