@@ -25,8 +25,8 @@ To start the development server, run `npm i && npm start` and have at the `src/`
 | `npm start` | Starts development server with hot reloading. |
 | `npm run build` | Runs development build. Outputs files to `/build`. |
 | `npm run dist` | Runs production build. Outputs files to `/dist`. |
-| `npm run lint` | Run eslint on the `/src` folder. |
-| `npm test` | Run test suite (currently incomplete). |
+| `npm run lint` | Runs eslint on the `/src` folder. |
+| `npm test` | Runs test suite (currently incomplete). |
 
 ## Testing
 
