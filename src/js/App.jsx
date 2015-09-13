@@ -23,8 +23,6 @@ import NewPost from './components/NewPost';
 import LoginLinks from './components/LoginLinks';
 import ProfileLink from './components/ProfileLink';
 
-import cx from 'classnames';
-
 let App = React.createClass({
 
     propTypes: {
@@ -119,7 +117,7 @@ let App = React.createClass({
             <div className="wrapper full-height">
                 <header className="header cf">
                     <div className="float-left">
-                        <Link to="/" className="menu-title">react-news</Link>
+                        <Link to="/" className="menu-title">react-schmooze</Link>
                     </div>
                     <div className="float-right">
                         { user.isLoggedIn ? <ProfileLink user={ user } /> : <LoginLinks /> }

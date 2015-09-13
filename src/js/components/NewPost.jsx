@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react/addons';
-import Reflux from 'reflux';
 import { Navigation } from 'react-router';
 import cx from 'classnames';
 

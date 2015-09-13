@@ -33,8 +33,6 @@ const Register = React.createClass({
     },
 
     clearForm() {
-        let { username, email, password } = this.state;
-
         this.setState({
             username: '',
             email: '',

@@ -110,7 +110,7 @@ const Profile = React.createClass({
 
             commentList = comments.map(comment => (
                 <Comment
-                    showPostTitle={ true }
+                    showPostTitle
                     comment={ comment }
                     user={ user }
                     key={ comment.id }

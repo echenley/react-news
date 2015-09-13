@@ -84,8 +84,7 @@ const SinglePost = React.createClass({
             loading,
             user,
             post,
-            comments,
-            commentErrorMessage
+            comments
         } = this.state;
 
         let { postId } = this.props.params;
