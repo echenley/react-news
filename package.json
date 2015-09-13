@@ -45,7 +45,7 @@
     "build": "npm run clean-build && webpack",
     "dist": "npm run clean-dist && webpack -p --config webpack.production.config.js",
     "start": "npm run clean-build && node server.js",
-    "lint": "gulp lint",
+    "lint": "./node_modules/.bin/eslint src/",
     "test": "./node_modules/.bin/mocha --compilers js:babel/register --recursive"
   }
 }
