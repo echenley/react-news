@@ -84,14 +84,13 @@ const Profile = React.createClass({
     },
 
     render() {
-        let user = this.state.user;
-        let profileData = this.state.profileData;
+        let { user, profileData, loading } = this.state;
         let posts = profileData.posts;
         let comments = profileData.comments;
 
         let postList, commentList, postHeader, commentsHeader;
 
-        if (this.state.loading) {
+        if (loading) {
             postHeader = <h2>Loading Posts...</h2>;
             postList = <Spinner />;
             commentsHeader = <h2>Loading Comments...</h2>;
