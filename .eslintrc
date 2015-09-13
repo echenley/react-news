@@ -29,6 +29,10 @@
         "indent": [2, 4, {
             "SwitchCase": 1
         }],
+        "no-unused-vars": [2, {
+            "vars": "all",
+            "args": "after-used"
+        }],
         "no-use-before-define": [2, "nofunc"],
         "quotes": [2, "single"],
         "semi": [2, "always"],
