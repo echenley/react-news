@@ -22,11 +22,11 @@ To start the development server, run `npm i && npm start` and have at the `src/`
 
 | Command | Description |
 | ------- | ----------- |
-| `npm start` | Starts development server |
-| `npm run build` | Runs build task without starting server |
-| `npm run dist` | Strips sourcemaps and minifies assets into `/dist` folder |
-| `npm run lint` | Lint the `/src` folder |
-| `npm test` | Run test suite (currently incomplete) |
+| `npm start` | Starts development server with hot reloading. |
+| `npm run build` | Runs development build. Outputs files to `/build`. |
+| `npm run dist` | Runs production build. Outputs files to `/dist`. |
+| `npm run lint` | Run eslint on the `/src` folder. |
+| `npm test` | Run test suite (currently incomplete). |
 
 ## Testing
 
