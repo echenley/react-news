@@ -53,11 +53,7 @@ const Login = React.createClass({
     },
 
     render() {
-        let {
-            submitted,
-            email,
-            password
-        } = this.state;
+        let { submitted, email, password } = this.state;
         let { errorMessage } = this.props;
 
         let error = errorMessage && (

@@ -61,12 +61,7 @@ const Register = React.createClass({
     },
 
     render() {
-        let {
-            submitted,
-            username,
-            email,
-            password
-        } = this.state;
+        let { submitted, username, email, password } = this.state;
         let { errorMessage } = this.props;
 
         let error = errorMessage && (
