@@ -2,7 +2,6 @@
 
 import React from 'react/addons';
 import { Router, Route, Redirect } from 'react-router';
-import HashHistory from 'react-router/lib/HashHistory';
 
 import App from './App';
 import Posts from './views/Posts';
@@ -11,7 +10,7 @@ import Profile from './views/Profile';
 import UhOh from './views/404';
 
 export default (
-    <Router history={ new HashHistory() }>
+    <Router>
         <Route component={ App }>
             <Route name="posts" path="/posts/:pageNum" component={ Posts } ignoreScrollBehavior />
             <Route name="post" path="/post/:postId" component={ SinglePost } />
