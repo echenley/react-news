@@ -59,10 +59,10 @@ let App = React.createClass({
         }
 
         // pressing esc closes modal
-        if (!oldModalState.show && newModalState.show) {
-            window.addEventListener('keyup', onKeyUp);
-        } else if (oldModalState.show && !newModalState.show) {
-            window.removeEventListener('keyup', onKeyUp);
+        if (!oldModalState.type && newModalState.type) {
+            document.addEventListener('keyup', onKeyUp);
+        } else if (oldModalState.type && !newModalState.type) {
+            document.removeEventListener('keyup', onKeyUp);
         }
 
         this.setState({
