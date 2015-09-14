@@ -9,7 +9,6 @@ import sinonChai from 'sinon-chai';
 var React;
 var Login;
 var TestUtils;
-var findDOMNode;
 
 chai.use(sinonChai);
 
@@ -21,7 +20,6 @@ describe('Login Component', () => {
         React = require('react/addons');
         Login = require('../../src/js/components/Login');
         TestUtils = React.addons.TestUtils;
-        findDOMNode = React.findDOMNode;
     });
 
     afterEach(() => {
@@ -70,7 +68,7 @@ describe('Login Component', () => {
         });
 
         it('should disable submit button until props update', () => {
-            let submitButton = findDOMNode(login.refs.submit);
+            let submitButton = TestUtils.findRenderedDOMComponentWithTag(login, 'button').getDOMNode();
 
             login.setState({ submitted: true });
             expect(submitButton.disabled).to.equal(true);
