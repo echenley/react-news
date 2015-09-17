@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
     entry: [
@@ -15,13 +16,20 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 include: path.join(__dirname, 'src'),
-                loaders: ['babel-loader']
+                loaders: ['babel']
             },
             {
                 test: /\.scss$/,
-                loader: 'style!css!sass'
+                loader: 'style!css!postcss!sass'
+            },
+            {
+                test: /\.svg$/,
+                loader: 'svg-inline'
             }
         ]
+    },
+    postcss: function () {
+        return [autoprefixer({ browsers: ['last 3 versions'] })];
     },
     resolve: {
         extensions: ['', '.js', '.jsx', '.json']

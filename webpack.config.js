@@ -2,6 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var friendlyFormatter = require('eslint-friendly-formatter');
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
     entry: [
@@ -18,13 +19,20 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 include: path.join(__dirname, 'src'),
-                loaders: ['react-hot', 'babel-loader', 'eslint-loader']
+                loaders: ['react-hot', 'babel', 'eslint']
             },
             {
                 test: /\.scss$/,
-                loader: 'style!css!sass'
+                loader: 'style!css!postcss!sass'
+            },
+            {
+                test: /\.svg$/,
+                loader: 'svg-inline'
             }
         ]
+    },
+    postcss: function () {
+        return [autoprefixer({ browsers: ['last 3 versions'] })];
     },
     eslint: {
         formatter: friendlyFormatter,
