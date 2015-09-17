@@ -22,6 +22,7 @@ import Register from './components/Register';
 import NewPost from './components/NewPost';
 import LoginLinks from './components/LoginLinks';
 import ProfileLink from './components/ProfileLink';
+import Icon from './components/Icon';
 
 let App = React.createClass({
 
@@ -117,12 +118,14 @@ let App = React.createClass({
             <div className="wrapper full-height">
                 <header className="header cf">
                     <div className="float-left">
-                        <Link to="/" className="menu-title">react-news</Link>
+                        <Link to="/" className="menu-title">
+                            <span>react-news</span>
+                        </Link>
                     </div>
                     <div className="float-right">
                         { user.isLoggedIn ? <ProfileLink user={ user } /> : <LoginLinks /> }
                         <a className="newpost-link" onClick={ this.newPost }>
-                            <i className="fa fa-plus-square-o"></i>
+                            <Icon svg={ require('../svg/add.svg') } />
                             <span className="sr-only">New Post</span>
                         </a>
                     </div>
