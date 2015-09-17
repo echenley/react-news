@@ -96,15 +96,16 @@
     padding-right: 1.5rem;
     background: lighten($light-gray, 3%);
     transition: background 0.2s;
+
     &:after {
-        content: '\f0dd';
-        font-family: FontAwesome;
+        content: '\25BE';
         z-index: 0;
         position: absolute;
         right: $x-small;
         top: 20%;
-        font-size: 10px;
+        font-size: 12px;
     }
+
     &:hover {
         background: $light-gray;
     }
