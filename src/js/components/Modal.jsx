@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { PropTypes } from 'react/addons';
+import Icon from './Icon';
 
 const Modal = React.createClass({
 
@@ -19,7 +20,7 @@ const Modal = React.createClass({
             <div className="modal-overlay" onClick={ hideModal }>
                 <div className="modal-inner" onClick={ (e) => e.stopPropagation() }>
                     <a href="#" onClick={ hideModal } className="modal-close">
-                        <span className="fa fa-close"></span>
+                        <Icon svg={ require('../../svg/close.svg') } />
                         <span className="sr-only">Hide Modal</span>
                     </a>
                     { this.props.children }
