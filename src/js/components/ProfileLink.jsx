@@ -13,12 +13,10 @@ const ProfileLink = React.createClass({
         let gravatarURI = 'http://www.gravatar.com/avatar/' + md5hash + '?d=mm';
 
         return (
-            <span className="user-info">
-                <Link to={ `/user/${username}` } className="profile-link">
-                    <span className="username">{ username }</span>
-                    <img src={ gravatarURI } className="profile-pic" />
-                </Link>
-            </span>
+            <Link to={ `/user/${username}` } className="profile-link">
+                <span className="username">{ username }</span>
+                <img src={ gravatarURI } className="profile-pic" />
+            </Link>
         );
     }
 });
