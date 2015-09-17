@@ -1,33 +1,18 @@
 'use strict';
 
-import React from 'react/addons';
-import { Link } from 'react-router';
-
-import Actions from '../actions/Actions';
-
-import Upvote from './Upvote';
-
-import abbreviateNumber from '../util/abbreviateNumber';
-import pluralize from '../util/pluralize';
-import hostNameFromUrl from '../util/hostNameFromUrl';
-import timeAgo from '../util/timeAgo';
+import React, { PropTypes } from 'react/addons';
+import PostLink from './PostLink';
+import PostInfo from './PostInfo';
 
 const Post = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object,
-        post: React.PropTypes.object
+        user: PropTypes.object,
+        post: PropTypes.object
     },
 
     render() {
-        let user = this.props.user;
-        let userUpvoted = user.upvoted || {};
-        let post = this.props.post;
-        let commentCount = post.commentCount || 0;
-        let upvoteActions = {
-            upvote: Actions.upvotePost,
-            downvote: Actions.downvotePost
-        };
+        const { user, post } = this.props;
 
         if (post.isDeleted) {
             // post doesn't exist
@@ -40,44 +25,10 @@ const Post = React.createClass({
             );
         }
 
-        // add delete option if creator is logged in
-        let deleteOption = user.uid !== post.creatorUID ? '' : (
-            <span className="delete post-info-item">
-                <a onClick={ () => Actions.deletePost(post) }>delete</a>
-            </span>
-        );
-
         return (
             <div className="post">
-                <div className="post-link">
-                    <a className="post-title" href={ post.url }>{ post.title }</a>
-                    <span className="hostname">
-                        (<a href={ post.url }>{ hostNameFromUrl(post.url) }</a>)
-                    </span>
-                </div>
-                <div className="post-info">
-                    <div className="posted-by">
-                        <Upvote
-                            upvoteActions={ upvoteActions }
-                            user={ user }
-                            itemId={ post.id }
-                            isUpvoted={ !!userUpvoted[post.id] }
-                            upvotes={ post.upvotes ? abbreviateNumber(post.upvotes) : '0' }
-                        />
-                        <span className="post-info-item">
-                            <Link to={ `/user/${post.creator}` }>{ post.creator }</Link>
-                        </span>
-                        <span className="post-info-item">
-                            { timeAgo(post.time) }
-                        </span>
-                        <span className="post-info-item">
-                            <Link to={ `/post/${post.id}` }>
-                                { pluralize(commentCount, 'comment') }
-                            </Link>
-                        </span>
-                        { deleteOption }
-                    </div>
-                </div>
+                <PostLink post={ post } />
+                <PostInfo post={ post } user={ user } />
             </div>
         );
     }
