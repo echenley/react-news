@@ -1,9 +1,11 @@
 'use strict';
 
 import React, { PropTypes } from 'react/addons';
-import Actions from '../actions/Actions';
-
 import cx from 'classnames';
+
+import Actions from '../actions/Actions';
+import abbreviateNumber from '../util/abbreviateNumber';
+import Icon from './Icon';
 
 const Upvote = React.createClass({
 
@@ -12,7 +14,7 @@ const Upvote = React.createClass({
         user: PropTypes.object,
         itemId: PropTypes.string,
         upvoteActions: PropTypes.object,
-        upvotes: PropTypes.string
+        upvotes: PropTypes.number
     },
 
     getInitialState() {
@@ -23,8 +25,8 @@ const Upvote = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        let oldUpvoted = this.props.isUpvoted;
-        let newUpvoted = nextProps.isUpvoted;
+        const oldUpvoted = this.props.isUpvoted;
+        const newUpvoted = nextProps.isUpvoted;
 
         // don't update unless upvoted changes
         if (oldUpvoted === newUpvoted) {
@@ -38,19 +40,17 @@ const Upvote = React.createClass({
     },
 
     upvote() {
-        if (this.state.updating) {
+        const { upvoted, updating } = this.state;
+        const { user, itemId, upvoteActions } = this.props;
+
+        if (updating) {
             return;
         }
 
-        if (!this.props.user.isLoggedIn) {
+        if (!user.isLoggedIn) {
             Actions.showModal('login', 'LOGIN_REQUIRED');
             return;
         }
-
-        let upvoted = this.state.upvoted;
-        let userId = this.props.user.uid;
-        let itemId = this.props.itemId;
-        let upvoteActions = this.props.upvoteActions;
 
         let upvoteAction = upvoted
             ? upvoteActions.downvote
@@ -62,20 +62,22 @@ const Upvote = React.createClass({
             updating: true
         });
 
-        upvoteAction(userId, itemId);
+        upvoteAction(user.uid, itemId);
     },
 
     render() {
-        let upvotes = this.props.upvotes;
+        const { upvoted, updating } = this.state;
+        const { upvotes } = this.props;
 
         let upvoteCx = cx('upvote', {
-            'upvoted': this.state.upvoted,
-            'updating': this.state.updating
+            'upvoted': upvoted,
+            'updating': updating
         });
 
         return (
             <a className={ upvoteCx } onClick={ this.upvote }>
-                { upvotes } <i className="fa fa-arrow-up"></i>
+                <span>{ abbreviateNumber(upvotes) }</span>
+                <Icon svg={ require('../../svg/upvote.svg') } />
             </a>
         );
     }
