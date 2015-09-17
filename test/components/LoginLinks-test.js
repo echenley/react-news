@@ -1,9 +1,7 @@
 'use strict';
 
 import setupDOM from '../util/setup';
-import createParent from '../util/createParent';
 import chai, { expect } from 'chai';
-import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 var React;
