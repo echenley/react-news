@@ -42,19 +42,33 @@
 // .comments-link {}
 
 .upvote {
+    display: inline-block;
     color: $dark-gray;
     user-select: none;
+    line-height: 1;
     
     &:hover {
         text-decoration: none;
     }
 
-    &.upvoted {
-        color: $upvoted;
+    &.updating {
+        opacity: 0.8;
     }
 
-    &.updating {
-        transform: scale(0.8);
+    > * {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    svg {
+        width: 12px;
+        height: 12px;
+        margin-left: 3px;
+        fill: $dark-gray;
+    }
+
+    &.upvoted svg {
+        fill: $upvoted;
     }
 }
 
