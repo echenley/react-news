@@ -24,7 +24,7 @@ import LoginLinks from './components/LoginLinks';
 import ProfileLink from './components/ProfileLink';
 import Icon from './components/Icon';
 
-let App = React.createClass({
+const App = React.createClass({
 
     propTypes: {
         children: React.PropTypes.object
@@ -50,7 +50,7 @@ let App = React.createClass({
     },
 
     onModalUpdate(newModalState) {
-        let oldModalState = this.state.modal;
+        const oldModalState = this.state.modal;
 
         function onKeyUp(e) {
             // esc key closes modal
@@ -89,8 +89,8 @@ let App = React.createClass({
             return null;
         }
 
-        let modalInner;
-        let modalProps = {
+        let modalInner = null;
+        const modalProps = {
             user: this.state.user,
             errorMessage: modal.errorMessage
         };
@@ -112,7 +112,7 @@ let App = React.createClass({
     },
 
     render() {
-        let { user, modal } = this.state;
+        const { user, modal } = this.state;
 
         return (
             <div className="wrapper full-height">

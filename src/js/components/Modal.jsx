@@ -14,7 +14,7 @@ const Modal = React.createClass({
     },
 
     render() {
-        let { hideModal } = this.props;
+        const { hideModal, children } = this.props;
 
         return (
             <div className="modal-overlay" onClick={ hideModal }>
@@ -23,7 +23,7 @@ const Modal = React.createClass({
                         <Icon svg={ require('../../svg/close.svg') } />
                         <span className="sr-only">Hide Modal</span>
                     </a>
-                    { this.props.children }
+                    { children }
                 </div>
             </div>
         );

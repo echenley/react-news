@@ -40,7 +40,7 @@ const Login = React.createClass({
 
     login(e) {
         e.preventDefault();
-        let { email, password } = this.state;
+        const { email, password } = this.state;
 
         this.setState({
             submitted: true
@@ -53,10 +53,10 @@ const Login = React.createClass({
     },
 
     render() {
-        let { submitted, email, password } = this.state;
-        let { errorMessage } = this.props;
+        const { submitted, email, password } = this.state;
+        const { errorMessage } = this.props;
 
-        let error = errorMessage && (
+        const error = errorMessage && (
             <div className="error modal-form-error">{ errorMessage }</div>
         );
 

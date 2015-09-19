@@ -42,7 +42,7 @@ const Register = React.createClass({
 
     registerUser(e) {
         e.preventDefault();
-        let { username, email, password } = this.state;
+        const { username, email, password } = this.state;
 
         if (!username) {
             return Actions.modalError('NO_USERNAME');
@@ -52,7 +52,7 @@ const Register = React.createClass({
             submitted: true
         });
 
-        let loginData = {
+        const loginData = {
             email: email,
             password: password
         };
@@ -61,10 +61,10 @@ const Register = React.createClass({
     },
 
     render() {
-        let { submitted, username, email, password } = this.state;
-        let { errorMessage } = this.props;
+        const { submitted, username, email, password } = this.state;
+        const { errorMessage } = this.props;
 
-        let error = errorMessage && (
+        const error = errorMessage && (
             <div className="error modal-form-error">{ errorMessage }</div>
         );
 
