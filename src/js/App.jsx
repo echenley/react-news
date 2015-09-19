@@ -50,29 +50,13 @@ const App = React.createClass({
     },
 
     onModalUpdate(newModalState) {
-        const oldModalState = this.state.modal;
-
-        function onKeyUp(e) {
-            // esc key closes modal
-            if (e.keyCode === 27) {
-                Actions.hideModal();
-            }
-        }
-
-        // pressing esc closes modal
-        if (!oldModalState.type && newModalState.type) {
-            document.addEventListener('keyup', onKeyUp);
-        } else if (oldModalState.type && !newModalState.type) {
-            document.removeEventListener('keyup', onKeyUp);
-        }
-
         this.setState({
             modal: newModalState
         });
     },
 
     hideModal(e) {
-        e.preventDefault();
+        if (e) { e.preventDefault(); }
         Actions.hideModal();
     },
 

@@ -13,6 +13,22 @@ const Modal = React.createClass({
         ]).isRequired
     },
 
+    componentDidMount() {
+        // allow esc to close modal
+        document.addEventListener('keyup', this.onKeyUp);
+    },
+
+    componentWillUnmount() {
+        document.removeEventListener('keyup', this.onKeyUp);
+    },
+
+    onKeyUp(e) {
+        // esc key closes modal
+        if (e.keyCode === 27) {
+            this.props.hideModal();
+        }
+    },
+
     render() {
         const { hideModal, children } = this.props;
 
