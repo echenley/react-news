@@ -1,10 +1,10 @@
 'use strict';
 
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
 
 const Icon = React.createClass({
     propTypes: {
-        svg: React.PropTypes.string.isRequired,
+        svg: PropTypes.string.isRequired
     },
 
     render() {
