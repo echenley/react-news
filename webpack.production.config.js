@@ -16,7 +16,7 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 include: path.join(__dirname, 'src'),
-                loaders: ['babel?optional[]=runtime']
+                loader: 'babel?optional[]=runtime'
             },
             {
                 test: /\.scss$/,
