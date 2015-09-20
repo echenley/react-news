@@ -1,35 +1,22 @@
 'use strict';
 
-import setupDOM from '../util/setup';
 import createParent from '../util/createParent';
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 
 var React;
 var Register;
 var TestUtils;
 
-chai.use(sinonChai);
-
 describe('Register Component', () => {
-    let register;
 
     beforeEach(() => {
-        setupDOM();
         React = require('react/addons');
         Register = require('../../src/js/components/Register');
         TestUtils = React.addons.TestUtils;
     });
 
-    afterEach(() => {
-        // React caches required modules
-        for (var i in require.cache) {
-            delete require.cache[i];
-        }
-    });
-
     describe('DOM', () => {
+        let register;
+        let error;
 
         beforeEach(() => {
             register = TestUtils.renderIntoDocument(<Register />);
@@ -39,21 +26,19 @@ describe('Register Component', () => {
             expect(register.getDOMNode().className).to.equal('register');
         });
 
-        it('should render an error message only when passed as prop', () => {
-            let error;
+        it('should not render an error message when not passed one', () => {
             error = TestUtils.scryRenderedDOMComponentsWithClass(register, 'error');
-
             expect(error.length).to.equal(0);
+        });
 
-            // rerender with errorMessage prop
+        it('should render an error message when passed as prop', () => {
             register = TestUtils.renderIntoDocument(<Register errorMessage="uh oh" />);
             error = TestUtils.findRenderedDOMComponentWithClass(register, 'error');
-
             expect(error.getDOMNode().textContent).to.equal('uh oh');
         });
     });
 
-    describe('props behavior', () => {
+    describe('Props', () => {
         let parent;
         let register;
 

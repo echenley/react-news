@@ -1,32 +1,18 @@
 'use strict';
 
-import setupDOM from '../util/setup';
 import createParent from '../util/createParent';
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 
 var React;
 var Login;
 var TestUtils;
 
-chai.use(sinonChai);
-
 describe('Login Component', () => {
     let login;
 
     beforeEach(() => {
-        setupDOM();
         React = require('react/addons');
         Login = require('../../src/js/components/Login');
         TestUtils = React.addons.TestUtils;
-    });
-
-    afterEach(() => {
-        // React caches required modules
-        for (var i in require.cache) {
-            delete require.cache[i];
-        }
     });
 
     describe('DOM', () => {
@@ -53,7 +39,7 @@ describe('Login Component', () => {
         });
     });
 
-    describe('props behavior', () => {
+    describe('Props', () => {
         let parent;
         let login;
 

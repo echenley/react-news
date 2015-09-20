@@ -1,30 +1,16 @@
 'use strict';
 
-import setupDOM from '../util/setup';
-import chai, { expect } from 'chai';
-import sinonChai from 'sinon-chai';
-
 var React;
 var LoginLinks;
 var TestUtils;
-
-chai.use(sinonChai);
 
 describe('LoginLinks Component', () => {
     let loginLinks;
 
     beforeEach(() => {
-        setupDOM();
         React = require('react/addons');
         LoginLinks = require('../../src/js/components/LoginLinks');
         TestUtils = React.addons.TestUtils;
-    });
-
-    afterEach(() => {
-        // React caches required modules
-        for (var i in require.cache) {
-            delete require.cache[i];
-        }
     });
 
     describe('DOM', function() {

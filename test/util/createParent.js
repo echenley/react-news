@@ -17,12 +17,21 @@ function createParent(Child, ref, props) {
 
         render() {
             let convertedProps = {};
+            let children = null;
 
             for (let prop in props) {
-                convertedProps[prop] = this.state[prop];
+                if (prop === 'children') {
+                    children = this.state[prop];
+                } else {
+                    convertedProps[prop] = this.state[prop];                    
+                }
             }
 
-            return <Child ref={ ref || 'child' } { ...convertedProps } />;
+            return (
+                <Child ref={ ref || 'child' } { ...convertedProps }>
+                    { children }
+                </Child>
+            );
         }
     });
 }
