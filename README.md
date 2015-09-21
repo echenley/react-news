@@ -26,13 +26,14 @@ To start the development server, run `npm i && npm start` and have at the `src/`
 | `npm run build` | Runs development build. Outputs files to `/build`. |
 | `npm run dist` | Runs production build. Outputs files to `/dist`. |
 | `npm run lint` | Runs eslint on the `/src` folder. |
-| `npm test` | Runs test suite (currently incomplete). |
+| `npm test` | Runs test suite once. |
+| `npm run test-dev` | Runs test server. |
 
 ## Testing
 
 *Note: tests are a work in progress.*
 
-Tests live in the `/test` directory and can be run using `npm test`. Tests are written using [Mocha](https://github.com/mochajs/mocha) (test runner), [jsdom](https://github.com/tmpvar/jsdom), [Chai](https://github.com/chaijs/chai) (assertions), and [Sinon](https://github.com/cjohansen/Sinon.JS) (spies/mocks). Jest was ruled out for [reasons](https://github.com/echenley/react-news/issues/4).
+Tests live in the `/test` directory and can be run using `npm test`. Tests are built with [Karma](https://github.com/karma-runner/karma) (test runner), [Mocha](https://github.com/mochajs/mocha) (test environment), [PhantomJS](http://phantomjs.org/) (test browser), [Chai](https://github.com/chaijs/chai) (assertions), and [Sinon](https://github.com/cjohansen/Sinon.JS) (spies/mocks). Jest was ruled out for [reasons](https://github.com/echenley/react-news/issues/4).
 
 ## Firebase Structure
 

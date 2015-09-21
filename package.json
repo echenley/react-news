@@ -63,6 +63,6 @@
     "dist": "rm -rf dist/* && ./node_modules/.bin/webpack -p --config webpack.production.config.js",
     "lint": "./node_modules/.bin/eslint src/",
     "test": "./node_modules/.bin/karma start ./test/karma.conf.js",
-    "testdev": "./node_modules/.bin/karma start ./test/karma.conf.js --no-single-run"
+    "test-dev": "./node_modules/.bin/karma start ./test/karma.conf.js --no-single-run"
   }
 }
