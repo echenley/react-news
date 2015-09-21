@@ -12,7 +12,7 @@ module.exports = {
                     path.join(__dirname, 'src'),
                     path.join(__dirname, 'test')
                 ],
-                loaders: ['babel']
+                loaders: ['babel?optional[]=runtime']
             },
             {
                 test: /\.scss$/,
