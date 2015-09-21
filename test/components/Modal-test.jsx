@@ -76,6 +76,13 @@ describe('Modal Component', () => {
             expect(hideModalSpy).to.have.been.called;
         });
 
+        // TODO: figure out how to test this
+        // it('should call props.hideModal when escape key is pressed', () => {
+        //     expect(hideModalSpy).to.have.not.been.called;
+        //     TestUtils.Simulate.keyPress(document, { keyCode: 27 });
+        //     expect(hideModalSpy).to.have.been.called;
+        // });
+
         it('should not be removed when .modal-inner is clicked', () => {
             const modalInner = TestUtils.findRenderedDOMComponentWithClass(modal, 'modal-inner');
             expect(hideModalSpy).to.have.not.been.called;
