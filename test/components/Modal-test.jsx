@@ -25,16 +25,16 @@ describe('Modal Component', () => {
             modal = shallowRenderer.getRenderOutput();
         });
 
-        it('should render a div with className "modal-overlay"', () => {
+        it('should render <div className="modal-overlay" />', () => {
             expect(modal.props.className).to.equal('modal-overlay');
         });
 
-        it('should render an inner div with className "modal-inner"', () => {
+        it('should render a child <Link className="modal-inner" />', () => {
             const modalInner = modal.props.children;
             expect(modalInner.props.className).to.equal('modal-inner');
         });
 
-        it('should render a link with className "modal-close"', () => {
+        it('should render a child <a className="modal-close" />', () => {
             const modalClose = modal.props.children.props.children[0];
             expect(modalClose.props.className).to.equal('modal-close');
         });
