@@ -3,7 +3,7 @@
 import React from 'react/addons';
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
-import { Navigation, TransitionHook } from 'react-router';
+import { History } from 'react-router';
 
 import PostsStore from '../stores/PostsStore';
 import UserStore from '../stores/UserStore';
@@ -19,8 +19,7 @@ const Posts = React.createClass({
     },
 
     mixins: [
-        TransitionHook,
-        Navigation,
+        History,
         Reflux.listenTo(PostsStore, 'onStoreUpdate'),
         Reflux.connect(UserStore, 'user')
     ],
@@ -42,7 +41,7 @@ const Posts = React.createClass({
         const { pageNum } = this.props.params;
 
         if (isNaN(pageNum) || pageNum < 1) {
-            this.transitionTo('/404');
+            this.history.pushState(null, '/404');
             return;
         }
 
@@ -53,7 +52,7 @@ const Posts = React.createClass({
         const { pageNum } = nextProps.params;
 
         if (isNaN(pageNum) || pageNum < 1) {
-            this.transitionTo('/404');
+            this.history.pushState(null, '/404');
             return;
         }
 
@@ -61,7 +60,8 @@ const Posts = React.createClass({
         Actions.watchPosts(pageNum);
     },
 
-    routerWillLeave() {
+    componentWillUnmount() {
+        console.log('hey');
         Actions.stopWatchingPosts();
     },
 
@@ -92,7 +92,7 @@ const Posts = React.createClass({
         Actions.setSortBy(sortByValue);
 
         if (currentPage !== 1) {
-            this.transitionTo('/posts/1');
+            this.history.pushState(null, '/posts/1');
         } else {
             Actions.stopWatchingPosts();
             Actions.watchPosts(currentPage);

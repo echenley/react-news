@@ -2,7 +2,7 @@
 
 import React from 'react/addons';
 import Reflux from 'reflux';
-import { Navigation, TransitionHook } from 'react-router';
+import { History } from 'react-router';
 
 import SingleStore from '../stores/SingleStore';
 import UserStore from '../stores/UserStore';
@@ -21,8 +21,7 @@ const SinglePost = React.createClass({
     },
 
     mixins: [
-        Navigation,
-        TransitionHook,
+        History,
         Reflux.listenTo(SingleStore, 'onUpdate'),
         Reflux.connect(UserStore, 'user')
     ],
@@ -55,7 +54,7 @@ const SinglePost = React.createClass({
         }
     },
 
-    routerWillLeave() {
+    componentWillUnmount() {
         const { postId } = this.props.params;
         Actions.stopWatchingPost(postId);
     },
@@ -65,7 +64,7 @@ const SinglePost = React.createClass({
 
         if (!post) {
             // post doesn't exist
-            this.transitionTo('/404');
+            this.history.pushState(null, '/404');
             return;
         }
 

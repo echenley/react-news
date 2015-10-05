@@ -2,7 +2,7 @@
 
 import React from 'react/addons';
 import Reflux from 'reflux';
-import { Navigation } from 'react-router';
+import { History } from 'react-router';
 
 import Actions from '../actions/Actions';
 
@@ -20,7 +20,7 @@ const Profile = React.createClass({
     },
 
     mixins: [
-        Navigation,
+        History,
         Reflux.listenTo(ProfileStore, 'updateProfileData'),
         Reflux.listenTo(UserStore, 'updateUser')
     ],
@@ -56,7 +56,7 @@ const Profile = React.createClass({
         }
     },
 
-    routerWillLeave() {
+    componentWillUnmount() {
         Actions.stopWatchingProfile();
     },
 
@@ -67,7 +67,7 @@ const Profile = React.createClass({
             });
         } else {
             // user has logged out
-            this.transitionTo('/');
+            this.history.pushState(null, '/');
         }
     },
 

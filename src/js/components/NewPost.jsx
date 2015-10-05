@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react/addons';
-import { Navigation } from 'react-router';
+import { History } from 'react-router';
 import cx from 'classnames';
 
 import Actions from '../actions/Actions';
@@ -14,9 +14,7 @@ const NewPost = React.createClass({
         errorMessage: React.PropTypes.string
     },
 
-    mixins: [
-        Navigation
-    ],
+    mixins: [ History ],
 
     getInitialState() {
         return {
@@ -27,8 +25,8 @@ const NewPost = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        let oldLatestPost = this.props.user.latestPost;
-        let newLatestPost = nextProps.user.latestPost;
+        const oldLatestPost = this.props.user.latestPost;
+        const newLatestPost = nextProps.user.latestPost;
 
         if (oldLatestPost !== newLatestPost) {
             // user just submitted a new post
@@ -50,14 +48,14 @@ const NewPost = React.createClass({
 
         // hide modal/redirect to the new post
         Actions.hideModal();
-        this.transitionTo(`/post/${postId}`);
+        this.history.pushState(null, `/post/${postId}`);
     },
 
     submitPost(e) {
         e.preventDefault();
 
-        let { title, link } = this.state;
-        let { user } = this.props;
+        const { title, link } = this.state;
+        const { user } = this.props;
 
         if (!title) {
             this.setState({
@@ -77,7 +75,7 @@ const NewPost = React.createClass({
             submitted: true
         });
 
-        let post = {
+        const post = {
             title: title.trim(),
             url: link,
             creator: user.username,
@@ -89,23 +87,18 @@ const NewPost = React.createClass({
     },
 
     render() {
-        let {
-            submitted,
-            highlight,
-            title,
-            link
-        } = this.state;
+        const { submitted, highlight, title, link } = this.state;
 
-        let titleInputCx = cx('panel-input', {
+        const titleInputCx = cx('panel-input', {
             'input-error': highlight === 'title'
         });
 
-        let linkInputCx = cx('panel-input', {
+        const linkInputCx = cx('panel-input', {
             'input-error': highlight === 'link'
         });
 
-        let errorMessage = this.props.errorMessage;
-        let error = errorMessage && (
+        const errorMessage = this.props.errorMessage;
+        const error = errorMessage && (
             <div className="error modal-form-error">{ errorMessage }</div>
         );
 
