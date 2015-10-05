@@ -49,23 +49,18 @@ const Comment = React.createClass({
                             user={ user }
                             itemId={ comment.id }
                             isUpvoted={ !!userUpvoted[comment.id] }
-                            upvotes={ comment.upvotes ? abbreviateNumber(comment.upvotes) : '0' }
+                            upvotes={ comment.upvotes || 0 }
                         />
-
                         <span className="post-info-item">
                             <Link to={ `/user/${comment.creator}` }>
                                 { comment.creator }
                             </Link>
                         </span>
-
                         <span className="post-info-item">
                             { timeAgo(comment.time) }
                         </span>
-
                         { postLink }
-
                         { deleteOption }
-
                     </div>
                 </div>
             </div>
