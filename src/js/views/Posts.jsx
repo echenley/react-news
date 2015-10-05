@@ -61,7 +61,6 @@ const Posts = React.createClass({
     },
 
     componentWillUnmount() {
-        console.log('hey');
         Actions.stopWatchingPosts();
     },
 
