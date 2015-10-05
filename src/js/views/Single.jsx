@@ -37,13 +37,13 @@ const SinglePost = React.createClass({
     },
 
     componentDidMount() {
-        let { postId } = this.props.params;
+        const { postId } = this.props.params;
         Actions.watchPost(postId);
     },
 
     componentWillReceiveProps(nextProps) {
-        let oldPostId = this.props.params.postId;
-        let newPostId = nextProps.params.postId;
+        const oldPostId = this.props.params.postId;
+        const newPostId = nextProps.params.postId;
 
         if (newPostId !== oldPostId) {
             this.setState({
@@ -56,15 +56,12 @@ const SinglePost = React.createClass({
     },
 
     routerWillLeave() {
-        let { postId } = this.props.params;
+        const { postId } = this.props.params;
         Actions.stopWatchingPost(postId);
     },
 
     onUpdate(postData) {
-        let {
-            post,
-            comments
-        } = postData;
+        const { post, comments } = postData;
 
         if (!post) {
             // post doesn't exist
@@ -80,14 +77,9 @@ const SinglePost = React.createClass({
     },
 
     render() {
-        let {
-            loading,
-            user,
-            post,
-            comments
-        } = this.state;
+        const { loading, user, post, comments } = this.state;
+        const { postId } = this.props.params;
 
-        let { postId } = this.props.params;
         let content;
 
         if (loading) {

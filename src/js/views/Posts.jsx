@@ -26,7 +26,7 @@ const Posts = React.createClass({
     ],
 
     getInitialState() {
-        let postsData = PostsStore.getDefaultData();
+        const postsData = PostsStore.getDefaultData();
 
         return {
             user: UserStore.getDefaultData(),
@@ -39,7 +39,7 @@ const Posts = React.createClass({
     },
 
     componentDidMount() {
-        let { pageNum } = this.props.params;
+        const { pageNum } = this.props.params;
 
         if (isNaN(pageNum) || pageNum < 1) {
             this.transitionTo('/404');
@@ -50,7 +50,7 @@ const Posts = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        let { pageNum } = nextProps.params;
+        const { pageNum } = nextProps.params;
 
         if (isNaN(pageNum) || pageNum < 1) {
             this.transitionTo('/404');
@@ -77,11 +77,11 @@ const Posts = React.createClass({
 
     updateSortBy(e) {
         e.preventDefault();
-        let currentPage = this.state.currentPage || 1;
-        let sortByValue = React.findDOMNode(this.refs.sortBy).value;
+        const { sortOptions } = this.state;
+        const currentPage = this.state.currentPage || 1;
+        const sortByValue = e.target.value;
 
         // optimistically update selected option
-        let sortOptions = this.state.sortOptions;
         sortOptions.currentValue = sortByValue;
 
         this.setState({
@@ -100,26 +100,21 @@ const Posts = React.createClass({
     },
 
     render() {
-        let user = this.state.user;
-        let posts = this.state.posts;
-        let currentPage = this.state.currentPage || 1;
-        let sortOptions = this.state.sortOptions;
+        const { loading, nextPage, user, posts, sortOptions } = this.state;
+        const currentPage = this.state.currentPage || 1;
+
         // possible sort values (defined in PostsStore)
-        let sortValues = Object.keys(sortOptions.values);
+        const sortValues = Object.keys(sortOptions.values);
 
-        if (posts.length) {
-            posts = posts.map(function(post) {
-                return <Post post={ post } user={ user } key={ post.id } />;
-            });
-        } else {
-            posts = 'There are no posts yet!';
-        }
+        const options = sortValues.map((optionText, i) => (
+            <option value={ sortOptions[i] } key={ i }>{ optionText }</option>
+        ));
 
-        // posts.push(<Post type={ default } />)
-
-        let options = sortValues.map(function(optionText, i) {
-            return <option value={ sortOptions[i] } key={ i }>{ optionText }</option>;
-        });
+        const postEls = posts.length
+            ? posts.map((post) => (
+                <Post post={ post } user={ user } key={ post.id } />)
+            )
+            : 'There are no posts yet!';
 
         return (
             <div className="content full-width">
@@ -137,12 +132,12 @@ const Posts = React.createClass({
                 </div>
                 <hr />
                 <div className="posts">
-                    { this.state.loading ? <Spinner /> : posts }
+                    { loading ? <Spinner /> : postEls }
                 </div>
                 <hr />
                 <nav className="pagination">
                     {
-                        this.state.nextPage ? (
+                        nextPage ? (
                             <Link to={ `/posts/${currentPage + 1}` } className="next-page">
                                 Load More Posts
                             </Link>
