@@ -1,6 +1,7 @@
 'use strict';
 
 import createParent from '../util/createParent';
+import { findDOMNode } from 'react-dom';
 
 var React;
 var Register;
@@ -9,9 +10,9 @@ var TestUtils;
 describe('Register Component', () => {
 
     beforeEach(() => {
-        React = require('react/addons');
+        React = require('react');
         Register = require('../../src/js/components/Register');
-        TestUtils = React.addons.TestUtils;
+        TestUtils = require('react-addons-test-utils');
     });
 
     describe('DOM', () => {
@@ -23,7 +24,7 @@ describe('Register Component', () => {
         });
 
         it('should render a div with className "register"', () => {
-            expect(register.getDOMNode().className).to.equal('register');
+            expect(findDOMNode(register).className).to.equal('register');
         });
 
         it('should not render an error message when not passed one', () => {
@@ -34,7 +35,7 @@ describe('Register Component', () => {
         it('should render an error message when passed as prop', () => {
             register = TestUtils.renderIntoDocument(<Register errorMessage="uh oh" />);
             error = TestUtils.findRenderedDOMComponentWithClass(register, 'error');
-            expect(error.getDOMNode().textContent).to.equal('uh oh');
+            expect(findDOMNode(error).textContent).to.equal('uh oh');
         });
     });
 
@@ -53,7 +54,7 @@ describe('Register Component', () => {
         });
 
         it('should disable submit button until props update', () => {
-            let submitButton = TestUtils.findRenderedDOMComponentWithTag(register, 'button').getDOMNode();
+            let submitButton = findDOMNode(TestUtils.findRenderedDOMComponentWithTag(register, 'button'));
 
             register.setState({ submitted: true });
             expect(submitButton.disabled).to.equal(true);

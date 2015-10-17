@@ -1,10 +1,10 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import { Link } from 'react-router';
 import ProfileLink from '../../src/js/components/ProfileLink';
 
-const TestUtils = React.addons.TestUtils;
+import TestUtils from 'react-addons-test-utils';
 
 const userData = {
     username: 'echenley',

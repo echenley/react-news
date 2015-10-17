@@ -7,7 +7,7 @@
 */
 
 function createParent(Child, ref, props) {
-    const React = require('react/addons');
+    const React = require('react');
     props = props || {};
 
     return React.createClass({

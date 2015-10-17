@@ -1,7 +1,7 @@
 'use strict';
 
 import '../scss/main.scss';
-import React from 'react/addons';
+import ReactDOM from 'react-dom';
 import routes from './routes';
 
-React.render(routes, document.getElementById('app'));
+ReactDOM.render(routes, document.getElementById('app'));

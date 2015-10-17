@@ -1,6 +1,7 @@
 'use strict';
 
 import createParent from '../util/createParent';
+import { findDOMNode } from 'react-dom';
 
 var React;
 var Modal;
@@ -9,9 +10,9 @@ var TestUtils;
 describe('Modal Component', () => {
 
     beforeEach(() => {
-        React = require('react/addons');
+        React = require('react');
         Modal = require('../../src/js/components/Modal');
-        TestUtils = React.addons.TestUtils;
+        TestUtils = require('react-addons-test-utils');
     });
 
     describe('DOM', () => {
@@ -65,14 +66,14 @@ describe('Modal Component', () => {
 
         it('should call props.hideModal when .modal-overlay is clicked', () => {
             expect(hideModalSpy).to.have.not.been.called;
-            TestUtils.Simulate.click(modal.getDOMNode());
+            TestUtils.Simulate.click(findDOMNode(modal));
             expect(hideModalSpy).to.have.been.called;
         });
 
         it('should call props.hideModal when .modal-close is clicked', () => {
             const modalClose = TestUtils.findRenderedDOMComponentWithClass(modal, 'modal-close');
             expect(hideModalSpy).to.have.not.been.called;
-            TestUtils.Simulate.click(modalClose.getDOMNode());
+            TestUtils.Simulate.click(findDOMNode(modalClose));
             expect(hideModalSpy).to.have.been.called;
         });
 
@@ -86,7 +87,7 @@ describe('Modal Component', () => {
         it('should not be removed when .modal-inner is clicked', () => {
             const modalInner = TestUtils.findRenderedDOMComponentWithClass(modal, 'modal-inner');
             expect(hideModalSpy).to.have.not.been.called;
-            TestUtils.Simulate.click(modalInner.getDOMNode());
+            TestUtils.Simulate.click(findDOMNode(modalInner));
             expect(hideModalSpy).to.have.not.been.called;
         });
     });

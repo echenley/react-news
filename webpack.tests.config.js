@@ -22,7 +22,12 @@ module.exports = {
                 test: /\.svg$/,
                 loader: 'svg-inline'
             }
-        ]
+        ],
+        postLoaders: [{
+            test: /\.(js|jsx)$/,
+            include: [path.join(__dirname, 'src')],
+            loader: 'istanbul-instrumenter'
+        }]
     },
     resolve: {
         extensions: ['', '.js', '.jsx', '.json']

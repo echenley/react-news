@@ -19,20 +19,22 @@ module.exports = function(config) {
             'karma-sinon-chai',
             'karma-sourcemap-loader',
             'karma-webpack',
+            'karma-coverage',
             'karma-mocha-reporter',
             'karma-phantomjs-launcher',
             'karma-phantomjs-shim'
         ],
-        phantomjsLauncher: {
-
-        },
+        phantomjsLauncher: {},
         // run the bundle through the webpack and sourcemap plugins
         preprocessors: {
             './test.bundle.js': ['webpack', 'sourcemap']
         },
-        reporters: ['mocha'],
+        reporters: ['mocha', 'coverage'],
         mochaReporter: {
             output: 'autowatch'
+        },
+        coverageReporter: {
+            type: 'text'
         },
         singleRun: true,
         // webpack config object

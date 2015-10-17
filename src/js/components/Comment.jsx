@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PropTypes } from 'react/addons';
+import React, { PropTypes } from 'react';
 import Actions from '../actions/Actions';
 
 import { Link } from 'react-router';

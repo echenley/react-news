@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import { Router, Route, Redirect } from 'react-router';
 
 import App from './App';

@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
 import { History } from 'react-router';

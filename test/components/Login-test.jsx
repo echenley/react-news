@@ -1,6 +1,7 @@
 'use strict';
 
 import createParent from '../util/createParent';
+import { findDOMNode } from 'react-dom';
 
 var React;
 var Login;
@@ -10,9 +11,9 @@ describe('Login Component', () => {
     let login;
 
     beforeEach(() => {
-        React = require('react/addons');
+        React = require('react');
         Login = require('../../src/js/components/Login');
-        TestUtils = React.addons.TestUtils;
+        TestUtils = require('react-addons-test-utils');
     });
 
     describe('DOM', () => {
@@ -22,7 +23,7 @@ describe('Login Component', () => {
         });
 
         it('should render a div with className "login"', () => {
-            expect(login.getDOMNode().className).to.equal('login');
+            expect(findDOMNode(login).className).to.equal('login');
         });
 
         it('should render an error message only when passed as prop', () => {
@@ -35,7 +36,7 @@ describe('Login Component', () => {
             login = TestUtils.renderIntoDocument(<Login errorMessage="uh oh" />);
             error = TestUtils.findRenderedDOMComponentWithClass(login, 'error');
 
-            expect(error.getDOMNode().textContent).to.equal('uh oh');
+            expect(findDOMNode(error).textContent).to.equal('uh oh');
         });
     });
 
@@ -54,7 +55,7 @@ describe('Login Component', () => {
         });
 
         it('should disable submit button until props update', () => {
-            let submitButton = TestUtils.findRenderedDOMComponentWithTag(login, 'button').getDOMNode();
+            let submitButton = findDOMNode(TestUtils.findRenderedDOMComponentWithTag(login, 'button'));
 
             login.setState({ submitted: true });
             expect(submitButton.disabled).to.equal(true);

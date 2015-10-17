@@ -6,7 +6,7 @@ Author URI: http://henleyedition.com/
 
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import Reflux from 'reflux';
 import { Link } from 'react-router';
 
