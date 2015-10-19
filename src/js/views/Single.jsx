@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import { History } from 'react-router';
 
@@ -17,7 +17,7 @@ import pluralize from '../util/pluralize';
 const SinglePost = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.object
+        params: PropTypes.object
     },
 
     mixins: [

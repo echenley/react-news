@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { History } from 'react-router';
 import cx from 'classnames';
 
@@ -10,8 +10,8 @@ import Spinner from '../components/Spinner';
 const NewPost = React.createClass({
 
     propTypes: {
-        user: React.PropTypes.object,
-        errorMessage: React.PropTypes.string
+        user: PropTypes.object,
+        errorMessage: PropTypes.string
     },
 
     mixins: [ History ],

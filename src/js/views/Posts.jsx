@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import Actions from '../actions/Actions';
 import { History } from 'react-router';
@@ -15,7 +15,7 @@ import Link from 'react-router/lib/Link';
 const Posts = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.object
+        params: PropTypes.object
     },
 
     mixins: [

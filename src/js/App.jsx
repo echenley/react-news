@@ -6,7 +6,7 @@ Author URI: http://henleyedition.com/
 
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import { Link } from 'react-router';
 
@@ -27,7 +27,7 @@ import Icon from './components/Icon';
 const App = React.createClass({
 
     propTypes: {
-        children: React.PropTypes.object
+        children: PropTypes.object
     },
 
     mixins: [

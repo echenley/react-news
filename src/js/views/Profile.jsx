@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import { History } from 'react-router';
 
@@ -16,7 +16,7 @@ import Comment from '../components/Comment';
 const Profile = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.object
+        params: PropTypes.object
     },
 
     mixins: [
