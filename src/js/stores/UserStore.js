@@ -1,14 +1,13 @@
 'use strict';
 
 import Reflux from 'reflux';
-import { update } from 'react-addons-update';
+import update from 'react-addons-update';
 import Actions from '../actions/Actions';
 import { firebaseUrl } from '../util/constants';
 
 import Firebase from 'firebase';
 const baseRef = new Firebase(firebaseUrl);
 const usersRef = baseRef.child('users');
-
 
 const defaultUser = {
     uid: '',
