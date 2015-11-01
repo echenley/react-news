@@ -4,13 +4,13 @@ import Reflux from 'reflux';
 import Firebase from 'firebase';
 import { firebaseUrl } from '../util/constants';
 
+// used to create email hash for gravatar
+import md5 from 'md5';
+
 const baseRef = new Firebase(firebaseUrl);
 const commentsRef = baseRef.child('comments');
 const postsRef = baseRef.child('posts');
 const usersRef = baseRef.child('users');
-
-// used to create email hash for gravatar
-import md5 from 'md5';
 
 const Actions = Reflux.createActions([
     // user actions
