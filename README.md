@@ -148,6 +148,9 @@ Tests live in the `/test` directory and can be run using `npm test`. Tests are b
       "$uid": {
         // user not authenticated until after profile is created
         ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['username', 'md5hash']) &&
+                      newData.child('username').isString() &&
+                      newData.child('md5hash').isString()",
         "upvoted": {
           "$itemId": {
             ".write": "auth.uid === $uid"

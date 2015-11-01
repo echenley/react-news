@@ -58,8 +58,7 @@ Actions.login.listen((loginData) => {
 function createUser(username, loginData) {
     let profile = {
         username: username,
-        md5hash: md5(loginData.email),
-        upvoted: {}
+        md5hash: md5(loginData.email)
     };
 
     baseRef.createUser(loginData, (error, userData) => {
