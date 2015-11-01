@@ -13,7 +13,8 @@ const PostLink = ({ url, title }) => (
 );
 
 PostLink.PropTypes = {
-    post: PropTypes.object
+    url: PropTypes.string,
+    title: PropTypes.string
 };
 
 export default PostLink;

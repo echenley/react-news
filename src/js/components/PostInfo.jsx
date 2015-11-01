@@ -1,14 +1,14 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 
 import Actions from '../actions/Actions';
 
 import Upvote from './Upvote';
-
-import pluralize from '../util/pluralize';
-import timeAgo from '../util/timeAgo';
+import PostCommentsLink from './PostCommentsLink';
+import PostTimeAgo from './PostTimeAgo';
+import PostCreatorLink from './PostCreatorLink';
+import PostDeleteLink from './PostDeleteLink';
 
 const PostLink = React.createClass({
 
@@ -21,19 +21,12 @@ const PostLink = React.createClass({
         const { user, post } = this.props;
 
         let userUpvoted = user.upvoted || {};
+        let creatorIsLoggedIn = user.uid === post.creatorUID;
 
-        let commentCount = post.commentCount || 0;
         let upvoteActions = {
             upvote: Actions.upvotePost,
             downvote: Actions.downvotePost
         };
-
-        // add delete option if creator is logged in
-        let deleteOption = user.uid === post.creatorUID && (
-            <span className="delete post-info-item">
-                <a onClick={ () => Actions.deletePost(post) }>delete</a>
-            </span>
-        );
 
         return (
             <div className="post-info">
@@ -44,18 +37,10 @@ const PostLink = React.createClass({
                     isUpvoted={ !!userUpvoted[post.id] }
                     upvotes={ post.upvotes || 0 }
                 />
-                <span className="post-info-item">
-                    <Link to={ `/user/${post.creator}` }>{ post.creator }</Link>
-                </span>
-                <span className="post-info-item">
-                    { timeAgo(post.time) }
-                </span>
-                <span className="post-info-item">
-                    <Link to={ `/post/${post.id}` }>
-                        { pluralize(commentCount, 'comment') }
-                    </Link>
-                </span>
-                { deleteOption }
+                <PostCreatorLink creator={ post.creator } />
+                <PostTimeAgo time={ post.time } />
+                <PostCommentsLink postId={ post.id } commentCount={ post.commentCount || 0 } />
+                { creatorIsLoggedIn && <PostDeleteLink post={ post } /> }
             </div>
         );
     }

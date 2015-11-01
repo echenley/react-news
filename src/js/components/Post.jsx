@@ -27,7 +27,7 @@ const Post = React.createClass({
 
         return (
             <div className="post">
-                <PostLink post={ post } />
+                <PostLink title={ post.title } url={ post.url } />
                 <PostInfo post={ post } user={ user } />
             </div>
         );
