@@ -9,7 +9,7 @@ const PostTimeAgo = ({ time }) => (
     </span>
 );
 
-PostTimeAgo.PropTypes = {
+PostTimeAgo.propTypes = {
     time: PropTypes.string
 };
 

@@ -12,7 +12,7 @@ const PostLink = ({ url, title }) => (
     </div>
 );
 
-PostLink.PropTypes = {
+PostLink.propTypes = {
     url: PropTypes.string,
     title: PropTypes.string
 };

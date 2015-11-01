@@ -9,7 +9,7 @@ const PostDeleteLink = ({ post }) => (
     </span>
 );
 
-PostDeleteLink.PropTypes = {
+PostDeleteLink.propTypes = {
     post: PropTypes.object
 };
 

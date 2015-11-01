@@ -12,7 +12,7 @@ const CommentsLink = ({ id, commentCount }) => (
     </span>
 );
 
-CommentsLink.PropTypes = {
+CommentsLink.propTypes = {
     id: PropTypes.string,
     commentCount: PropTypes.number
 };

@@ -9,7 +9,7 @@ const PostCreatorLink = ({ creator }) => (
     </span>
 );
 
-PostCreatorLink.PropTypes = {
+PostCreatorLink.propTypes = {
     creator: PropTypes.string
 };
 
