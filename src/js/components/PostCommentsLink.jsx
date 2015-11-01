@@ -4,16 +4,16 @@ import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 import pluralize from '../util/pluralize';
 
-const CommentsLink = ({ postId, commentCount }) => (
+const CommentsLink = ({ id, commentCount }) => (
     <span className="post-info-item">
-        <Link to={ `/post/${postId}` }>
+        <Link to={ `/post/${id}` }>
             { pluralize(commentCount, 'comment') }
         </Link>
     </span>
 );
 
 CommentsLink.PropTypes = {
-    postId: PropTypes.string,
+    id: PropTypes.string,
     commentCount: PropTypes.number
 };
 

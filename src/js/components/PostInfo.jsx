@@ -39,7 +39,7 @@ const PostLink = React.createClass({
                 />
                 <PostCreatorLink creator={ post.creator } />
                 <PostTimeAgo time={ post.time } />
-                <PostCommentsLink postId={ post.id } commentCount={ post.commentCount || 0 } />
+                <PostCommentsLink id={ post.id } commentCount={ post.commentCount || 0 } />
                 { creatorIsLoggedIn && <PostDeleteLink post={ post } /> }
             </div>
         );
