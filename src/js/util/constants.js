@@ -1,6 +1,6 @@
 'use strict';
 
-const errorMessages = {
+export const errorMessages = {
     LOGIN_REQUIRED: 'You have to login to do that.',
     INVALID_EMAIL: 'Invalid email address.',
     INVALID_PASSWORD: 'Invalid password.',
@@ -13,9 +13,4 @@ const errorMessages = {
     generic: 'Something went wrong.'
 };
 
-const constants = {
-    errorMessages: errorMessages,
-    firebaseUrl: 'https://resplendent-fire-4810.firebaseio.com/'
-};
-
-export default constants;
+export const firebaseUrl = 'https://resplendent-fire-4810.firebaseio.com/';
