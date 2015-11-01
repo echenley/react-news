@@ -2,19 +2,15 @@
 
 import React, { PropTypes } from 'react';
 
-const Icon = React.createClass({
-    propTypes: {
-        svg: PropTypes.string.isRequired
-    },
+const Icon = (props) => (
+    <i { ...props }
+       svg={ null }
+       dangerouslySetInnerHTML={ { __html: props.svg } }>
+    </i>
+);
 
-    render() {
-        return (
-            <i { ...this.props }
-               svg={ null }
-               dangerouslySetInnerHTML={ { __html: this.props.svg } }>
-            </i>
-        );
-    }
-});
+Icon.propTypes = {
+    svg: PropTypes.string.isRequired
+};
 
 export default Icon;
