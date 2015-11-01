@@ -12,7 +12,7 @@ module.exports = {
                     path.join(__dirname, 'src'),
                     path.join(__dirname, 'test')
                 ],
-                loaders: ['babel?optional[]=runtime']
+                loader: 'babel?presets[]=es2015&presets[]=stage-2&presets[]=react'
             },
             {
                 test: /\.scss$/,
