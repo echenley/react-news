@@ -10,7 +10,7 @@ const PostTimeAgo = ({ time }) => (
 );
 
 PostTimeAgo.propTypes = {
-    time: PropTypes.string
+    time: PropTypes.number
 };
 
 export default PostTimeAgo;
