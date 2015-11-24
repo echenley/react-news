@@ -4,13 +4,17 @@ var webpackTestConfig = require('../webpack.tests.config.js');
 
 module.exports = function(config) {
     config.set({
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
         // karma only needs to know about the test bundle
-        files: [
-            './test.bundle.js'
-        ],
+        files: ['./test.bundle.js'],
         singleRun: true,
-        frameworks: ['chai', 'mocha', 'sinon', 'sinon-chai', 'phantomjs-shim'],
+        frameworks: [
+            'chai',
+            'mocha',
+            'sinon',
+            'sinon-chai',
+            'phantomjs-shim'
+        ],
         plugins: [
             'karma-chrome-launcher',
             'karma-chai',
@@ -42,6 +46,6 @@ module.exports = function(config) {
         webpackMiddleware: {
             noInfo: true,
         },
-        port: 3002
+        port: 3300
     });
 };

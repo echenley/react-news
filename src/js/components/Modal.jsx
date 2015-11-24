@@ -6,11 +6,18 @@ import Icon from './Icon';
 const Modal = React.createClass({
 
     propTypes: {
-        hideModal: PropTypes.func,
+        hideModal: PropTypes.func.isRequired,
         children: PropTypes.oneOfType([
             PropTypes.array,
             PropTypes.element
         ]).isRequired
+    },
+
+    getDefaultProps() {
+        return {
+            hideModal: () => {},
+            children: null
+        };
     },
 
     componentDidMount() {

@@ -1,10 +1,8 @@
 'use strict';
 
-jest.dontMock('../hostNameFromUrl');
+import hostNameFromUrl from '../hostNameFromUrl';
 
-describe('hostNameFromUrl', function() {
-    let hostNameFromUrl = require('../hostNameFromUrl');
-
+describe('hostNameFromUrl', () => {
     let urls = [
         {
             url: 'https://www.youtube.com/watch?v=_OVg8uov78I',
@@ -16,9 +14,9 @@ describe('hostNameFromUrl', function() {
         }
     ];
 
-    it('returns hostname correctly', function() {
+    it('returns hostname correctly', () => {
         for (let { url, hostname } of urls) {
-            expect(hostNameFromUrl(url)).toBe(hostname);
+            expect(hostNameFromUrl(url)).to.equal(hostname);
         }
     });
 });

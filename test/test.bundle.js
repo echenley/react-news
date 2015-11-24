@@ -1,4 +1,8 @@
 'use strict';
 
-var context = require.context('./components/', true, /-test\.(js|jsx)$/);
+import equalJSX from 'chai-equal-jsx';
+
+chai.use(equalJSX);
+
+var context = require.context('../src/js/', true, /-test\.(js|jsx)$/);
 context.keys().forEach(context);

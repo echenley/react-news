@@ -1,13 +1,11 @@
 'use strict';
 
-jest.dontMock('../pluralize');
+import pluralize from '../pluralize';
 
-describe('hostNameFromUrl', function() {
-    let pluralize = require('../pluralize');
-
-    it('pluralize correctly', function() {
-        expect(pluralize(1, 'comment')).toBe('1 comment');
-        expect(pluralize(21, 'comment')).toBe('21 comments');
-        expect(pluralize(10, 'turkey')).toBe('10 turkeys');
+describe('pluralize', function() {
+    it('pluralizes correctly', function() {
+        expect(pluralize(1, 'comment')).to.equal('1 comment');
+        expect(pluralize(21, 'comment')).to.equal('21 comments');
+        expect(pluralize(10, 'turkey')).to.equal('10 turkeys');
     });
 });
