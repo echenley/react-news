@@ -25,8 +25,6 @@
     "eslint-friendly-formatter": "^1.2.2",
     "eslint-loader": "^1.1.1",
     "eslint-plugin-react": "^3.7.1",
-    "expect": "^1.12.2",
-    "expect-jsx": "^2.1.0",
     "firebase": "^2.3.1",
     "history": "^1.13.0",
     "html-webpack-plugin": "^1.6.2",
