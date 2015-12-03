@@ -11,6 +11,10 @@ describe('hostNameFromUrl', () => {
         {
             url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#For_of_iteration_and_destructuring',
             hostname: 'developer.mozilla.org'
+        },
+        {
+            url: 'www.google.com',
+            hostname: 'www.google.com'
         }
     ];
 
