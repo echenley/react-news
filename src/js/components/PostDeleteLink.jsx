@@ -1,6 +1,6 @@
 'use strict';
 
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Actions from '../actions/Actions';
 
 const PostDeleteLink = ({ post }) => (
