@@ -10,6 +10,7 @@ export const errorMessages = {
     NO_USERNAME: 'You have to enter a username.',
     EMAIL_TAKEN: 'That email is taken.',
     USERNAME_TAKEN: 'That username is taken.',
+    AUTHENTICATION_DISABLED: 'Your administrator needs to configure Firebase authentication',
     generic: 'Something went wrong.'
 };
 

@@ -81,7 +81,7 @@ The test suite is run using `npm test` and `npm run test:watch`. Individual unit
         // auth can't be null to make/edit post
         // if the post exists, auth.uid must match creatorUID
         ".write": "(auth != null && !data.exists()) || data.child('creatorUID').val() === auth.uid",
-          
+
         // make sure all 5 fields are present before saving a new post
         // leave 'isDeleted' when deleting a post
         ".validate": "newData.hasChildren(['title', 'url', 'creator', 'creatorUID', 'time']) ||
@@ -124,12 +124,12 @@ The test suite is run using `npm test` and `npm run test:watch`. Individual unit
     "comments": {
       ".read": true,
       ".indexOn": ["postId","creatorUID","time"],
-      
+
       "$comment_id": {
         ".write": "auth != null && (!data.exists() || data.child('creatorUID').val() === auth.uid)",
         ".validate": "newData.hasChildren(['postId', 'text', 'creator', 'creatorUID', 'time']) &&
                       (newData.child('text').isString() && newData.child('text').val() != '')",
-        
+
         "upvotes": {
           // upvotes must be writable by anyone logged in
           ".write": "auth != null",
@@ -170,3 +170,11 @@ The test suite is run using `npm test` and `npm run test:watch`. Individual unit
   }
 }
 ```
+
+## Firebase Authentication
+
+To set up users, from your Firebase dashboard:
+
+1. Click Auth
+1. Click users
+1. Enable Email/password sign-in method
